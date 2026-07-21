@@ -93,6 +93,14 @@
   .ai-box p{ margin:4px 0; color:#444; }
   .ai-box ul{ margin:4px 0; padding-left:18px; color:#444; }
   .ai-box li{ margin:2px 0; }
+  .coach-box{ background:#fffaf0; border:1px solid #f0e2c4; border-radius:10px; padding:12px 12px 10px; }
+  .coach-head{ font-size:13.5px; font-weight:600; color:#9a6b1e; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+  .coach-tag{ font-size:11px; font-weight:500; background:#f6e7c8; color:#8a5e15; padding:2px 8px; border-radius:20px; }
+  .coach-body{ font-size:13px; color:#5b4a2e; }
+  .coach-body .coach-hint{ color:var(--sub); font-size:12.5px; margin:0; }
+  .coach-body ul{ margin:4px 0; padding-left:18px; }
+  .coach-body li{ margin:5px 0; line-height:1.5; }
+  .coach-body li b{ color:#8a5e15; }
   .ai-ver-toggle{ display:inline-flex; background:#f0f3f1; border-radius:8px; padding:2px; gap:2px; }
   .ver-btn{ font-size:12px; border:none; background:transparent; color:var(--sub); cursor:pointer; padding:4px 10px; border-radius:6px; transition:.15s; white-space:nowrap; }
   .ver-btn.active{ background:#fff; color:var(--green-d); box-shadow:0 1px 3px rgba(0,0,0,.08); font-weight:600; }
@@ -109,6 +117,10 @@
   .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
   .file-row{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
   .file-row input[type=file]{ font-size:12px; }
+  .ins-action-row{ display:flex; gap:8px; align-items:center; margin-bottom:6px; }
+  .field-label-inline{ font-size:12.5px; color:var(--sub); white-space:nowrap; }
+  .inline-num{ width:80px; border:1px solid #d6dbd9; border-radius:8px; padding:8px 9px; font-size:14px; color:var(--text); background:#fff; box-sizing:border-box; }
+  .inline-num:focus{ outline:none; border-color:var(--green); box-shadow:0 0 0 2px var(--green-l); }
   .sec-divider{ height:1px; background:var(--border); margin:12px 0; }
   .lock-note{ font-size:11.5px; color:var(--green-d); background:var(--green-l); border-radius:7px; padding:6px 9px; margin-bottom:9px; }
   /* 计划书预览 */
@@ -139,19 +151,18 @@
 
     <!-- 模块1 保险 -->
     <div class="card">
-      <h2>🛡️ 保险资产 <span class="tag">Excel导入 / 手动新增</span></h2>
-      <div class="file-row">
-        <button class="btn soft sm" id="btnTpl">下载模板</button>
-        <input type="file" id="fileIns" accept=".xlsx,.xls">
-        <button class="btn sm" id="btnImport">导入Excel</button>
-      </div>
+      <h2>🛡️ 保险资产 <button class="btn sm" id="btnImport" style="margin-left:auto;">导入Excel</button></h2>
+      <input type="file" id="fileIns" accept=".xlsx,.xls" style="display:none;">
       <div class="hint">上传计划书 Excel 后，系统自动识别「保单类型」并生成逐年现金价值曲线。请填写「投保年度」（即客户当前已持有到第几年度，0 = 刚投保/未满1年），再点「新增保单」即可测算未来 10 年收益。测算表「第 N 年」对应计划书「保单年度 (投保年度 + N)」。</div>
+      <div class="ins-action-row">
+        <label class="field-label-inline">投保年度（当前已持有第几年度）</label>
+        <input id="i_curYear" type="number" value="0" min="0" class="inline-num">
+      </div>
 
       <div class="plan-preview" id="planPreview" style="display:none;">
         <div class="pp-row"><span class="pp-k">保单类型</span><span class="pp-v" id="pp_type">—</span></div>
       </div>
 
-      <div class="field"><label>投保年度（当前已持有第几年度）</label><input id="i_curYear" type="number" value="0" min="0"></div>
       <button class="btn sm" id="btnAddIns" style="margin-top:4px;">+ 新增保单（需先上传计划书）</button>
       <button class="btn danger sm" id="btnClearIns" style="margin-top:4px;float:right;">批量清空</button>
       <div style="clear:both"></div>
@@ -256,6 +267,13 @@
       </div>
       <div class="ai-box" id="aiBox" style="margin-top:8px;">
         <p style="color:var(--sub);font-size:12.5px;">点击「生成财富解读」按钮，基于当前演算数据生成双版本话术与优化建议。</p>
+      </div>
+
+      <div class="coach-box" id="coachBox" style="margin-top:12px;">
+        <div class="coach-head">💼 理财经理话术提示 <span class="coach-tag">内部参考 · 客户不可见</span></div>
+        <div class="coach-body" id="coachBody">
+          <p class="coach-hint">点击「生成财富解读」后，这里会给出针对当前演算结果的面谈话术与异议应对建议，仅供理财经理内部准备。</p>
+        </div>
       </div>
 
       <div class="disclaimer">合规免责：本测算仅为情景演示，不构成任何收益承诺；保险现金价值、年金以保险合同为准；理财收益存在波动风险，仅供财富规划参考。所有数据仅存于当前页面内存，刷新或关闭后彻底销毁。</div>
@@ -605,7 +623,6 @@ function renderCuts(){
 // 保险导入
 $('btnImport').onclick = () => $('fileIns').click();
 $('fileIns').onchange = e => { const f=e.target.files[0]; if(f) importExcel(f); e.target.value=''; };
-$('btnTpl').onclick = downloadTemplate;
 // 计划书解析后的待新增记录（不直接入列，等用户确认「当前保单年度」）
 let pendingPlan = null;
 function resetPendingIns(){
@@ -687,6 +704,7 @@ $('btnClear').onclick = () => {
   $('p_years').value=10; state.params.years=10;
   renderCuts(); renderInsList(); renderDepList(); renderWeaList(); render();
   $('aiBox').innerHTML='<p style="color:var(--sub);font-size:12.5px;">点击「生成财富解读」按钮，基于当前演算数据生成双版本话术与优化建议。</p>';
+  if($('coachBody')) $('coachBody').innerHTML='<p class="coach-hint">点击「生成财富解读」后，这里会给出针对当前演算结果的面谈话术与异议应对建议，仅供理财经理内部准备。</p>';
   toast('已全部清空，内存数据已销毁');
 };
 
@@ -753,7 +771,7 @@ function importExcel(file){
       if(!rows.length){ showMsg('导入失败','表格为空或无数据行。'); return; }
       const req=['投保人','被保人','保单类型','投保年度','保单年度','现金价值','年交保费','保障期限'];
       const miss=req.filter(k=>!(k in rows[0]));
-      if(miss.length){ showMsg('无法识别格式','未找到「保单年度」列，且缺少标准模板必要列：'+miss.join('、')+'。请下载模板或导入计划书格式。'); return; }
+      if(miss.length){ showMsg('无法识别格式','未找到「保单年度」列，且缺少标准模板必要列：'+miss.join('、')+'。请导入计划书 Excel 格式。'); return; }
       const list=[];
       const types=['普通型','分红型','年金型'];
       for(let i=0;i<rows.length;i++){
@@ -866,7 +884,7 @@ function parseFlatRows(raw, h){
   return list;
 }
 function downloadTemplate(){
-  if(typeof XLSX==='undefined'){ showMsg('解析库未加载','请联网后重试下载模板。'); return; }
+  if(typeof XLSX==='undefined'){ showMsg('解析库未加载','请联网后重试导入。'); return; }
   const headers=['保单编号','投保人','被保人','保单类型','投保年度','保单年度','现金价值','红利现价','年度领取年金','年交保费','保障期限'];
   const sample=[
     ['P2026001','张三','张三','终身寿',2022,4,50000,'',0,10000,'终身'],
@@ -929,6 +947,25 @@ function generateAI(){
   }
   html += `<h3 style="margin-top:10px;">💡 基础资产优化提示</h3><ul>${tips.map(t=>'<li>'+t+'</li>').join('')}</ul>`;
   $('aiBox').innerHTML = html;
+
+  // 理财经理话术提示（内部参考，仅屏幕显示，不进入导出图片/PDF）
+  const hasCutC = state.params.rateCuts.length>0;
+  const diffTxt = fmt(diff);
+  const coachItems = [];
+  coachItems.push(`<b>【开场锚定】</b>先用大数建立画面感："${N} 年后按当前利率，您家庭资产预计约 <b>${fmt(A)}</b>；但考虑降息与每年 ${infl}% 通胀，实际购买力约 <b>${fmt(B)}</b>——中间差了约 <b>${diffTxt}</b>。"让客户直观感到"账面价值 ≠ 真实购买力"，再展开规划。`);
+  if(hasCutC){
+    coachItems.push(`<b>【降息沟通】</b>客户若问"利率还会降吗"：用本轮已设 <b>${state.params.rateCuts.length}</b> 轮分层降息切入，强调"现在锁定 ≈ 给未来利率上保险"，顺势引导增配可锁息的长期定存 / 年金险。`);
+  } else {
+    coachItems.push(`<b>【降息沟通】</b>当前未设降息情景，可用"利率长期下行是大趋势"做铺垫，引导客户别把资金长期堆在活期和短期里被再投资利率砍一刀。`);
+  }
+  if(s.cashA[N] > 0){
+    coachItems.push(`<b>【满期金衔接】</b>演算期内有约 <b>${fmt(s.cashA[N])}</b> 元保险满期金到账，提前帮客户规划续投去向（长期定存 / 年金险），避免资金回活期"睡大觉"被通胀侵蚀。`);
+  }
+  coachItems.push(`<b>【异议处理·嫌收益低】</b>客户说"不如炒股/基金"：先共鸣"高收益确实诱人"，再落到"这部分是家庭的<b>安全垫 / 压舱石</b>，目标是稳稳跑赢通胀、锁定确定性"，用上面 ${diffTxt} 的差距体现通胀侵蚀。`);
+  coachItems.push(`<b>【异议处理·想再看看】</b>客户犹豫"再等等"：用"自动转存 / 分批锁定"降低决策压力——"先锁一部分、留一部分灵活"，把行动门槛降到最低。`);
+  coachItems.push(`<b>【合规底线】</b>所有数字均为情景假设，面谈务必提示"不构成收益承诺、以保险合同 / 产品说明书为准"，杜绝销售误导。`);
+  $('coachBody').innerHTML = '<ul>'+coachItems.map(t=>'<li>'+t+'</li>').join('')+'</ul>';
+
   toast('已生成财富解读');
 }
 
