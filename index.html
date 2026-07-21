@@ -1131,12 +1131,12 @@ function loadSample(){
      divCurve:null,annCurve:null}
   ];
   state.deposits=[
-    {id:uid(),principal:200000,rate:2.0,term:3,startYear:2026,autoRoll:true},
-    {id:uid(),principal:100000,rate:1.5,term:1,startYear:2026,autoRoll:false}
+    {id:uid(),principal:200000,rate:1.55,term:3,startYear:2026,autoRoll:true},
+    {id:uid(),principal:100000,rate:1.15,term:1,startYear:2026,autoRoll:true}
   ];
   state.wealth=[
-    {id:uid(),principal:150000,rate:3.5,term:1,startYear:2026},
-    {id:uid(),principal:80000,rate:4.2,term:2,startYear:2027}
+    {id:uid(),principal:150000,rate:2.05,term:3,startYear:2026},
+    {id:uid(),principal:80000,rate:1.75,term:2,startYear:2027}
   ];
   state.params.rateCuts=[{year:3,depositCut:0.25,wealthCut:0.5},{year:7,depositCut:0.25,wealthCut:0.5}];
   $('p_infl').value=2; state.params.inflation=2; $('p_years').value=10; state.params.years=10;
