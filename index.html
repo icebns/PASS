@@ -365,46 +365,42 @@ function wealthValueAt(w, t, applyCuts){
   }
   return value;
 }
-function insDisplayValue(p){
+// 计入「待新增」保单（导入解析后、尚未点「新增保单」前），让图表即时反映已解析的保险
+function allInsurance(){ return (pendingPlan) ? state.insurance.concat([pendingPlan]) : state.insurance; }
+function insuranceValueOf(p, t){
   if(p.hasCurve){
-    const idx = Math.min((p.curPolicyYear||0), Math.max(1,p.cashCurve.length-1));
-    return (p.cashCurve[idx]||0) + (p.divCurve?(p.divCurve[idx]||0):0) + (p.annCurve?(p.annCurve[idx]||0):0);
+    const py = (p.curPolicyYear||0) + t;
+    const my = p.cashCurve.length - 1;            // 满期年度
+    if(py < my){
+      const idx = Math.min(Math.max(py,1), my);
+      const cv = p.cashCurve[idx] || 0;
+      const dv = p.divCurve ? (p.divCurve[idx]||0) : 0;
+      const av = p.annCurve ? (p.annCurve[idx]||0) : 0;
+      return cv + dv + av;
+    }
+    return 0;                                       // 已到期（满期金已转入现金类）
   }
-  return (p.cashValue||0) + (p.type==='分红型'?(p.dividendValue||0):0) + (p.type==='年金型'?(p.annuityAmount||0):0);
+  let v = (p.cashValue||0);
+  if(p.type==='分红型') v += (p.dividendValue||0);
+  if(p.type==='年金型') v += (p.annuityAmount||0);
+  const payTerm = parseTerm(p.coverageTerm);
+  if(t>=1 && t<=payTerm) v -= (p.annualPremium||0);
+  return v;
 }
+function insDisplayValue(p){ return insuranceValueOf(p, 0); }
 function insMatureYear(p){
   if(p.hasCurve) return p.cashCurve.length - 1;        // 曲线最后一行 = 满期年度
   const ct = parseTerm(p.coverageTerm); return ct>0 ? ct : Infinity;
 }
 function insuranceValueAt(t){
   let v = 0;
-  for(const p of state.insurance){
-    if(p.hasCurve){
-      // 逐年曲线：t=0 对应 curPolicyYear；满期年度 = 曲线最后一行
-      // 满期当年及之后保险归零（满期金已转入「现金(满期金)」类目，见 maturityCashAt）
-      const py = (p.curPolicyYear||0) + t;
-      const my = p.cashCurve.length - 1;              // 满期年度
-      if(py < my){
-        const idx = Math.min(Math.max(py,1), my);
-        const cv = p.cashCurve[idx] || 0;
-        const dv = p.divCurve ? (p.divCurve[idx]||0) : 0;
-        const av = p.annCurve ? (p.annCurve[idx]||0) : 0;
-        v += cv + dv + av;
-      }
-    } else {
-      v += (p.cashValue||0);
-      if(p.type==='分红型') v += (p.dividendValue||0);
-      if(p.type==='年金型') v += (p.annuityAmount||0);
-      const payTerm = parseTerm(p.coverageTerm);
-      if(t>=1 && t<=payTerm) v -= (p.annualPremium||0);
-    }
-  }
+  for(const p of allInsurance()) v += insuranceValueOf(p, t);
   return v;
 }
 function maturityCashAt(t){
   // 满期金：保单满期当年及之后，以「现金(满期金)」形式持有，计入家庭总资产
   let v = 0;
-  for(const p of state.insurance){
+  for(const p of allInsurance()){
     if(!p.hasCurve) continue;                         // 仅曲线型计划书支持满期建模
     const my = p.cashCurve.length - 1;                // 满期年度
     const py = (p.curPolicyYear||0) + t;
@@ -417,7 +413,7 @@ function maturityCashAt(t){
 function computeSeries(){
   const N = state.params.years;
   const infl = state.params.inflation/100;
-  const years=[],A=[],B=[],diff=[],depA=[],weaA=[],insA=[],cashA=[];
+  const years=[],A=[],B=[],diff=[],depA=[],weaA=[],insA=[],cashA=[],depB=[],weaB=[];
   for(let t=0;t<=N;t++){
     let d=0,w=0,ins=insuranceValueAt(t),cash=maturityCashAt(t);
     for(const x of state.deposits) d += depositValueAt(x,t,false);
@@ -429,13 +425,13 @@ function computeSeries(){
     const nominalB = d2 + w2 + ins + cash;
     const b = nominalB / Math.pow(1+infl, t);
     years.push(t); A.push(a); B.push(b); diff.push(a-b);
-    depA.push(d); weaA.push(w); insA.push(ins); cashA.push(cash);
+    depA.push(d); weaA.push(w); insA.push(ins); cashA.push(cash); depB.push(d2); weaB.push(w2);
   }
   let invested = 0;
   for(const x of state.deposits) invested += x.principal;
   for(const x of state.wealth)   invested += x.principal;
-  for(const p of state.insurance) invested += (p.annualPremium||0) * (p.payTerm || parseTerm(p.coverageTerm));
-  return {years,A,B,diff,depA,weaA,insA,cashA,N,invested};
+  for(const p of allInsurance()) invested += (p.annualPremium||0) * (p.payTerm || parseTerm(p.coverageTerm));
+  return {years,A,B,diff,depA,weaA,insA,cashA,depB,weaB,N,invested};
 }
 function totalInvested(){ return _series ? _series.invested : 0; }
 
@@ -483,8 +479,8 @@ function drawLineChart(canvas, s){
     ctx.stroke(); ctx.setLineDash([]);
   };
   // 三类资产 + 总资产(名义/实际)汇总线
-  plot(s.depA,'#3c8c6c',2);
-  plot(s.weaA,'#6fae93',2);
+  plot(s.depB,'#3c8c6c',2);
+  plot(s.weaB,'#6fae93',2);
   plot(s.insA,'#9cc9b3',2);
   plot(s.A,'#444444',3.2);
   plot(s.B,'#444444',3.2,[6,4]);
@@ -512,8 +508,8 @@ function drawPie(canvas, s){
   ctx.clearRect(0,0,w,h);
   const cx=w*0.32, cy=h/2, r=Math.min(w*0.28,h*0.4);
   const segs=[
-    {label:'定期存款', value:s.depA[s.N], color:'#3c8c6c'},
-    {label:'理财/资管', value:s.weaA[s.N], color:'#6fae93'},
+    {label:'定期存款', value:s.depB[s.N], color:'#3c8c6c'},
+    {label:'理财/资管', value:s.weaB[s.N], color:'#6fae93'},
     {label:'保险资产', value:s.insA[s.N], color:'#bcd8cb'},
     {label:'现金(满期金)', value:s.cashA[s.N], color:'#e8b04b'}
   ];
@@ -624,7 +620,7 @@ function renderCuts(){
 $('btnImport').onclick = () => $('fileIns').click();
 $('fileIns').onchange = e => { const f=e.target.files[0]; if(f) importExcel(f); e.target.value=''; };
 // 计划书解析后的待新增记录（不直接入列，等用户确认「当前保单年度」）
-let pendingPlan = null;
+var pendingPlan = null;
 function resetPendingIns(){
   pendingPlan=null;
   const pv=$('planPreview'); if(pv) pv.style.display='none';
@@ -1079,7 +1075,7 @@ function drawLineOn(ctx,x,y,w,h,s){
   ctx.textAlign='center'; ctx.textBaseline='top';
   for(let i=0;i<n;i++){ const gx=n===1?x+padL+pw/2:x+padL+(s.years[i]/s.N)*pw; ctx.fillText(s.years[i]+'年',gx,y+padT+ph+6); }
   const plot=(series,color,width,dash)=>{ ctx.strokeStyle=color; ctx.lineWidth=width; ctx.setLineDash(dash||[]); ctx.beginPath(); for(let i=0;i<n;i++){ const gx=n===1?x+padL+pw/2:x+padL+(s.years[i]/s.N)*pw, gy=y+padT+ph-(series[i]/maxV)*ph; i===0?ctx.moveTo(gx,gy):ctx.lineTo(gx,gy);} ctx.stroke(); ctx.setLineDash([]); };
-  plot(s.depA,'#3c8c6c',2); plot(s.weaA,'#6fae93',2); plot(s.insA,'#9cc9b3',2); plot(s.A,'#444444',3.2); plot(s.B,'#444444',3.2,[6,4]);
+  plot(s.depB,'#3c8c6c',2); plot(s.weaB,'#6fae93',2); plot(s.insA,'#9cc9b3',2); plot(s.A,'#444444',3.2); plot(s.B,'#444444',3.2,[6,4]);
   // 图例（相对于图表区域顶部，一行 5 项）
   ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.font='12px system-ui';
   const ly = y + 2;
@@ -1098,7 +1094,7 @@ function drawLineOn(ctx,x,y,w,h,s){
   ctx.restore();
 }
 function drawPieOn(ctx,cx,cy,r,s){
-  const segs=[{label:'定期存款',value:s.depA[s.N],color:'#3c8c6c'},{label:'理财/资管',value:s.weaA[s.N],color:'#6fae93'},{label:'保险资产',value:s.insA[s.N],color:'#bcd8cb'},{label:'现金(满期金)',value:s.cashA[s.N],color:'#e8b04b'}];
+  const segs=[{label:'定期存款',value:s.depB[s.N],color:'#3c8c6c'},{label:'理财/资管',value:s.weaB[s.N],color:'#6fae93'},{label:'保险资产',value:s.insA[s.N],color:'#bcd8cb'},{label:'现金(满期金)',value:s.cashA[s.N],color:'#e8b04b'}];
   const total=segs.reduce((a,b)=>a+b.value,0);
   if(total<=0){ ctx.fillStyle='#9aa19e'; ctx.font='13px system-ui'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('暂无资产数据',cx,cy); return; }
   let ang=-Math.PI/2;
