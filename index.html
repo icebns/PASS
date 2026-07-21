@@ -243,13 +243,12 @@
         <div class="stat alt"><div class="k">期末实际价值(B)</div><div class="v" id="s_b">¥0.00</div></div>
         <div class="stat"><div class="k">期末差额(A−B)</div><div class="v" id="s_diff">¥0.00</div></div>
         <div class="stat alt"><div class="k">总投入本金</div><div class="v" id="s_inv">¥0.00</div></div>
-        <div class="stat"><div class="k">满期金(现金)</div><div class="v" id="s_cash" style="color:#c5891f;">¥0.00</div></div>
       </div>
 
       <div class="chart-title">① 资产增长对比（三类资产 + 总资产 / 通胀实际）</div>
       <div class="chart-box"><canvas id="lineCanvas" height="300"></canvas></div>
 
-      <div class="chart-title">② 期末资产结构占比（含满期金）</div>
+      <div class="chart-title">② 期末资产结构占比（三类资产）</div>
       <div class="chart-box"><canvas id="pieCanvas" height="240"></canvas></div>
       <div class="legend" id="pieLegend"></div>
 
@@ -510,8 +509,7 @@ function drawPie(canvas, s){
   const segs=[
     {label:'定期存款', value:s.depB[s.N], color:'#3c8c6c'},
     {label:'理财/资管', value:s.weaB[s.N], color:'#6fae93'},
-    {label:'保险资产', value:s.insA[s.N], color:'#bcd8cb'},
-    {label:'现金(满期金)', value:s.cashA[s.N], color:'#e8b04b'}
+    {label:'保险资产', value:s.insA[s.N], color:'#bcd8cb'}
   ];
   const total=segs.reduce((a,b)=>a+b.value,0);
   if(total<=0){ ctx.fillStyle='#9aa19e'; ctx.font='13px system-ui'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('暂无资产数据',cx,cy); return; }
@@ -541,9 +539,9 @@ function renderCharts(s){
 
 /* ============ 明细表 ============ */
 function renderTable(s){
-  let html='<thead><tr><th>年度</th><th class="num">基准场景(A)</th><th class="num">降息+通胀(B)</th><th class="num">满期金(现金)</th><th class="num">差额(A−B)</th></tr></thead><tbody>';
+  let html='<thead><tr><th>年度</th><th class="num">基准场景(A)</th><th class="num">降息+通胀(B)</th><th class="num">差额(A−B)</th></tr></thead><tbody>';
   for(let i=0;i<=s.N;i++){
-    html+=`<tr><td>${s.years[i]}年</td><td class="num">${fmt(s.A[i])}</td><td class="num">${fmt(s.B[i])}</td><td class="num">${fmt(s.cashA[i])}</td><td class="num">${fmt(s.diff[i])}</td></tr>`;
+    html+=`<tr><td>${s.years[i]}年</td><td class="num">${fmt(s.A[i])}</td><td class="num">${fmt(s.B[i])}</td><td class="num">${fmt(s.diff[i])}</td></tr>`;
   }
   html+='</tbody>';
   $('detailTable').innerHTML=html;
@@ -557,7 +555,6 @@ function render(){
   $('s_b').textContent = fmt(s.B[s.N]);
   $('s_diff').textContent = fmt(s.diff[s.N]);
   $('s_inv').textContent = fmt(s.invested);
-  $('s_cash').textContent = fmt(s.cashA[s.N]);
   renderCharts(s);
   renderTable(s);
 }
@@ -983,8 +980,8 @@ function makeReportCanvas(){
   ctx.fillStyle='#7a8285'; ctx.font='12px system-ui'; ctx.fillText('生成时间：'+new Date().toLocaleString('zh-CN')+'　测算年限：'+s.N+'年　年度通胀：'+state.params.inflation+'%', pad, y+30);
   y+=titleH+gap;
   // 概要卡片
-  const stats=[['期末名义总值(A)',fmt(s.A[s.N])],['期末实际价值(B)',fmt(s.B[s.N])],['期末差额(A−B)',fmt(s.diff[s.N])],['总投入本金',fmt(s.invested)],['满期金(现金)',fmt(s.cashA[s.N])]];
-  const sw=(W-pad*2-4*10)/5;
+  const stats=[['期末名义总值(A)',fmt(s.A[s.N])],['期末实际价值(B)',fmt(s.B[s.N])],['期末差额(A−B)',fmt(s.diff[s.N])],['总投入本金',fmt(s.invested)]];
+  const sw=(W-pad*2-3*10)/4;
   stats.forEach((st,i)=>{
     const x=pad+i*(sw+10);
     ctx.fillStyle='#e8f3ee'; roundRect(ctx,x,y,sw,sumH-50,10); ctx.fill();
@@ -1001,7 +998,7 @@ function makeReportCanvas(){
   drawPieOn(ctx, pad+(W-pad*2)*0.32, y+(pieH-24)/2, Math.min((W-pad*2)*0.24,(pieH-24)*0.42), s); y+=pieH-24+gap;
   // ③ 明细表
   ctx.fillText('③ 年度资产明细', pad, y); y+=24;
-  const cols=[['年度',0.8],['基准场景(A)',2],['降息+通胀(B)',2],['满期金(现金)',1.6],['差额(A−B)',2]];
+  const cols=[['年度',0.8],['基准场景(A)',2],['降息+通胀(B)',2.2],['差额(A−B)',2]];
   const tw=W-pad*2; const wsum=cols.reduce((a,c)=>a+c[1],0); const cw=cols.map(c=>c[1]/wsum*tw);
   ctx.font='12px system-ui'; ctx.textBaseline='middle';
   ctx.fillStyle='#e8f3ee'; ctx.fillRect(pad,y,tw,26);
@@ -1010,7 +1007,7 @@ function makeReportCanvas(){
   y+=26;
   for(let i=0;i<=s.N;i++){
     cx=pad;
-    const row=[s.years[i]+'年', fmt(s.A[i]), fmt(s.B[i]), fmt(s.cashA[i]), fmt(s.diff[i])];
+    const row=[s.years[i]+'年', fmt(s.A[i]), fmt(s.B[i]), fmt(s.diff[i])];
     ctx.fillStyle = i%2? '#fafbfa':'#fff'; ctx.fillRect(pad,y,tw,26);
     row.forEach((v,i)=>{ ctx.fillStyle='#333'; ctx.textAlign=i===0?'left':'right'; ctx.fillText(v, cx+(i===0?8:cw[i]-8), y+13); cx+=cw[i]; });
     y+=26;
@@ -1094,7 +1091,7 @@ function drawLineOn(ctx,x,y,w,h,s){
   ctx.restore();
 }
 function drawPieOn(ctx,cx,cy,r,s){
-  const segs=[{label:'定期存款',value:s.depB[s.N],color:'#3c8c6c'},{label:'理财/资管',value:s.weaB[s.N],color:'#6fae93'},{label:'保险资产',value:s.insA[s.N],color:'#bcd8cb'},{label:'现金(满期金)',value:s.cashA[s.N],color:'#e8b04b'}];
+  const segs=[{label:'定期存款',value:s.depB[s.N],color:'#3c8c6c'},{label:'理财/资管',value:s.weaB[s.N],color:'#6fae93'},{label:'保险资产',value:s.insA[s.N],color:'#bcd8cb'}];
   const total=segs.reduce((a,b)=>a+b.value,0);
   if(total<=0){ ctx.fillStyle='#9aa19e'; ctx.font='13px system-ui'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('暂无资产数据',cx,cy); return; }
   let ang=-Math.PI/2;
