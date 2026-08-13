@@ -5,28 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>邮储财富情景演算小助手</title>
 <script>
-/* GitHub Pages 等静态托管不支持 COOP/COEP 响应头，WebLLM 需要 SharedArrayBuffer，
-   因此用 Service Worker 注入这两个头。localhost 不需要。 */
+/* GitHub Pages 等静态托管不支持 COOP/COEP 响应头，WebLLM 需要 SharedArrayBuffer。
+   因此用同目录 sw.js 注入这两个头。localhost 不需要。 */
 (function(){
   if (!('serviceWorker' in navigator) || window.crossOriginIsolated ||
       location.hostname === 'localhost' || location.hostname === '127.0.0.1') return;
-  var swCode = [
-    "self.addEventListener('install',function(e){self.skipWaiting();});",
-    "self.addEventListener('activate',function(e){e.waitUntil(self.clients.claim());});",
-    "self.addEventListener('fetch',function(e){",
-    "  if(e.request.mode==='navigate'){",
-    "    e.respondWith(fetch(e.request).then(function(r){",
-    "      var h=new Headers(r.headers);",
-    "      h.set('Cross-Origin-Embedder-Policy','require-corp');",
-    "      h.set('Cross-Origin-Opener-Policy','same-origin');",
-    "      return new Response(r.body,{status:r.status,statusText:r.statusText,headers:h});",
-    "    }));",
-    "  }",
-    "});"
-  ].join('\n');
-  var blob = new Blob([swCode], {type:'application/javascript'});
-  var swUrl = URL.createObjectURL(blob);
-  navigator.serviceWorker.register(swUrl,{scope:'./'}).then(function(reg){
+  navigator.serviceWorker.register('./sw.js',{scope:'./'}).then(function(reg){
     if(!navigator.serviceWorker.controller){ window.location.reload(); }
   }).catch(function(e){ console.error('COI Service Worker 注册失败：',e); });
 })();
