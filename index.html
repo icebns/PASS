@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>邮储银发财富情景演算小助手</title>
+<title>邮储农户养老财富规划助手</title>
 <script>
 /* GitHub Pages 等静态托管不支持 COOP/COEP 响应头，WebLLM 需要 SharedArrayBuffer。
    因此用同目录 sw.js 注入这两个头。localhost 不需要。 */
@@ -88,6 +88,12 @@
   .field input:focus, .field select:focus{ outline:none; border-color:var(--green); box-shadow:0 0 0 2px var(--green-l); }
   .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:9px; }
   .grid3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:9px; }
+  .farmer-note{ margin:8px 0 4px; padding:10px 12px; border-radius:10px; background:rgba(224,164,94,.16); border:1px solid rgba(224,164,94,.5); color:#8a5a12; font-size:12.5px; line-height:1.7; }
+  .cost-grid{ display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+  .cost-grid .field.sm{ margin-bottom:0; }
+  .cost-grid .field.sm input{ padding:7px 8px; font-size:13px; }
+  .margin-box{ padding:10px 12px; border-radius:10px; background:rgba(63,156,131,.12); border:1px solid rgba(63,156,131,.4); font-size:13px; line-height:1.8; color:#0f5132; }
+  .margin-box.warn{ background:rgba(220,80,80,.12); border-color:rgba(220,80,80,.45); color:#9a2b2b; }
   .hint{ font-size:11.5px; color:var(--sub); margin:4px 0 8px; }
   .summary{ display:grid; grid-template-columns:repeat(4,1fr); gap:9px; margin-bottom:12px; }
   @media (max-width:520px){ .summary{ grid-template-columns:repeat(2,1fr);} }
@@ -554,16 +560,16 @@
 <div class="splash" id="splash">
   <div class="splash-inner">
     <div class="splash-badge">中国邮政储蓄银行</div>
-    <h1 class="splash-title">邮储银发财富情景演算</h1>
-    <p class="splash-sub">利率下行与通胀影响可视化测算工具</p>
+    <h1 class="splash-title">邮储农户养老财富规划助手</h1>
+    <p class="splash-sub">把卖粮收入、务农成本与家庭资产，演算成停止务农后的养老现金流</p>
     <div class="splash-tags">
-      <span>资产配置</span>
+      <span>收入测算</span>
       <span>养老规划</span>
-      <span>财富传承</span>
-      <span>稳健增值</span>
+      <span>资产配置</span>
+      <span>稳健养老</span>
     </div>
     <div class="splash-chart">
-      <svg class="growth-svg" viewBox="0 0 360 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="资产增长情景曲线">
+      <svg class="growth-svg" viewBox="0 0 360 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="务农积蓄增长情景曲线">
         <defs>
           <linearGradient id="gArea" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="rgba(255,255,255,.20)"/>
@@ -588,7 +594,7 @@
 
 <!-- 顶部操作栏 -->
 <div class="topbar">
-  <h1>邮储银发财富情景演算小助手</h1>
+  <h1>邮储农户养老财富规划助手</h1>
   <div class="top-actions">
     <button class="btn soft" id="btnQuest" title="重填问卷" aria-label="重填问卷">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
@@ -614,7 +620,7 @@
     <!-- 步骤 1：客户档案 -->
     <div class="step active" data-step="0" id="step0">
       <div class="hero">
-        <h2>先花一分钟，认识一下您</h2>
+        <h2>先花几分钟，认识一下您家的情况</h2>
         <p>回答后系统自动为您设定测算口径，您随时可在「测算假设」里微调。全程在您手机 / 平板本地运行，数据不留痕。</p>
       </div>
       <div class="card">
@@ -638,12 +644,13 @@
         <div class="q-label">您当前是否已退休？</div>
         <div class="hint" style="margin:-6px 0 8px;">选「已退休」会自动展开「现有养老金」填写项。</div>
         <div class="opt-grid" data-q="retired">
-          <div class="opt" data-v="no"><div class="t">未退休</div><div class="d">仍在积累阶段</div></div>
-          <div class="opt" data-v="yes"><div class="t">已退休</div><div class="d">已在领取养老金</div></div>
+          <div class="opt" data-v="no"><div class="t">还在务农</div><div class="d">仍在积累阶段</div></div>
+          <div class="opt" data-v="yes"><div class="t">已不务农</div><div class="d">已靠积蓄生活</div></div>
         </div>
+        <div class="farmer-note">⚠️ 绝大多数种粮农户没有职工养老金，未来养老现金流全部靠自己务农攒下的积蓄与合理配置。下面我们会帮您测算：不再务农之后，这笔钱每月能补充多少生活费。</div>
         <div id="qNotRetired" style="display:none;">
-          <div class="q-label">计划退休年龄</div>
-          <div class="hint" style="margin:-6px 0 8px;">用于测算从现在到退休的积累期，默认停留在 60 岁。</div>
+          <div class="q-label">期望停止劳作年龄</div>
+          <div class="hint" style="margin:-6px 0 8px;">很多农户 60 岁后仍会下地，这里填您想真正停手干活的年龄，用于测算积累期，默认 60 岁。</div>
           <div class="opt-grid" data-q="retireAge">
             <div class="opt" data-v="50"><div class="t">50 岁</div></div>
             <div class="opt" data-v="55"><div class="t">55 岁</div></div>
@@ -680,12 +687,12 @@
           <span class="g-tip">元</span>
         </div>
         <div id="qOccRow">
-          <div class="q-label">职业类型</div>
-          <div class="hint" style="margin:-6px 0 8px;">用于匹配更合适的资产参考比例（已退休则自动按"退休"口径，无需选择）。</div>
+          <div class="q-label">主要收入来源</div>
+          <div class="hint" style="margin:-6px 0 8px;">农户也可能有务工、副业等收入，选择最贴近的一项，方便匹配资产参考比例（已退休则自动按"退休"口径，无需选择）。</div>
           <div class="opt-grid" data-q="occ">
-            <div class="opt" data-v="salary"><div class="t">工薪上班族</div><div class="d">收入稳定可规划</div></div>
-            <div class="opt" data-v="biz"><div class="t">个体 / 商贸</div><div class="d">现金流波动较大</div></div>
-            <div class="opt" data-v="owner"><div class="t">企业主</div><div class="d">资产体量较大</div></div>
+            <div class="opt" data-v="salary"><div class="t">务农为主</div><div class="d">种粮/养殖等，收入随季节波动</div></div>
+            <div class="opt" data-v="biz"><div class="t">农闲务工 / 副业</div><div class="d">有额外现金流，但不太稳定</div></div>
+            <div class="opt" data-v="owner"><div class="t">个体经营 / 商贸</div><div class="d">资产体量相对较大</div></div>
           </div>
         </div>
         <div class="q-label">风险偏好</div>
@@ -741,6 +748,54 @@
         </div>
       </div>
       <div class="card">
+        <h2>🌾 卖粮积蓄与养老投入 <span class="tag">钱从哪来 · 怎么投</span></h2>
+        <div class="hint">先记下您家卖粮的节奏与到手收入，系统自动折算成"每年能存下的养老钱"；如需扣掉生活开销，可在下方微调实际投入额，再选分摊比例。</div>
+        <div class="q-label">庄稼多久卖一次？</div>
+        <div class="hint" style="margin:-6px 0 8px;">一年卖一次小麦，还是小麦 + 玉米各卖一次；也有农户两年才收一季。</div>
+        <div class="opt-grid" data-q="cropCycle">
+          <div class="opt" data-v="1"><div class="t">一年卖 1 次</div><div class="d">如单季小麦</div></div>
+          <div class="opt" data-v="2"><div class="t">一年卖 2 次</div><div class="d">小麦 + 玉米</div></div>
+          <div class="opt" data-v="0.5"><div class="t">两年卖 1 次</div><div class="d">如两年一收</div></div>
+        </div>
+        <div class="q-label" style="margin-top:10px;">每次卖粮实际到手收入（元）</div>
+        <div class="hint" style="margin:-6px 0 8px;">卖完粮、扣掉种子化肥等成本后，真正进腰包的钱。知道自己就直接填；不清楚可展开下方算。</div>
+        <div class="name-row" style="margin-bottom:6px;">
+          <input class="q-input" id="qCropIncome" type="number" min="0" step="1000" placeholder="如 30000" value="30000" style="width:180px;">
+          <span class="g-tip">元/次</span>
+        </div>
+        <div id="cropAnnualPreview" style="margin:0 0 4px;padding:8px 12px;border-radius:10px;background:rgba(63,156,131,.14);color:#0f6e56;font-size:13px;line-height:1.6;">按当前填写，每年卖粮净收入约 <b>—</b>。不清楚净收入？可展开下方「详细计算」自动算。</div>
+        <div class="more-toggle" id="grossToggle" style="margin-top:10px;">▾ 不清楚净收入？展开详细计算（填单次毛营收与务农成本）</div>
+        <div class="inline-sec" id="grossInline">
+          <div class="q-label">单次卖粮毛营收（元）</div>
+          <div class="hint" style="margin:-6px 0 8px;">与上方"每次卖粮"口径一致：填这一茬粮食卖的钱（未扣成本）。</div>
+          <div class="name-row" style="margin-bottom:6px;">
+            <input class="q-input" id="qGrossRev" type="number" min="0" step="1000" placeholder="如 60000" style="width:180px;">
+            <span class="g-tip">元/次</span>
+          </div>
+          <div class="q-label" style="margin-top:8px;">务农成本（可逐项填）</div>
+          <div class="cost-grid">
+            <div class="field sm"><label>种子费用</label><input type="number" min="0" step="500" id="qCostSeed" placeholder="0"></div>
+            <div class="field sm"><label>化肥农药</label><input type="number" min="0" step="500" id="qCostFert" placeholder="0"></div>
+            <div class="field sm"><label>农机耕地收割</label><input type="number" min="0" step="500" id="qCostMach" placeholder="0"></div>
+            <div class="field sm"><label>土地租金</label><input type="number" min="0" step="500" id="qCostLand" placeholder="0"></div>
+            <div class="field sm"><label>其他农资杂费</label><input type="number" min="0" step="500" id="qCostOther" placeholder="0"></div>
+          </div>
+          <div id="marginResult" class="margin-box" style="margin-top:10px;"></div>
+          <button class="btn soft sm" id="btnFillMargin" style="margin-top:8px;">⬇️ 把算出的单次净收益（元/次）填回上面</button>
+        </div>
+        <div class="sec-divider" style="height:1px;background:var(--border);margin:14px 0;"></div>
+        <div id="planInsNote" class="ins-note" style="display:none;"></div>
+        <div class="field"><label>每年实际投入养老（元，默认=卖粮净收入，可微调扣除生活开销）</label><input type="number" min="0" step="1000" id="planAnnual" placeholder="如：60000"></div>
+        <div class="chart-title" style="margin:6px 0 2px;">各方面分摊比例（合计需 100%）</div>
+        <div id="planRatios"></div>
+        <div class="chip-row" style="margin-top:6px;"><span id="planSumChip" class="chip">合计 0%</span></div>
+        <div class="grid2" style="margin-top:8px;">
+          <button class="btn soft sm active" id="btnPlanCur">按当前资产占比</button>
+          <button class="btn soft sm" id="btnPlanStd">按问卷标准比例</button>
+        </div>
+      </div>
+
+      <div class="card">
         <h2>💰 我的资产 <span class="tag">详细录入</span></h2>
         <div class="hint">逐项填入各类资产金额；需要快速填总额，点下方「⚡ 快速估算」展开。</div>
         <div class="inline-sec open" id="detailInline">
@@ -749,19 +804,6 @@
         <div class="more-toggle" id="quickToggle" style="margin-top:12px;">▾ ⚡ 快速估算（填总额即可）</div>
         <div class="inline-sec" id="quickInline">
           <div id="simpleList"></div>
-        </div>
-      </div>
-      <div class="card">
-        <h2 id="planCardTitle">📥 养老金结余再投入 <span class="tag">让长远测算更真实</span></h2>
-        <div class="hint" id="planCardHint">每月养老金扣除生活开销后，预计每年结余多少，按以下比例分配到各类资产。没有结余则留空。</div>
-        <div id="planInsNote" class="ins-note" style="display:none;"></div>
-        <div class="field"><label>每年计划额外新增投入（元，不含保单固定缴费）</label><input type="number" min="0" step="1000" id="planAnnual" placeholder="如：60000"></div>
-        <div class="chart-title" style="margin:6px 0 2px;">各方面分摊比例（合计需 100%）</div>
-        <div id="planRatios"></div>
-        <div class="chip-row" style="margin-top:6px;"><span id="planSumChip" class="chip">合计 0%</span></div>
-        <div class="grid2" style="margin-top:8px;">
-          <button class="btn soft sm active" id="btnPlanCur">按当前资产占比</button>
-          <button class="btn soft sm" id="btnPlanStd">按问卷标准比例</button>
         </div>
       </div>
       <div class="card" id="qLumpRow" style="display:none;">
@@ -969,7 +1011,15 @@ const state = {
   targetMonthly:6000,
   planIntent:'both',
   lumpTarget:100000,
-  lumpYear:20
+  lumpYear:20,
+  farmer:true,
+  farm:{
+    cropCycle:2,           // 一年卖几次：1=一年1次；2=一年2次(小麦+玉米)；0.5=两年一收
+    incomePerSale:30000,   // 每次卖粮实际到手收入（净，已扣成本）
+    grossRev:0,            // 本期粮食售卖总营收（毛）
+    costSeed:0, costFert:0, costMach:0, costLand:0, costOther:0,
+    livingCost:0           // 家庭生活开支（从净毛利中可扣，得到真正可存养老的结余）
+  }
 };
 let _series = null;
 /* WebLLM 本地推理状态缓存（演示机浏览器内 WebGPU 运行，数据不出本机） */
@@ -1964,6 +2014,7 @@ function generateAI(silent){
   const N=s.N, A=s.A[N], B=s.B[N], diff=s.diff[N], infl=state.params.inflation, gainA=A-s.invested, gainB=B-s.invested;
   const hasCut=state.params.rateCuts.length>0;
   const cashV=s.perClass.cash[N], aggV=s.perClass.aggressive[N], insV=s.perClass.insurance[N], depV=s.perClass.deposit[N], wealthV=s.perClass.wealth[N], annual=state.plan.annual||0;
+  const _dFarmer=computeDecumulation(s), _cropAnnual=Math.round(state.plan.annual||0);
   const tips=[];
   if(hasCut) tips.push(`未来存在 ${state.params.rateCuts.length} 轮分层降息，建议在利率尚处相对高位时，将部分活期/短期资金转换为可锁定中长期收益的产品（如长期定存、国债、年金险）。`);
   else tips.push('当前未设置降息情景，建议主动预留降息与再投资风险的缓冲，避免到期资金集中滚动到更低利率。');
@@ -1974,8 +2025,11 @@ function generateAI(silent){
   if(insV>0) tips.push(`保险资产约 ${fmt(insV)} 元在组合中承担"安全垫"角色，能在利率下行时提供确定性现金价值，建议根据家庭责任动态调整保额与年期。`);
   if(aggV>0) tips.push(`进取投资约 ${fmt(aggV)} 元承担了较高波动，建议与定期、理财、保险等稳健资产搭配，避免单一博收益。`);
   if(annual>0) tips.push(`未来 ${N} 年您计划每年新增投入约 ${fmt(annual)} 元${state.plan.growth>0?('（按每年递增 '+state.plan.growth+'%）'):''}，按设定比例分摊到各账户参与增长；这部分持续投入是资产滚雪球的重要来源，建议保持稳定节奏，并在收入提升时同步上调。`);
-  const proText=`根据您提供的家庭资产资料，我们做了一次全口径情景演示。如上图，受通胀与降息影响，到第 ${N} 年您的名义口径累计收益约 ${fmt(gainA)}、实际口径累计收益约 ${fmt(gainB)}——账面数字的"含金量"已被悄悄削弱。整体来看，建议在能力范围内尽早把一部分收益通过长期定存、国债或年金保险等方式锁定。`;
-  const plainText=`简单说：如上图，降息+通胀一来，您第 ${N} 年的实际到手会比名义总值少约 ${fmt(diff)}。一句话建议：别把钱全放在活期和短期里，趁利率还行，先把一部分"锁死"成长期收益，剩下的再去博更高回报。`;
+  if(state.farmer){
+    tips.unshift(`您每年卖粮攒下的钱约 ${fmt(_cropAnnual)} 元，到 ${state.retireAge} 岁不再务农之后，这笔资产预计每月可补充生活费约 ${fmt(_dFarmer.monthly)} 元——务农的积蓄，正在变成晚年的"按月工钱"。`);
+  }
+  const proText=`根据您提供的家庭资产资料，我们做了一次全口径情景演示。如上图，受通胀与降息影响，到第 ${N} 年您的名义口径累计收益约 ${fmt(gainA)}、实际口径累计收益约 ${fmt(gainB)}——账面数字的"含金量"已被悄悄削弱。整体来看，建议在能力范围内尽早把一部分收益通过长期定存、国债或年金保险等方式锁定。具体到您家：每年卖粮约 ${fmt(_cropAnnual)} 元，到 ${state.retireAge} 岁不再务农之后，这笔资产预计每月可补充生活费约 ${fmt(_dFarmer.monthly)} 元。`;
+  const plainText=`简单说：如上图，降息+通胀一来，您第 ${N} 年的实际到手会比名义总值少约 ${fmt(diff)}。一句话建议：别把钱全放在活期和短期里，趁利率还行，先把一部分"锁死"成长期收益，剩下的再去博更高回报。您家每年卖粮约 ${fmt(_cropAnnual)}，到 ${state.retireAge} 岁不务农后，这笔钱每月能补大约 ${fmt(_dFarmer.monthly)} 生活费。`;
   const ver=(state.aiVersion==='young' || state.reportStyle==='plain') && state.aiVersion!=='elderly' ? 'young' : 'elderly';
   let html = ver==='elderly' ? `<h3>💡 小邮财富解读</h3><p>${proText.replace(/\n/g,'<br>')}</p>` : `<h3>💡 小邮财富解读</h3><p>${plainText.replace(/\n/g,'<br>')}</p>`;
   html+=`<h3 style="margin-top:10px;">💡 五类资产优化提示</h3><ul>${tips.map(t=>'<li>'+t+'</li>').join('')}</ul>`;
@@ -2013,7 +2067,7 @@ function makeReportCanvas(){
   const name=fmtSalutation(), age=state.exactAge>0?state.exactAge:'—';
   const dateStr=new Date().toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric'});
   ctx.fillStyle='#fff'; ctx.textAlign='left'; ctx.textBaseline='top';
-  ctx.font='bold 26px system-ui'; ctx.fillText('您的专属养老财富规划书', pad+20, y+20);
+  ctx.font='bold 26px system-ui'; ctx.fillText('您的专属农户养老规划书', pad+20, y+20);
   ctx.font='15px system-ui'; ctx.fillStyle='rgba(255,255,255,.92)'; ctx.fillText(name+'　·　'+age+'岁　·　测算日期：'+dateStr, pad+20, y+62);
   let concl;
   if(d.target>0 && !d.gapSurplus){ concl='每月养老缺口约 '+fmt(d.gap)+'，建议通过配置调整补足'; }
@@ -2032,14 +2086,14 @@ function makeReportCanvas(){
     y=drawRetireAtOn(ctx, pad, y, W-pad*2, s); y+=gap;
   }
   /* 区块4 · 资产走势图 */
-  ctx.fillStyle='#004f35'; ctx.font='bold 17px system-ui'; ctx.fillText('资产走势图', pad, y); y+=secTitleH;
+  ctx.fillStyle='#004f35'; ctx.font='bold 17px system-ui'; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText('资产走势图', pad, y); y+=secTitleH;
   ctx.font='12px system-ui'; ctx.fillStyle='#7a8285';
   const cuts=state.params.rateCuts;
   const noteTxt = cuts.length>0 ? ('本测算含 '+cuts.length+' 轮降息假设：'+cuts.map(c=>'第'+c.year+'年存款降'+c.depositCut+'%、理财降'+c.wealthCut+'%').join('；')+'。实际利率走势可能不同，仅供情景参考。') : '本测算未设降息情景，按当前利率维持测算。';
   ctx.fillText(noteTxt, pad, y); y+=drawNoteH;
   drawRetireOn(ctx, pad, y, W-pad*2, drawH, s); y+=drawH+gap;
   /* 区块5 · 养老需求对比 */
-  ctx.fillStyle='#004f35'; ctx.font='bold 17px system-ui'; ctx.fillText('养老需求对比', pad, y); y+=secTitleH;
+  ctx.fillStyle='#004f35'; ctx.font='bold 17px system-ui'; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText('养老需求对比', pad, y); y+=secTitleH;
   drawCompareOn(ctx, pad, y, W-pad*2, s); y+=compareH+gap;
   /* 区块6 · 配置建议 */
   ctx.fillStyle='#004f35'; ctx.font='bold 17px system-ui'; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText('给您的配置建议', pad, y); y+=secTitleH;
@@ -2326,7 +2380,7 @@ function buildPDF(jb,pxW,pxH){ const scale=595/pxW, dispW=595, dispH=Math.round(
   const xr=len; ps("xref\n0 6\n0000000000 65535 f \n"); for(let i=1;i<=5;i++) ps(String(off[i]).padStart(10,'0')+' 00000 n \n'); ps("trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n"+xr+"\n%%EOF"); return ch; }
 
 /* ============ 向导：步骤1 客户档案 ============ */
-const questAnswers={ occ:'biz', risk:'steady', goal:'retire', retired:'no', retireAge:'60', decYears:'30', planIntent:'both', lumpYear:'20' };
+const questAnswers={ occ:'biz', risk:'steady', goal:'retire', retired:'no', retireAge:'60', decYears:'30', planIntent:'both', lumpYear:'20', cropCycle:'2' };
 document.querySelectorAll('#step0 .opt').forEach(o=>{
   o.onclick=()=>{ const q=o.parentElement.dataset.q; questAnswers[q]=o.dataset.v;
     o.parentElement.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel')); o.classList.add('sel'); };
@@ -2371,6 +2425,43 @@ if($('qFuturePensionRow')) $('qFuturePensionRow').style.display=(questAnswers.re
 if($('qOccRow')) $('qOccRow').style.display=(questAnswers.retired==='yes')?'none':'block';
 if($('qLumpRow')) $('qLumpRow').style.display=(state.planIntent!=='cashflow')?'block':'none';
 document.querySelectorAll('input[name=gender]').forEach(r=>{ r.checked=(r.value===state.profile.gender); });
+/* ===== 农户版：卖粮收入 / 毛利率 → 养老年度投入 ===== */
+function computeFarmAnnual(){
+  const c=Number(state.farm.cropCycle)||0, inc=Math.max(0, num($('qCropIncome')?$('qCropIncome').value:0));
+  state.farm.incomePerSale=inc; state.farm.cropCycle=c;
+  const annual=c*inc; state.plan.annual=Math.round(annual);
+  const pe=$('cropAnnualPreview'); if(pe) pe.innerHTML=`按当前填写，每年卖粮净收入约 <b>${fmt(Math.round(annual))}</b>。不清楚净收入？可展开上方「详细计算」自动算。`;
+  if($('planAnnual')) $('planAnnual').value=Math.round(annual);
+}
+function syncCropCycleSel(){
+  document.querySelectorAll('[data-q="cropCycle"] .opt').forEach(x=>x.classList.toggle('sel', String(x.dataset.v)===String(state.farm.cropCycle)));
+}
+function computeGrossMargin(){
+  const rev=Math.max(0,num($('qGrossRev')?$('qGrossRev').value:0));
+  const c1=Math.max(0,num($('qCostSeed')?$('qCostSeed').value:0));
+  const c2=Math.max(0,num($('qCostFert')?$('qCostFert').value:0));
+  const c3=Math.max(0,num($('qCostMach')?$('qCostMach').value:0));
+  const c4=Math.max(0,num($('qCostLand')?$('qCostLand').value:0));
+  const c5=Math.max(0,num($('qCostOther')?$('qCostOther').value:0));
+  const cost=c1+c2+c3+c4+c5, profit=rev-cost, margin=rev>0?profit/rev*100:0;
+  const cycle=Number(state.farm.cropCycle)||1;
+  const box=$('marginResult');
+  if(box){
+    if(rev<=0){ box.className='margin-box'; box.innerHTML='填好「单次毛营收」与各项成本后，这里会实时显示总成本、毛利与毛利率。'; }
+    else if(profit<0){ box.className='margin-box warn'; box.innerHTML=`⚠️ 务农亏损：总成本 <b>${fmt(cost)}</b> 已超过营收 <b>${fmt(rev)}</b>，毛利 <b>${fmt(profit)}</b>，毛利率 <b>${margin.toFixed(1)}%</b>。建议先核实成本或粮价，工具暂不把亏损额回填。`; }
+    else { box.className='margin-box'; box.innerHTML=`单次总成本 <b>${fmt(cost)}</b>　·　单次毛利 <b>${fmt(profit)}</b>　·　毛利率 <b>${margin.toFixed(1)}%</b><br>填回上方后，每年（卖 ${cycle} 次）卖粮净收入约 <b>${fmt(Math.round(profit*cycle))}</b>。`; }
+  }
+  return {rev,cost,profit,margin,cycle};
+}
+/* 绑定：卖粮周期 / 单次净收入 / 毛利率明细 */
+document.querySelectorAll('[data-q="cropCycle"] .opt').forEach(o=>{ o.addEventListener('click',()=>{ state.farm.cropCycle=Number(o.dataset.v); computeFarmAnnual(); if(_series) render(); }); });
+if($('qCropIncome')) $('qCropIncome').addEventListener('input',()=>{ computeFarmAnnual(); if(_series) render(); });
+['qGrossRev','qCostSeed','qCostFert','qCostMach','qCostLand','qCostOther'].forEach(id=>{ if($(id)) $(id).addEventListener('input',computeGrossMargin); });
+if($('btnFillMargin')) $('btnFillMargin').addEventListener('click',()=>{ const r=computeGrossMargin(); if(r.profit<=0){ toast('当前测算为亏损或未填成本，未回填'); return; } if($('qCropIncome')){ $('qCropIncome').value=Math.round(r.profit); computeFarmAnnual(); if(_series) render(); } toast('已把单次净收益 '+fmt(Math.round(r.profit))+' 元填回「每次卖粮到手收入」'); });
+/* 初始化回显与预览 */
+if($('qCropIncome')) $('qCropIncome').value=state.farm.incomePerSale||0;
+if($('qGrossRev')) $('qGrossRev').value=state.farm.grossRev||0;
+computeFarmAnnual(); computeGrossMargin();
 function submitStep0(){
   const sel={};
   document.querySelectorAll('#step0 .opt-grid').forEach(g=>{ const v=g.querySelector('.opt.sel'); if(v) sel[g.dataset.q]=v.dataset.v; });
@@ -2402,6 +2493,7 @@ function submitStep0(){
   if(state.exactAge<=0){ toast('请先填写确切年龄'); return; }
   // 小校验：未退休但退休年龄已≤当前年龄，自动按"已退休·立即领取"口径
   if(!state.retired && state.retireAge <= state.exactAge){ state.retired=true; state.profile.occ='retire'; state.pensionPerMonth=state.futurePensionPerMonth||0; state.futurePensionPerMonth=0; toast('您填写的退休年龄已不大于当前年龄，已按"已退休·立即领取"口径测算'); }
+  computeFarmAnnual(); // 农户：用卖粮周期×单次净收入确定养老年度投入
   syncQ1Displays();
   if(!state.profile.risk){ toast('请先完成问卷选择'); return; }
   deriveParams(); setPlanMode(true); renderSimple(); showStep(1); toast('已按当前资产占比生成测算口径');
@@ -2416,14 +2508,8 @@ function syncQ1Displays(){
 }
 /* 第二步卡片标题/说明随「是否已退休」切换 */
 function renderPlanCardLabels(){
-  const t=$('planCardTitle'), h=$('planCardHint'); if(!t||!h) return;
-  if(state.retired){
-    t.innerHTML='📥 养老金结余再投入 <span class="tag">让长远测算更真实</span>';
-    h.textContent='每月养老金扣除生活开销后，预计每年结余多少，按以下比例分配到各类资产。没有结余则留空。';
-  } else {
-    t.innerHTML='📈 未来投入规划 <span class="tag">让长远测算更真实</span>';
-    h.textContent='填写您未来每年计划新增的投入，按比例分摊到各账户参与增长。';
-  }
+  const h=$('planCardHint'); if(!h) return;
+  h.textContent='先填卖粮节奏与到手收入，系统自动折算每年能存下的养老钱；扣除生活开销后实际投入额可在下方微调，再选分摊比例。';
 }
 $('btnQuest').onclick=()=>{ // 重填：回到步骤1并回显已选
   document.querySelectorAll('#step0 .opt').forEach(o=>{ const q=o.parentElement.dataset.q; o.classList.toggle('sel', questAnswers[q]===o.dataset.v); });
@@ -2439,6 +2525,7 @@ $('btnQuest').onclick=()=>{ // 重填：回到步骤1并回显已选
   if($('qPensionAdj')) $('qPensionAdj').value=state.pensionType||'infl';
   syncQ1Displays();
   document.querySelectorAll('input[name=gender]').forEach(r=>{ r.checked=(r.value===state.profile.gender); });
+  syncCropCycleSel();
   showStep(0);
 };
 
@@ -2450,6 +2537,7 @@ function toggleInline(toggleId, inlineId){
   t.textContent = isOpen ? t.textContent.replace('▾','▴') : t.textContent.replace('▴','▾');
 }
 $('quickToggle') && ($('quickToggle').onclick=()=> toggleInline('quickToggle','quickInline'));
+$('grossToggle') && ($('grossToggle').onclick=()=> toggleInline('grossToggle','grossInline'));
 $('moreToggle') && ($('moreToggle').onclick=()=> toggleInline('moreToggle','moreSec'));
 
 /* 未来投入规划 */
@@ -2479,7 +2567,7 @@ function switchAIVer(v){ state.aiVersion=v; document.querySelectorAll('.ver-btn'
 /* AI 切换按钮（专业版/通俗版）已随看板改版移除：默认通俗版，经理话术内仍可生成专业版 */
 
 /* 清空 */
-$('btnClear').onclick=()=>{ CLASSES.forEach(c=>state.items[c.key]=[]); state.insurancePolicies=[]; state.pendingPlan=null; state.params.rateCuts=[]; CLASSES.forEach(c=>state.plan.ratios[c]=0); state.plan.annual=0; state.plan.growth=0; if($('planAnnual'))$('planAnnual').value=''; renderCuts(); renderPlanRatios(); renderSimple(); renderDetailSections(); render(); if($('aiBox')) $('aiBox').innerHTML='<p style="color:var(--sub);font-size:12.5px;">点击「生成财富解读」按钮，基于当前演算数据生成双版本话术与优化建议。</p>'; $('coachBody').innerHTML='<p class="coach-hint">点击「生成财富解读」后，这里会给出针对当前演算结果的讲解思路与优化建议。</p>'; state.exactAge=40; state.retired=false; state.retireAge=60; state.decYears=30; state.pensionPerMonth=0; state.futurePensionPerMonth=3500; state.pensionType='infl'; state.reserveAmount=100000; state.targetMonthly=6000; state.planIntent='both'; state.lumpTarget=100000; state.lumpYear=10; state.profile={age:'40岁',occ:'biz',risk:'steady',goal:'retire',name:'李',gender:'m'}; if($('qAge'))$('qAge').value=40; if($('qPension'))$('qPension').value=0; if($('qFuturePension'))$('qFuturePension').value=3500; if($('qReserve'))$('qReserve').value=100000; if($('qTargetMonthly'))$('qTargetMonthly').value=6000; if($('qLumpTarget'))$('qLumpTarget').value=100000; if($('qPensionAdj'))$('qPensionAdj').value='infl'; if($('qTargetPreview'))$('qTargetPreview').style.display='none'; Object.assign(questAnswers,{occ:'biz',risk:'steady',goal:'retire',retired:'no',retireAge:'60',decYears:'30',planIntent:'both',lumpYear:'10'}); document.querySelectorAll('#step0 .opt').forEach(o=>{ const q=o.parentElement.dataset.q; o.classList.toggle('sel', questAnswers[q]===o.dataset.v); }); if($('qReserve')){ const rv=String(state.reserveAmount); document.querySelectorAll('[data-q="reserve"] .opt').forEach(x=>x.classList.toggle('sel', x.dataset.v===rv)); } if($('qLumpRow')) document.querySelectorAll('[data-q="lumpYear"] .opt').forEach(x=>x.classList.toggle('sel', x.dataset.v===String(state.lumpYear))); syncQ1Displays(); showStep(0); toast('已全部清空，内存数据已销毁'); };
+$('btnClear').onclick=()=>{ CLASSES.forEach(c=>state.items[c.key]=[]); state.insurancePolicies=[]; state.pendingPlan=null; state.params.rateCuts=[]; CLASSES.forEach(c=>state.plan.ratios[c]=0); state.plan.annual=0; state.plan.growth=0; if($('planAnnual'))$('planAnnual').value=''; renderCuts(); renderPlanRatios(); renderSimple(); renderDetailSections(); render(); if($('aiBox')) $('aiBox').innerHTML='<p style="color:var(--sub);font-size:12.5px;">点击「生成财富解读」按钮，基于当前演算数据生成双版本话术与优化建议。</p>'; $('coachBody').innerHTML='<p class="coach-hint">点击「生成财富解读」后，这里会给出针对当前演算结果的讲解思路与优化建议。</p>'; state.exactAge=40; state.retired=false; state.retireAge=60; state.decYears=30; state.pensionPerMonth=0; state.futurePensionPerMonth=3500; state.pensionType='infl'; state.reserveAmount=100000; state.targetMonthly=6000; state.planIntent='both'; state.lumpTarget=100000; state.lumpYear=10; state.profile={age:'40岁',occ:'biz',risk:'steady',goal:'retire',name:'李',gender:'m'}; state.farm={cropCycle:2,incomePerSale:30000,grossRev:0,costSeed:0,costFert:0,costMach:0,costLand:0,costOther:0,livingCost:0}; if($('qAge'))$('qAge').value=40; if($('qPension'))$('qPension').value=0; if($('qFuturePension'))$('qFuturePension').value=3500; if($('qReserve'))$('qReserve').value=100000; if($('qTargetMonthly'))$('qTargetMonthly').value=6000; if($('qLumpTarget'))$('qLumpTarget').value=100000; if($('qPensionAdj'))$('qPensionAdj').value='infl'; if($('qTargetPreview'))$('qTargetPreview').style.display='none'; Object.assign(questAnswers,{occ:'biz',risk:'steady',goal:'retire',retired:'no',retireAge:'60',decYears:'30',planIntent:'both',lumpYear:'10'}); document.querySelectorAll('#step0 .opt').forEach(o=>{ const q=o.parentElement.dataset.q; o.classList.toggle('sel', questAnswers[q]===o.dataset.v); }); if($('qReserve')){ const rv=String(state.reserveAmount); document.querySelectorAll('[data-q="reserve"] .opt').forEach(x=>x.classList.toggle('sel', x.dataset.v===rv)); } if($('qLumpRow')) document.querySelectorAll('[data-q="lumpYear"] .opt').forEach(x=>x.classList.toggle('sel', x.dataset.v===String(state.lumpYear))); if($('qCropIncome'))$('qCropIncome').value=state.farm.incomePerSale; if($('qGrossRev'))$('qGrossRev').value=state.farm.grossRev; ['qCostSeed','qCostFert','qCostMach','qCostLand','qCostOther','qLivingCost'].forEach(id=>{ if($(id))$(id).value=0; }); computeFarmAnnual(); computeGrossMargin(); syncCropCycleSel(); syncQ1Displays(); showStep(0); toast('已全部清空，内存数据已销毁'); };
 $('btnExportImg').onclick=exportImage; $('btnExportPdf').onclick=exportPDF;
 $('btnSample').onclick=loadSample;
 let _rz; window.addEventListener('resize',()=>{ clearTimeout(_rz); _rz=setTimeout(()=>{ if(_series && $('retireCanvas')) drawRetireDrawdown(_series); },150); });
@@ -2512,16 +2600,17 @@ function applyTemplate(t){
 document.querySelectorAll('.tpl-btn').forEach(b=> b.onclick=()=> applyTemplate(b.dataset.tpl));
 
 /* 示例 */
-function loadSample(){ state.profile={age:'40岁',occ:'biz',risk:'steady',goal:'retire',name:'李',gender:'m'}; Object.assign(questAnswers,state.profile); Object.assign(questAnswers,{retired:'no',retireAge:'60',decYears:'30',planIntent:'both',lumpYear:'10'});
+function loadSample(){ state.profile={age:'52岁',occ:'biz',risk:'steady',goal:'retire',name:'王',gender:'m'}; Object.assign(questAnswers,state.profile); Object.assign(questAnswers,{retired:'no',retireAge:'60',decYears:'30',planIntent:'both',lumpYear:'10',cropCycle:'2'});
   state.items={ cash:[{id:uid(),name:'活期+货基',principal:150000,rate:0.2,startYear:2026}],
     aggressive:[{id:uid(),name:'股票基金',principal:60000,rate:6,startYear:2026}],
     insurance:[{id:uid(),name:'年金/增额寿险',principal:300000,rate:2.5,startYear:2026}],
     deposit:[{id:uid(),name:'三年定存',principal:320000,rate:1.55,startYear:2026},{id:uid(),name:'储蓄国债',principal:200000,rate:2.0,startYear:2026}],
     wealth:[{id:uid(),name:'三年理财',principal:180000,rate:2.05,startYear:2026}] };
-  state.plan={ annual:36000, growth:0 };
-  state.retired=false; state.retireAge=60; state.exactAge=40; state.decYears=30; state.pensionPerMonth=0; state.futurePensionPerMonth=3500; state.pensionType='infl'; state.reserveAmount=100000; state.targetMonthly=8000; state.planIntent='both'; state.lumpTarget=100000; state.lumpYear=10;
+  state.farm={ cropCycle:2, incomePerSale:30000, grossRev:60000, costSeed:8000, costFert:12000, costMach:6000, costLand:0, costOther:4000, livingCost:0 };
+  state.plan={ annual:60000, growth:0 };
+  state.retired=false; state.retireAge=60; state.exactAge=52; state.decYears=30; state.pensionPerMonth=0; state.futurePensionPerMonth=0; state.pensionType='infl'; state.reserveAmount=100000; state.targetMonthly=5000; state.planIntent='both'; state.lumpTarget=100000; state.lumpYear=10;
   deriveParams();
-  setPlanMode(true); $('planAnnual').value=36000; renderSimple(); render();
+  setPlanMode(true); $('planAnnual').value=60000; renderSimple(); render();
   document.querySelectorAll('#step0 .opt').forEach(o=>{ const q=o.parentElement.dataset.q; o.classList.toggle('sel', questAnswers[q]===o.dataset.v); });
   if($('qLumpRow')) document.querySelectorAll('[data-q="lumpYear"] .opt').forEach(x=>x.classList.toggle('sel', x.dataset.v===String(state.lumpYear)));
   if($('qReserve')){ const rv=String(state.reserveAmount); document.querySelectorAll('[data-q="reserve"] .opt').forEach(x=>x.classList.toggle('sel', x.dataset.v===rv)); }
@@ -2533,9 +2622,18 @@ function loadSample(){ state.profile={age:'40岁',occ:'biz',risk:'steady',goal:'
   if($('qTargetMonthly')) $('qTargetMonthly').value=state.targetMonthly;
   if($('qLumpTarget')) $('qLumpTarget').value=state.lumpTarget;
   if($('qPensionAdj')) $('qPensionAdj').value=state.pensionType;
+  if($('qCropIncome')) $('qCropIncome').value=state.farm.incomePerSale;
+  if($('qGrossRev')) $('qGrossRev').value=state.farm.grossRev;
+  if($('qCostSeed')) $('qCostSeed').value=state.farm.costSeed;
+  if($('qCostFert')) $('qCostFert').value=state.farm.costFert;
+  if($('qCostMach')) $('qCostMach').value=state.farm.costMach;
+  if($('qCostLand')) $('qCostLand').value=state.farm.costLand;
+  if($('qCostOther')) $('qCostOther').value=state.farm.costOther;
+  computeFarmAnnual(); computeGrossMargin();
+  syncCropCycleSel();
   syncQ1Displays();
   document.querySelectorAll('input[name=gender]').forEach(r=>{ r.checked=(r.value===state.profile.gender); });
-  showStep(1); toast('已载入银发示例数据'); }
+  showStep(1); toast('已载入农户示例数据'); }
 
 /* ============ 专属演示（多页弹框） ============ */
 let _presIdx=0;
@@ -2651,18 +2749,18 @@ function buildPresentation(){
      <div class="demo-warn">仅为情景演示，非收益承诺；理财收益以实际净值为准</div>${_readBtn}` : '';
   /* 第二页：到客户预设退休年龄时的资产画像（仅未退休展示） */
   const R = state.retired ? 0 : Math.max(1, Math.min((state.retireAge||60)-(state.exactAge||0), N));
-  const _retireAssetSlide = !state.retired ? `     <h2 class="t">到 ${state.retireAge} 岁退休时的资产画像</h2>
-     <div class="sub">按当前规划，退休那年（约第 ${R} 年）的名义总值 vs 通胀后实际购买力</div>
+  const _retireAssetSlide = !state.retired ? `     <h2 class="t">到 ${state.retireAge} 岁停止务农时的资产画像</h2>
+     <div class="sub">按当前规划，停止务农那年（约第 ${R} 年）的名义总值 vs 通胀后实际购买力</div>
      <div class="cards-row">
-       <div class="pcard"><div class="k">退休时名义总值</div><div class="v">${fmtW(s.A[R])}</div></div>
+       <div class="pcard"><div class="k">停止务农时名义总值</div><div class="v">${fmtW(s.A[R])}</div></div>
        <div class="pcard"><div class="k">实际购买力</div><div class="v">${fmtW(s.B[R])}</div></div>
        <div class="pcard"><div class="k">通胀侵蚀差额</div><div class="v">${fmtW(s.diff[R])}</div></div>
        <div class="pcard"><div class="k">累计投入本金</div><div class="v">${fmtW(s.invested)}</div></div>
      </div>
-     <div class="goal-note">🎯 退休那年：受通胀与降息影响，您的资产实际购买力预计约 <b>${fmt(s.B[R])}</b>，低于累计投入的 <b>${fmt(s.invested)}</b>。被悄悄拿走了约 <b>${fmt(s.diff[R])}</b> 购买力，${purchasePowerAnalogy(s.diff[R], state.profile.age)}——数字变大了，能换来的退休生活却变少了。</div>
+     <div class="goal-note">🎯 停止务农那年：受通胀与降息影响，您的资产实际购买力预计约 <b>${fmt(s.B[R])}</b>，低于累计投入的 <b>${fmt(s.invested)}</b>。被悄悄拿走了约 <b>${fmt(s.diff[R])}</b> 购买力，${purchasePowerAnalogy(s.diff[R], state.profile.age)}——数字变大了，能换来的晚年生活却变少了。</div>
      <div class="demo-note" style="margin-top:10px;">结构变化：进取 / 理财类随时间增长更快、占比往往上升，活钱占比下降——这正是需要主动再平衡、用金字塔做搭配的原因。</div>${_readBtn}` : '';
   const slides=[
-    `     <h2 class="t">您的专属养老财富规划书</h2>
+    `     <h2 class="t">您的专属农户养老规划书</h2>
      <div class="motto">${greetLine}</div>
      <div class="sub">${profLabel} · 测算周期 ${N} 年</div>
      <div class="cards-row">
@@ -2673,7 +2771,7 @@ function buildPresentation(){
      <div class="ov-row">${_overview}</div>${_readBtn}`,
     riskSlide,
     _retireAssetSlide,
-    `     <h2 class="t">退休领取测算</h2>
+    `     <h2 class="t">不再务农后的领取测算</h2>
      <div class="sub">把"积累的数字"换算成"每月到手的钱"</div>
      <div class="cards-row retire-hero" style="max-width:980px;margin:16px auto 0;">
        <div class="pcard retire-hl"><div class="k">每月可补充养老金</div><div class="v">${fmt(_dec.monthly)}</div></div>
@@ -2809,17 +2907,18 @@ async function genCoachByLLM(){
   const _dec = computeDecumulation(s);
   const _std = presStd4(), _act = presAct4();
   const data = {
-    客户画像:{年龄:state.exactAge?state.exactAge+'岁':'未填', 职业:state.profile.occ, 风险偏好:state.profile.risk, 目标:state.profile.goal, 姓名:state.profile.name||'', 退休状态: state.retired?'已退休':('未退休（预计'+state.retireAge+'岁退休）')},
+    客户画像:{年龄:state.exactAge?state.exactAge+'岁':'未填', 职业:state.profile.occ, 风险偏好:state.profile.risk, 目标:state.profile.goal, 姓名:state.profile.name||'', 退休状态: state.retired?'已退休':('未退休（预计'+state.retireAge+'岁退休）'), 客户类型:(state.farmer?'种粮农户（多数无职工养老金，养老靠务农积蓄）':'普通客户')},
     测算年限:N, 年度通胀率:state.params.inflation, 降息轮数:state.params.rateCuts.length,
     期末名义总值:Math.round(s.A[N]), 期末实际价值:Math.round(s.B[N]), 通胀与长寿侵蚀差额:Math.round(s.diff[N]),
     已投入本金:Math.round(s.invested), 未来年新增投入:(state.plan.annual||0),
+    农户卖粮情况:(state.farmer?{售卖周期_次每年:state.farm.cropCycle, 每次净收入:state.farm.incomePerSale, 年化卖粮净收入:Math.round(state.plan.annual||0), 停止务农年龄:state.retireAge}:null),
     五类资产期末值:{ 活钱:Math.round(s.perClass.cash[N]), 进攻:Math.round(s.perClass.aggressive[N]),
       稳健存款:Math.round(s.perClass.deposit[N]), 稳健理财:Math.round(s.perClass.wealth[N]), 保障:Math.round(s.perClass.insurance[N]) },
     退休领取测算:{ 可用于领取资产:Math.round(_dec.realPot), 每月可补充养老金:Math.round(_dec.monthly), 合计每月现金流:Math.round(_dec.totalMonthly), 预计领取年限:_dec.decYears, 加权实际年化:+( _dec.realRate*100).toFixed(2) },
     养老配置结构:{ 实际占比:{进攻:_act['进攻'],稳健:_act['稳健'],保障:_act['保障'],活钱:_act['活钱']}, 标准建议占比:{进攻:_std['进攻'],稳健:_std['稳健'],保障:_std['保障'],活钱:_std['活钱']} }
   };
   const dataStr = JSON.stringify(data, null, 2);
-  const sys = '你是邮储银行的养老财富规划顾问助手，服务于客户经理面访客户的场景。请基于给定的客户演算数据，生成 4-6 条【养老规划方向的解读与面谈建议】，严格围绕“养老规划”主线，不要泛泛谈理财。\n要求：\n1) 用中文、分条、简洁专业，每条以【养老规划·场景】开头；\n2) 必须聚焦以下养老主题，并给出可落地的方向性建议：\n   - 退休后现金流规划（引用“每月可补充养老金/合计每月现金流”，谈养老金替代率与安稳现金流）；\n   - 锁定长期利率（降息周期下，用长期定存、国债、年金险、增额终身寿等锁定利率，对抗利率下行）；\n   - 保障安全垫（引用“保障类资产占比”，谈长寿风险、医养储备、保险安全垫）；\n   - 结构再平衡（引用“实际占比 vs 标准建议占比”，谈向稳健/保障层再平衡）；\n   - 通胀与长寿双重侵蚀（引用“名义总值 vs 实际价值/侵蚀差额”，谈“数字变多、能换的养老生活变少”）；\n3) 所有数字必须引用数据中给出的具体数值，不要编造任何产品收益率或具体产品名称；\n4) 末尾附一句合规提示：以上为情景演示、非收益承诺，具体方案以银行正式产品与风险评估为准。';
+  const sys = '你是邮储银行的养老财富规划顾问助手，服务于客户经理面访客户的场景。请基于给定的客户演算数据，生成 4-6 条【养老规划方向的解读与面谈建议】，严格围绕“养老规划”主线，不要泛泛谈理财。\n要求：\n1) 用中文、分条、简洁专业，每条以【养老规划·场景】开头；\n2) 必须聚焦以下养老主题，并给出可落地的方向性建议：\n   - 退休后现金流规划（引用“每月可补充养老金/合计每月现金流”，谈养老金替代率与安稳现金流）；\n   - 锁定长期利率（降息周期下，用长期定存、国债、年金险、增额终身寿等锁定利率，对抗利率下行）；\n   - 保障安全垫（引用“保障类资产占比”，谈长寿风险、医养储备、保险安全垫）；\n   - 结构再平衡（引用“实际占比 vs 标准建议占比”，谈向稳健/保障层再平衡）；\n   - 通胀与长寿双重侵蚀（引用“名义总值 vs 实际价值/侵蚀差额”，谈“数字变多、能换的养老生活变少”）；\n3) 所有数字必须引用数据中给出的具体数值，不要编造任何产品收益率或具体产品名称；\n4) 末尾附一句合规提示：以上为情景演示、非收益承诺，具体方案以银行正式产品与风险评估为准。' + (state.farmer ? '\n【农户特别视角】若客户为种粮农户：①务必点明“绝大多数种粮农户没有职工养老金，晚年生活费全靠务农攒下的积蓄”；②用一句口语化解读收束：“按您每年卖粮收入，在停止务农之后，这笔资产大约可以每月补充生活费”；③提示通胀会悄悄侵蚀务农积蓄的购买力，建议通过长期定存、国债、年金险把收益“锁死”，让晚年有笔稳当的按月现金流。' : '');
   const user = '以下是客户养老财富演算结果（JSON）：\n'+dataStr+'\n\n请站在“养老规划顾问”角度，给出偏向养老规划方向的解读与面谈建议（每条约 2-3 句，包含可面谈的话术要点）。';
 
   body.innerHTML='<p class="coach-loading">⏳ 正在准备本地模型…<br>首次加载需下载约 265MB 权重，浏览器会自动缓存，之后再次打开即可秒开，请保持网络畅通。</p>';
@@ -2869,22 +2968,35 @@ async function genCoachByLLM(){
   }catch(e){
     console.warn('本地模型生成失败，回退规则话术：', e);
     _llmLoading=false;
-    generateAI(true);
     const proto = location.protocol;
     const isFile = proto === 'file:';
     const reason = (e && e.message) ? e.message : String(e);
-    let hint = '';
-    if(isFile) hint = '当前通过 file:// 直接打开文件，浏览器禁止动态加载远程模块。建议用本地服务器访问：安装 Node 后运行 <code>npx serve .</code>，再打开 http://localhost:3000';
-    else if(/timeout/i.test(reason)) hint = '下载超时，可能是网络波动。可点击“重新加载本地模型”重试；建议首次在稳定网络下完整下载一次，之后浏览器会缓存，再次打开即可秒开。';
-    else if(/webgpu|gpu/i.test(reason)) hint = 'WebGPU 初始化失败，请确认使用 Chrome/Edge 113+，且显卡驱动正常。';
-    else if(/fetch|network|CORS|blocked|Failed to fetch|NetworkError/i.test(reason)) hint = '网络请求被拦截或跨域限制。请检查能否访问 modelscope.cn 和 cdn.jsdelivr.net；若在企业内网，可能需要代理。';
-    else hint = '可点击“重新加载本地模型”再试一次。';
+    let title = '浏览器端 AI 模型启动失败';
+    let hint = '可点击下方按钮重新加载；若仍失败，可继续参考上方的规则话术解读。';
+    let actions = '';
+    if(isFile){
+      title = '本地文件协议限制了模型加载';
+      hint = '当前通过 file:// 直接打开，浏览器禁止动态加载远程模型。建议用本地服务器访问：安装 Node 后运行 <code>npx serve .</code>，再打开 http://localhost:3000';
+    } else if(/timeout/i.test(reason)){
+      title = '模型下载超时';
+      hint = '首次加载约 265MB，建议在网络稳定时点击重试；下载完成后浏览器会自动缓存，之后秒开。';
+    } else if(/webgpu|gpu|requestDevice|adapter|D3D12|DXGI|removed/i.test(reason)){
+      title = '当前浏览器/显卡暂不支持 WebGPU';
+      hint = '这是浏览器调用本地显卡时的兼容性问题，与网络无关。建议：① 更新显卡驱动；② 重启浏览器；③ 关闭其他占用 GPU 的软件；④ 换一台配置较新的电脑（推荐 Chrome/Edge 113+）。';
+    } else if(/fetch|network|CORS|blocked|Failed to fetch|NetworkError/i.test(reason)){
+      title = '模型下载被网络环境拦截';
+      hint = '请检查能否访问 modelscope.cn 和 cdn.jsdelivr.net；若在企业内网或特殊网络环境，可能需要切换网络或代理。';
+    }
     _llmError = reason;
     generateAI(true);
     const errBox=document.createElement('div'); errBox.className='coach-err';
-    errBox.innerHTML = '本地模型加载失败：'+reason.replace(/</g,'&lt;')+'<div class="coach-diag">协议：'+proto+' | WebGPU：'+('gpu' in navigator)+' | 来源：'+location.origin+'</div><div style="margin-top:8px;">'+hint+'</div><button class="coach-retry" onclick="retryCoachLLM()">重新加载本地模型</button>';
+    errBox.innerHTML = '<div style="font-weight:700;font-size:15px;margin-bottom:6px;">⚠️ '+title+'</div>'+
+      '<div style="font-size:13px;color:rgba(255,255,255,.85);line-height:1.7;">已为您自动切换为<strong>养老规划规则话术</strong>，上方的解读仍可正常参考。若需启用 AI 自由追问，可按下方建议排查。</div>'+
+      '<div style="margin-top:10px;padding:10px 12px;background:rgba(0,0,0,.18);border-radius:8px;font-size:12px;color:rgba(255,255,255,.72);line-height:1.6;">'+hint+'</div>'+
+      '<div class="coach-diag" style="margin-top:8px;">协议：'+proto+' · WebGPU：'+('gpu' in navigator)+' · 来源：'+location.origin+'<br>错误摘要：'+reason.slice(0,120).replace(/</g,'&lt;')+(reason.length>120?'…':'')+'</div>'+
+      '<button class="coach-retry" onclick="retryCoachLLM()">重新加载本地模型</button>';
     body.appendChild(errBox);
-    toast('本地模型加载失败，已回退规则话术；可点击重试');
+    toast('本地模型加载失败，已切换规则话术；可按提示排查后重试');
   }
 }
 
@@ -2967,7 +3079,7 @@ $('detailSections').addEventListener('click', e => {
   const id = e.target.getAttribute('data-del-ins');
   if(id){ state.insurancePolicies = state.insurancePolicies.filter(p=>p.id!==id); state.pendingPlan=null; render(); renderSimple(); renderDetailSections(); }
 });
-renderSimple(); renderPlanRatios(); renderParamChips(); renderStyleSelect(); render(); renderDetailSections(); syncQ1Displays(); showStep(0);
+renderSimple(); renderPlanRatios(); renderParamChips(); renderStyleSelect(); render(); renderDetailSections(); syncQ1Displays(); syncCropCycleSel(); showStep(0);
 
 /* 开屏封面：点击进入 */
 (function(){
