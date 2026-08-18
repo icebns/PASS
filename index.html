@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>邮储财富情景演算小助手</title>
+<title>邮储银发财富情景演算小助手</title>
 <script>
 /* GitHub Pages 等静态托管不支持 COOP/COEP 响应头，WebLLM 需要 SharedArrayBuffer。
    因此用同目录 sw.js 注入这两个头。localhost 不需要。 */
@@ -78,7 +78,7 @@
   .col-head.collapsible:hover{ color:var(--green-d); }
   .col-head .toggle-ico{ display:inline-block; transition:transform .2s; font-size:11px; }
   .col-head.collapsible.open .toggle-ico{ transform:rotate(90deg); }
-  .card{ background:var(--card); border:1px solid var(--border); border-radius:13px; padding:14px; margin-bottom:14px; box-shadow:0 1px 2px rgba(0,0,0,.03); }
+  .card{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:18px; margin-bottom:14px; box-shadow:0 2px 8px rgba(0,0,0,.04); }
   .card > h2{ font-size:15.5px; margin:0 0 10px; color:var(--green-d); display:flex; align-items:center; gap:7px; }
   .card > h2 .tag{ font-size:11px; background:var(--green-l); color:var(--green-d); padding:2px 7px; border-radius:20px; font-weight:500; }
   .tag.warn{ background:#fbe9cf; color:#c5891f; }
@@ -202,16 +202,29 @@
   .pres-close{ width:42px;height:42px;border-radius:50%; border:1px solid rgba(255,255,255,.3); background:rgba(255,255,255,.08); color:#fff; font-size:20px; cursor:pointer; transition:.15s; }
   .pres-close:hover{ background:rgba(255,255,255,.2); }
   .pres-stage{ flex:1; position:relative; overflow:hidden; }
-  .slide{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:4vh 5vw; opacity:0; transform:translateY(14px); transition:opacity .4s, transform .4s; color:#fff; text-align:center; background:linear-gradient(150deg,#0d3a2a 0%,#0a5a3f 60%,#0c6b48 100%); }
-  .slide.active{ opacity:1; transform:none; }
+  .slide{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:4vh 5vw; opacity:0; pointer-events:none; transform:translateY(14px); transition:opacity .4s, transform .4s; color:#fff; text-align:center; background:linear-gradient(150deg,#0d3a2a 0%,#0a5a3f 60%,#0c6b48 100%); overflow-y:auto; -webkit-overflow-scrolling:touch; }
+  .slide.active{ opacity:1; transform:none; pointer-events:auto; }
   .slide .bg-note{ position:absolute; left:14px; bottom:12px; font-size:11px; color:rgba(255,255,255,.38); }
-  .slide h2.t{ font-size:30px; font-weight:700; margin:0 0 6px; letter-spacing:1px; }
-  .slide .sub{ font-size:15px; color:rgba(255,255,255,.72); margin-bottom:22px; }
+  .slide h2.t{ font-size:34px; font-weight:700; margin:0 0 6px; letter-spacing:1px; }
+  .slide .sub{ font-size:17px; color:rgba(255,255,255,.72); margin-bottom:22px; }
   .motto{ font-size:18px; font-weight:500; color:#ffd479; margin-bottom:14px; letter-spacing:.5px; }
   .cards-row{ display:flex; gap:16px; flex-wrap:wrap; justify-content:center; }
   .pcard{ background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.18); border-radius:14px; padding:18px 22px; min-width:150px; color:#fff; }
   .pcard .k{ font-size:13px; color:rgba(255,255,255,.72); }
-  .pcard .v{ font-size:26px; font-weight:700; margin-top:6px; font-variant-numeric:tabular-nums; }
+  .pcard .v{ font-size:30px; font-weight:700; margin-top:6px; font-variant-numeric:tabular-nums; }
+  /* 退休领取测算 · 演示页卡片布局 */
+  .retire-hero{ display:flex; justify-content:center; margin:12px auto 0; width:100%; max-width:980px; }
+  .retire-hero .pcard{ flex:0 1 420px; min-width:220px; padding:22px 34px; text-align:center; background:rgba(15,110,86,.22); border:1px solid rgba(127,227,192,.45); }
+  .retire-hero .pcard .k{ font-size:15px; color:rgba(255,255,255,.85); }
+  .retire-hero .pcard .v{ font-size:38px; font-weight:800; margin-top:6px; color:#7fe3c0; }
+  .retire-four{ display:flex; gap:16px; flex-wrap:nowrap; justify-content:center; margin:22px auto 0; width:100%; max-width:980px; }
+  .retire-four .pcard{ flex:1 1 0; min-width:0; max-width:240px; text-align:center; display:flex; flex-direction:column; justify-content:center; padding:20px 16px; }
+  .retire-four .pcard .k{ font-size:13px; }
+  .retire-four .pcard .v{ font-size:26px; margin-top:8px; }
+  @media(max-width:760px){
+    .retire-four{ flex-wrap:wrap; }
+    .retire-four .pcard{ flex:1 1 calc(50% - 8px); max-width:none; }
+  }
   .pres-bot{ display:flex; align-items:center; justify-content:space-between; padding:14px 22px; background:rgba(0,0,0,.28); }
   .pres-bot button{ border:1px solid rgba(255,255,255,.32); background:rgba(255,255,255,.1); color:#fff; border-radius:9px; padding:9px 18px; cursor:pointer; font-size:14px; transition:.15s; }
   .pres-bot button:hover:not(:disabled){ background:rgba(255,255,255,.22); }
@@ -219,35 +232,43 @@
   .dots{ display:flex; gap:8px; }
   .dot-i{ width:9px;height:9px;border-radius:50%; background:rgba(255,255,255,.3); cursor:pointer; transition:.15s; }
   .dot-i.on{ background:#fff; transform:scale(1.25); }
-  /* 收益演示 · 并排情景对比 */
-  .risk-card{ flex:1; min-width:240px; border-radius:14px; padding:16px 20px; text-align:left; box-shadow:0 8px 24px rgba(0,0,0,.2); }
-  .cards-row.risk-row{ flex-wrap:nowrap; gap:16px; justify-content:center; align-items:stretch; }
-  .cards-row.risk-row .risk-card{ flex:1 1 calc(50% - 8px); min-width:0; max-width:none; padding:22px 32px; }
-  .cards-row.risk-row .risk-card .rnum.big{ font-size:28px; }
+  /* 浮动收益区间卡片 · 紧凑版 */
+  .risk-card{ flex:1; min-width:0; border-radius:14px; padding:16px 18px; text-align:left; box-shadow:0 8px 24px rgba(0,0,0,.18); background:rgba(255,255,255,.1); color:#fff; border:1px solid rgba(255,255,255,.18); display:flex; flex-direction:column; }
+  .cards-row.risk-row{ flex-wrap:nowrap; gap:14px; justify-content:center; align-items:stretch; width:100%; max-width:1180px; min-width:0; align-self:stretch; box-sizing:border-box; }
+  .rcap{ display:inline-block; font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; background:rgba(255,255,255,.14); color:#fff; margin-bottom:8px; }
+  .risk-card .rk{ font-size:15px; font-weight:700; color:#fff; display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .risk-card .rshare{ font-size:12px; color:rgba(255,255,255,.65); font-weight:500; }
+  .risk-body{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:12px 0 10px; }
+  .risk-half{ background:rgba(255,255,255,.08); border-radius:10px; padding:10px 12px; }
+  .risk-half.up{ background:rgba(15,110,86,.78); }
+  .risk-half.down{ background:rgba(163,45,45,.78); }
+  .risk-half .rlabel{ font-size:11.5px; font-weight:600; margin-bottom:4px; color:rgba(255,255,255,.9); }
+  .risk-half .rnum{ font-size:20px; font-weight:800; font-variant-numeric:tabular-nums; white-space:nowrap; word-break:keep-all; color:#fff; }
+  .risk-half .rpct{ font-size:11px; color:rgba(255,255,255,.8); margin-top:2px; }
+  .risk-foot{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding-top:10px; border-top:1px dashed rgba(255,255,255,.3); }
+  .risk-foot .rline{ font-size:12px; color:rgba(255,255,255,.7); }
+  .risk-foot .rnum.big{ font-size:24px; font-weight:800; color:#fff; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .risk-card .rnote{ font-size:11.5px; color:rgba(255,255,255,.62); margin-top:10px; line-height:1.55; }
+  @media(max-width:980px){
+    .cards-row.risk-row{ flex-wrap:wrap; max-width:760px; }
+    .risk-card{ flex:1 1 calc(50% - 7px); }
+  }
   @media(max-width:620px){
-    .cards-row.risk-row{ flex-wrap:nowrap; gap:12px; }
-    .cards-row.risk-row .risk-card{ flex:1 1 0; padding:14px 12px; }
-    .cards-row.risk-row .risk-card .rnum.big{ font-size:24px; }
+    .cards-row.risk-row{ flex-direction:column; flex-wrap:nowrap; gap:10px; max-width:100%; }
+    .risk-card{ flex:0 0 auto; padding:12px 14px; }
+    .risk-card .rk{ font-size:14px; }
+    .risk-card .rshare{ font-size:11px; }
+    .risk-body{ gap:8px; margin:10px 0 8px; }
+    .risk-half{ padding:8px 10px; }
+    .risk-half .rlabel{ font-size:11px; }
+    .risk-half .rnum{ font-size:17px; }
+    .risk-foot{ padding-top:8px; }
+    .risk-foot .rnum.big{ font-size:20px; }
+    .risk-card .rnote{ font-size:11px; margin-top:8px; line-height:1.5; }
+    .slide h2.t{ font-size:22px; }
+    .slide .sub{ font-size:12.5px; margin-bottom:4px; }
+    .demo-warn{ font-size:11.5px; margin-top:8px; }
   }
-  @media(max-width:420px){
-    .cards-row.risk-row{ gap:8px; }
-    .cards-row.risk-row .risk-card{ padding:12px 10px; }
-    .cards-row.risk-row .risk-card .rk{ font-size:12px; }
-    .cards-row.risk-row .risk-card .rv{ font-size:16px; }
-    .cards-row.risk-row .risk-card .rshare{ font-size:12px; }
-    .cards-row.risk-row .risk-card .rline{ font-size:11.5px; }
-    .cards-row.risk-row .risk-card .rnum{ font-size:18px; }
-    .cards-row.risk-row .risk-card .rnum.big{ font-size:22px; }
-  }
-  .risk-card.up{ background:linear-gradient(155deg,#1e6b4f,#0e4733); border:1px solid rgba(120,230,175,.4); }
-  .risk-card.down{ background:linear-gradient(155deg,#7c3030,#4a1c1c); border:1px solid rgba(255,120,120,.38); }
-  .risk-card .rk{ font-size:13px; color:rgba(255,255,255,.74); letter-spacing:.5px; }
-  .risk-card .rv{ font-size:19px; font-weight:800; margin:5px 0 4px; }
-  .risk-card .rshare{ font-size:13px; color:rgba(255,255,255,.7); margin-bottom:16px; }
-  .risk-card.up .rv{ color:#9ff0c4; } .risk-card.down .rv{ color:#ffb4b4; }
-  .risk-card .rline{ font-size:12.5px; color:rgba(255,255,255,.66); margin-top:13px; }
-  .risk-card .rnum{ font-size:22px; font-weight:700; font-variant-numeric:tabular-nums; margin-top:2px; white-space:nowrap; word-break:keep-all; }
-  .risk-card .rnum.big{ font-size:28px; font-weight:800; margin-top:4px; white-space:nowrap; word-break:keep-all; }
   .demo-ref{ font-size:14px; color:rgba(255,255,255,.84); margin-top:20px; }
   .demo-ref b{ color:#ffd479; font-size:18px; }
   .demo-note{ font-size:13px; color:rgba(255,255,255,.66); margin-top:14px; line-height:1.65; max-width:560px; text-align:left; }
@@ -305,6 +326,25 @@
   .wiz-nav .btn{ flex:1; padding:14px; font-size:15px; }
   .inline-sec{ margin-top:12px; border:1px dashed var(--border); border-radius:12px; padding:12px; background:#fcfdfc; display:none; }
   .inline-sec.open{ display:block; }
+  /* 更多设置 / 快速估算折叠开关 */
+  .more-toggle{ cursor:pointer; color:var(--green-d); font-size:13px; font-weight:600; user-select:none; }
+  .more-toggle:hover{ text-decoration:underline; }
+  /* 客户模板卡片 */
+  .tpl-card{ background:linear-gradient(135deg,#0e7a52,#004f35); color:#fff; }
+  .tpl-card h2{ color:#fff; }
+  .tpl-card .hint{ color:rgba(255,255,255,.82); }
+  .tpl-card .btn.soft{ background:rgba(255,255,255,.92); color:#004f35; border-color:transparent; }
+  .tpl-card .btn.soft:hover{ background:#fff; }
+  .tpl-row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
+  .tpl-row .tpl-btn{ flex:1; min-width:120px; }
+  /* 演示页·高亮核心数字 / 朗读按钮 */
+  .slide .pcard.retire-hl .v{ font-size:36px; }
+  .read-btn{ position:absolute; right:14px; bottom:12px; z-index:6; border:1px solid rgba(255,255,255,.32); background:rgba(255,255,255,.14); color:#fff; border-radius:20px; padding:6px 14px; font-size:12.5px; cursor:pointer; transition:.15s; }
+  .read-btn:hover{ background:rgba(255,255,255,.28); }
+  .slide.speaking .read-btn{ background:#7fe3c0; color:#004f35; border-color:#7fe3c0; }
+  .ov-row{ display:flex; gap:16px; flex-wrap:wrap; justify-content:center; font-size:14px; color:rgba(255,255,255,.9); margin-top:18px; }
+  .ov-i{ display:inline-flex; align-items:center; gap:6px; }
+  .ov-i b{ color:#fff; font-variant-numeric:tabular-nums; }
   .cta{ display:block; width:100%; padding:16px; font-size:16px; margin:14px 0 6px; }
   /* 保单上传 */
   .ins-head{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
@@ -329,7 +369,7 @@
   }
 
   /* ============ 看板主页面 ============ */
-  .report-view{ display:none; max-width:1100px; margin:0 auto; padding:16px 14px 60px; }
+  .report-view{ display:none; position:relative; max-width:960px; margin:0 auto; padding:20px 16px 60px; }
   body.report-mode .topbar, body.report-mode .wiz, body.report-mode .wiz-nav{ display:none; }
   body.report-mode .report-view{ display:block; }
   /* 经理话术：隐蔽右下角按钮 + 密码 */
@@ -378,6 +418,134 @@
   body.report-mode .coach-fab{ display:flex; }
   .qr-placeholder{ margin:14px auto 6px; width:140px; height:140px; border:2px dashed var(--border); border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--sub); font-size:12.5px; text-align:center; line-height:1.6; background:#fafbfa; }
   .qr-placeholder span{ font-size:11px; opacity:.7; }
+  /* 资产分层横条卡片：垂直排列，宽大于高 */
+  .flip-grid{ display:flex; flex-direction:column; gap:10px; margin:10px auto 0; width:100%; max-width:720px; min-width:0; align-self:stretch; box-sizing:border-box; }
+  .flip-card{ width:100%; height:auto; min-height:74px; position:relative; }
+  .flip-inner{ position:relative; width:100%; height:100%; min-height:inherit; }
+  .flip-face{ position:relative; width:100%; min-height:74px; border-radius:12px; padding:14px 16px; display:flex; align-items:center; box-shadow:0 4px 12px rgba(0,40,20,.12); overflow:hidden; transition:opacity .25s ease; box-sizing:border-box; }
+  .flip-front{ background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.18); color:#fff; opacity:1; visibility:visible; }
+  .flip-back{ background:linear-gradient(155deg,#0c5a3a,#05301f); color:#fff; opacity:0; visibility:hidden; position:absolute; inset:0; }
+  .flip-card.show-role .flip-front{ opacity:0; visibility:hidden; }
+  .flip-card.show-role .flip-back{ opacity:1; visibility:visible; }
+  .fc-front-row{ width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .fc-left{ display:flex; align-items:center; gap:7px; flex:1 1 auto; min-width:0; }
+  .fc-head{ font-size:15px; font-weight:700; display:flex; align-items:center; gap:5px; white-space:nowrap; }
+  .fc-dot{ width:10px; height:10px; border-radius:50%; flex:0 0 auto; }
+  .fc-no{ color:#ffd479; font-weight:800; }
+  .fc-mid{ display:flex; align-items:baseline; gap:10px; text-align:right; flex:0 0 auto; }
+  .fc-amt{ font-size:18px; font-weight:800; color:#fff; }
+  .fc-pct{ font-size:12px; color:rgba(255,255,255,.7); white-space:nowrap; }
+  .fc-right{ flex:0 0 auto; display:flex; align-items:center; }
+  .fc-detail-btn{ border:1px solid rgba(255,255,255,.6); color:#fff; background:transparent; border-radius:20px; padding:6px 14px; font-size:12px; font-weight:600; cursor:pointer; transition:.2s; }
+  .fc-detail-btn:hover{ background:rgba(255,255,255,.15); color:#fff; }
+  .fc-back-body{ width:100%; font-size:12.5px; line-height:1.6; text-align:left; }
+  .fc-back-body b{ margin-right:6px; opacity:.85; }
+  .fc-back-row{ width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .fc-back-btn{ border:1px solid rgba(255,255,255,.7); color:#fff; background:transparent; border-radius:20px; padding:5px 13px; font-size:12px; font-weight:600; cursor:pointer; transition:.2s; flex:0 0 auto; }
+  .fc-back-btn:hover{ background:rgba(255,255,255,.15); }
+  @media(max-width:480px){
+    .fc-front-row{ gap:8px; }
+    .fc-mid{ flex-direction:column; align-items:flex-end; gap:1px; }
+    .fc-amt{ font-size:16px; }
+    .fc-detail-btn{ padding:5px 10px; font-size:11px; }
+    .fc-back-row{ flex-direction:column; align-items:flex-start; gap:8px; }
+  }
+  /* 退休领取测算（银发版） */
+  .retire-box{ margin-top:10px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.16); border-radius:14px; padding:16px 18px; }
+  .retire-phase{ font-size:13px; color:var(--sub); margin-bottom:12px; }
+  .retire-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+  @media(max-width:760px){ .retire-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media(max-width:420px){ .retire-grid{ grid-template-columns:1fr; } }
+  .retire-grid .rb{ background:rgba(255,255,255,.08); border-radius:10px; padding:12px 14px; text-align:left; }
+  .retire-grid .rb.hl{ background:rgba(63,156,131,.18); border:1px solid rgba(63,156,131,.5); }
+  .retire-grid .rb .k{ font-size:12px; color:var(--sub); }
+  .retire-grid .rb .v{ font-size:20px; font-weight:800; margin-top:4px; color:#fff; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .retire-grid .rb.hl .v{ color:#7fe3c0; font-size:24px; }
+  .retire-grid .rb .s{ font-size:11px; color:var(--sub); margin-top:3px; }
+  .retire-note{ font-size:12.5px; line-height:1.7; color:#e8efea; margin-top:12px; }
+  .retire-note b{ color:#ffd479; }
+  @media(max-width:620px){ .retire-grid{ grid-template-columns:1fr; } .retire-grid .rb.hl .v{ font-size:22px; } }
+  /* ============ 养老规划书（看板改版） ============ */
+  .report-tools{ position:absolute; top:16px; right:18px; display:flex; gap:10px; z-index:5; }
+  .tool-ic{ width:36px; height:36px; border-radius:50%; border:none; background:rgba(255,255,255,.15); font-size:16px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; color:#fff; transition:.15s; }
+  .tool-ic:hover{ background:#fff; color:var(--green-d); }
+  .pb-cover{ background:linear-gradient(90deg,#004f35,#006341); color:#fff; border-radius:12px; padding:22px; margin-bottom:24px; box-shadow:0 2px 8px rgba(0,0,0,.04); }
+  .pb-cover-title{ font-size:24px; font-weight:700; letter-spacing:1px; line-height:1.2; }
+  .pb-cover-sub{ font-size:14px; margin-top:8px; opacity:.92; }
+  .pb-cover-concl{ font-size:20px; font-weight:700; color:#ffd479; margin-top:14px; line-height:1.5; }
+  .pb-cover-concl b{ color:#fff; }
+  .pb-cards{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+  @media (max-width:560px){ .pb-cards{ grid-template-columns:repeat(2,1fr); } }
+  .pb-card{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:18px; box-shadow:0 2px 8px rgba(0,0,0,.04); display:flex; flex-direction:column; }
+  .pb-card.hl{ background:#e6f1ec; border-color:#d0e2d8; }
+  .pb-card.hl .pb-card-k{ color:#004f35; }
+  .pb-card.hl .pb-card-v{ color:#004f35; }
+  .pb-card.surplus{ background:#e6f1ec; border-color:#d0e2d8; }
+  .pb-card.surplus .pb-card-v{ color:#004f35; }
+  .pb-card.gap{ background:#fdecea; border-color:#f3d4d0; }
+  .pb-card.gap .pb-card-v{ color:#c0392b; }
+  .pb-card-k{ font-size:12px; color:#7a8285; }
+  .pb-card-v{ font-size:36px; font-weight:700; color:var(--text); margin-top:8px; font-variant-numeric:tabular-nums; line-height:1.15; }
+  .pb-section{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:18px; margin-bottom:24px; box-shadow:0 2px 8px rgba(0,0,0,.04); }
+  .pb-h2{ font-size:17px; margin:0 0 14px; color:var(--green-d); display:flex; align-items:center; gap:8px; }
+  .pb-h2::before{ content:''; width:3px; height:16px; background:#006341; border-radius:2px; flex:0 0 auto; }
+  .pb-sub{ font-size:12px; color:var(--sub); margin:0 0 8px; line-height:1.5; }
+  .pb-asset-total{ display:inline-flex; align-items:center; gap:8px; background:#f0f7f4; border-radius:8px; padding:10px 14px; font-size:15px; font-weight:700; margin-bottom:14px; }
+  .pb-asset-total b{ color:var(--green-d); font-size:17px; }
+  .asset-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:11px 0; border-bottom:1px solid #eef1f0; }
+  .asset-row .dot{ width:12px; height:12px; border-radius:50%; flex:0 0 auto; }
+  .asset-row-main{ display:flex; align-items:flex-start; gap:10px; flex:1; min-width:0; }
+  .asset-name-wrap{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+  .asset-name{ font-size:14px; font-weight:700; color:#2b3330; }
+  .asset-role{ font-size:12px; color:#7a8285; }
+  .asset-row-side{ display:flex; flex-direction:column; align-items:flex-end; gap:2px; flex:0 0 auto; }
+  .asset-amt{ font-size:18px; font-weight:700; color:#2b3330; font-variant-numeric:tabular-nums; }
+  .asset-pct{ font-size:11px; color:#9aa19e; }
+  .asset-sub-block{ padding:10px 0; border-bottom:1px solid #eef1f0; }
+  .asset-sub-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .asset-sub-row .dot{ width:12px; height:12px; border-radius:50%; flex:0 0 auto; }
+  .asset-sub-sum{ font-size:15px; font-weight:700; color:#2b3330; }
+  .asset-items{ margin:8px 0 0 22px; }
+  .asset-item{ display:flex; align-items:center; justify-content:space-between; gap:12px; font-size:13px; color:var(--text); padding:5px 0; }
+  .asset-item-main{ display:flex; align-items:center; gap:6px; flex:1; min-width:0; }
+  .asset-item-prefix{ color:#9aa19e; font-size:13px; flex:0 0 auto; }
+  .asset-item-name{ flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .asset-item-type{ font-size:11px; color:#7a8285; background:#f5f7f6; padding:1px 6px; border-radius:10px; flex:0 0 auto; }
+  .asset-item-amt{ font-weight:700; font-variant-numeric:tabular-nums; color:#2b3330; }
+  .asset-item-meta{ font-size:11px; color:#9aa19e; }
+  .pb-divider{ border-top:1px solid #eef1f0; margin-top:14px; }
+  .asset-missing{ font-size:11px; color:#9aa19e; margin-top:10px; }
+  .pb-compare{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:560px){ .pb-compare{ grid-template-columns:1fr; } }
+  .cmp-card{ border:1px solid var(--border); border-radius:10px; padding:12px; display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .cmp-col{ text-align:center; }
+  .cmp-num{ font-size:22px; font-weight:700; color:var(--text); font-variant-numeric:tabular-nums; }
+  .cmp-lab{ font-size:12px; color:var(--sub); }
+  .cmp-vs{ font-size:13px; color:var(--green-d); font-weight:700; }
+  .cmp-foot{ font-size:12.5px; color:var(--sub); text-align:center; margin-top:4px; line-height:1.5; }
+  .advice-item{ font-size:13.5px; color:#333; margin:6px 0; line-height:1.6; padding-left:18px; position:relative; }
+  .advice-item::before{ content:'•'; position:absolute; left:4px; color:var(--green-d); }
+  .advice-item b{ color:var(--green-d); }
+  .pb-footer{ font-size:11px; color:var(--sub); line-height:1.6; }
+  .pb-assume{ margin-bottom:8px; }
+  .pb-footer .disclaimer{ border-top:1px dashed var(--border); padding-top:8px; }
+  @media print{
+    .topbar, .wiz, .wiz-nav, .coach-fab, .report-tools, .top-actions, button{ display:none !important; }
+    .report-view{ display:block !important; max-width:none; padding:0 !important; }
+    body{ background:#fff !important; }
+    .pb-cover, .pb-card, .pb-section, .asset-row, .asset-sub-block, .cmp-card{ box-shadow:none !important; }
+    .pb-cover, .pb-card, .pb-section{ border:1px solid #ccc !important; }
+    .pb-section, .pb-card{ background:#fff !important; color:#000 !important; }
+    .asset-row, .asset-sub-block, .cmp-card, .pb-card{ page-break-inside:avoid; }
+    .pb-cover{ background:#004f35 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .pb-cover-concl{ color:#ffd479 !important; }
+    .pb-card.hl, .pb-card.surplus{ background:#e6f1ec !important; }
+    .pb-card.hl .pb-card-k, .pb-card.hl .pb-card-v, .pb-card.surplus .pb-card-k, .pb-card.surplus .pb-card-v{ color:#004f35 !important; }
+    .pb-card.gap{ background:#fdecea !important; }
+    .pb-card.gap .pb-card-k, .pb-card.gap .pb-card-v{ color:#c0392b !important; }
+    .pb-cover-title, .pb-cover-sub, .pb-h2, .pb-asset-total, .asset-name, .asset-amt, .asset-sub-sum, .cmp-num, .cmp-lab, .pb-card-k, .pb-card-v, .pb-assume, .asset-item-name, .asset-item-amt{ color:#000 !important; }
+    .pb-sub, .asset-pct, .asset-role, .asset-item-meta, .cmp-foot, .cmp-vs, .pb-footer .disclaimer{ color:#333 !important; }
+  }
 </style>
 </head>
 <body>
@@ -386,12 +554,12 @@
 <div class="splash" id="splash">
   <div class="splash-inner">
     <div class="splash-badge">中国邮政储蓄银行</div>
-    <h1 class="splash-title">财富情景演算小助手</h1>
+    <h1 class="splash-title">邮储银发财富情景演算</h1>
     <p class="splash-sub">利率下行与通胀影响可视化测算工具</p>
     <div class="splash-tags">
       <span>资产配置</span>
       <span>养老规划</span>
-      <span>子女教育</span>
+      <span>财富传承</span>
       <span>稳健增值</span>
     </div>
     <div class="splash-chart">
@@ -420,7 +588,7 @@
 
 <!-- 顶部操作栏 -->
 <div class="topbar">
-  <h1>财富情景演算小助手</h1>
+  <h1>邮储银发财富情景演算小助手</h1>
   <div class="top-actions">
     <button class="btn soft" id="btnQuest" title="重填问卷" aria-label="重填问卷">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
@@ -446,66 +614,146 @@
     <!-- 步骤 1：客户档案 -->
     <div class="step active" data-step="0" id="step0">
       <div class="hero">
-        <h2>先花 10 秒，认识一下您</h2>
-        <p>回答后系统自动为您设定测算口径，您随时可在「高级参数」里微调。全程在您手机 / 平板本地运行，数据不留痕。</p>
+        <h2>先花一分钟，认识一下您</h2>
+        <p>回答后系统自动为您设定测算口径，您随时可在「测算假设」里微调。全程在您手机 / 平板本地运行，数据不留痕。</p>
       </div>
       <div class="card">
         <h2>👤 客户档案 <span class="tag">问卷自动生成口径</span></h2>
         <div class="q-label">您怎么称呼？</div>
         <div class="hint" style="margin:-6px 0 10px;">用于生成报告中的专属问候，选填即可。</div>
         <div class="name-row">
-          <input class="q-input" id="qName" type="text" placeholder="姓氏，如「李」" maxlength="8" value="邮">
+          <input class="q-input" id="qName" type="text" placeholder="姓氏，如「李」" maxlength="8" value="李">
           <div class="gender-row">
             <span class="g-tip">性别</span>
             <label class="g-item"><input type="radio" name="gender" value="f"> 女士</label>
             <label class="g-item"><input type="radio" name="gender" value="m"> 先生</label>
           </div>
         </div>
-        <div class="q-label">1. 您目前所处的年龄阶段</div>
-        <div class="opt-grid" data-q="age">
-          <div class="opt" data-v="u30"><div class="t">30 岁以下</div><div class="d">时间是最大的优势</div></div>
-          <div class="opt" data-v="30-45"><div class="t">30 – 45 岁</div><div class="d">家庭责任上升期</div></div>
-          <div class="opt" data-v="45-60"><div class="t">45 – 60 岁</div><div class="d">临近财富兑现</div></div>
-          <div class="opt" data-v="o60"><div class="t">60 岁以上</div><div class="d">以稳健保值为主</div></div>
+        <div class="q-label">您的年龄</div>
+        <div class="hint" style="margin:-6px 0 8px;">用于判断退休阶段与积累期长短。</div>
+        <div class="name-row" style="margin-bottom:10px;">
+          <input class="q-input" id="qAge" type="number" min="18" max="120" placeholder="如 40" value="40" style="width:110px;">
+          <span class="g-tip">岁</span>
         </div>
-        <div class="q-label">2. 您的职业类型</div>
-        <div class="opt-grid" data-q="occ">
-          <div class="opt" data-v="salary"><div class="t">工薪上班族</div><div class="d">收入稳定可规划</div></div>
-          <div class="opt" data-v="biz"><div class="t">个体 / 商贸</div><div class="d">现金流波动较大</div></div>
-          <div class="opt" data-v="owner"><div class="t">企业主</div><div class="d">资产体量较大</div></div>
-          <div class="opt" data-v="retire"><div class="t">退休</div><div class="d">以保值流动性为先</div></div>
+        <div class="q-label">您当前是否已退休？</div>
+        <div class="hint" style="margin:-6px 0 8px;">选「已退休」会自动展开「现有养老金」填写项。</div>
+        <div class="opt-grid" data-q="retired">
+          <div class="opt" data-v="no"><div class="t">未退休</div><div class="d">仍在积累阶段</div></div>
+          <div class="opt" data-v="yes"><div class="t">已退休</div><div class="d">已在领取养老金</div></div>
         </div>
-        <div class="q-label">3. 您的风险偏好</div>
+        <div id="qNotRetired" style="display:none;">
+          <div class="q-label">计划退休年龄</div>
+          <div class="hint" style="margin:-6px 0 8px;">用于测算从现在到退休的积累期，默认停留在 60 岁。</div>
+          <div class="opt-grid" data-q="retireAge">
+            <div class="opt" data-v="50"><div class="t">50 岁</div></div>
+            <div class="opt" data-v="55"><div class="t">55 岁</div></div>
+            <div class="opt" data-v="60"><div class="t">60 岁（默认）</div></div>
+            <div class="opt" data-v="65"><div class="t">65 岁</div></div>
+          </div>
+        </div>
+        <div id="qPensionRow">
+          <div class="q-label">现有养老金（每月）</div>
+          <div class="hint" style="margin:-6px 0 8px;">社保、企业年金等固定现金流（无则填 0）。</div>
+          <div class="name-row" style="margin-bottom:6px;">
+            <input class="q-input" id="qPension" type="number" min="0" step="100" placeholder="如 3500" value="0" style="width:160px;">
+            <span class="g-tip">元/月</span>
+          </div>
+        </div>
+        <div id="qFuturePensionRow" style="display:none;">
+          <div class="q-label">计划退休后社保养老金（每月）</div>
+          <div class="hint" style="margin:-6px 0 8px;">预计从退休年龄开始领取的社保/企业年金等固定现金流（无则填 0）。</div>
+          <div class="name-row" style="margin-bottom:6px;">
+            <input class="q-input" id="qFuturePension" type="number" min="0" step="100" placeholder="如 3500" value="3500" style="width:160px;">
+            <span class="g-tip">元/月</span>
+          </div>
+        </div>
+        <div class="q-label">预留备用金</div>
+        <div class="hint" style="margin:-6px 0 8px;">先扣下、不参与领取测算，用于医疗 / 应急等大额支出（也可手填其它金额）。</div>
+        <div class="opt-grid" data-q="reserve" style="margin-bottom:6px;">
+          <div class="opt" data-v="50000"><div class="t">5 万</div></div>
+          <div class="opt" data-v="100000"><div class="t">10 万（默认）</div></div>
+          <div class="opt" data-v="200000"><div class="t">20 万</div></div>
+          <div class="opt" data-v="300000"><div class="t">30 万</div></div>
+        </div>
+        <div class="name-row" style="margin-bottom:10px;">
+          <input class="q-input" id="qReserve" type="number" min="0" step="1000" placeholder="其它金额" value="100000" style="width:160px;">
+          <span class="g-tip">元</span>
+        </div>
+        <div id="qOccRow">
+          <div class="q-label">职业类型</div>
+          <div class="hint" style="margin:-6px 0 8px;">用于匹配更合适的资产参考比例（已退休则自动按"退休"口径，无需选择）。</div>
+          <div class="opt-grid" data-q="occ">
+            <div class="opt" data-v="salary"><div class="t">工薪上班族</div><div class="d">收入稳定可规划</div></div>
+            <div class="opt" data-v="biz"><div class="t">个体 / 商贸</div><div class="d">现金流波动较大</div></div>
+            <div class="opt" data-v="owner"><div class="t">企业主</div><div class="d">资产体量较大</div></div>
+          </div>
+        </div>
+        <div class="q-label">风险偏好</div>
         <div class="opt-grid" data-q="risk">
           <div class="opt" data-v="cons"><div class="t">保守型</div><div class="d">先保住本金</div></div>
           <div class="opt" data-v="steady"><div class="t">稳健型</div><div class="d">小幅波动可接受</div></div>
           <div class="opt" data-v="agg"><div class="t">进取型</div><div class="d">愿博更高收益</div></div>
         </div>
-        <div class="q-label">4. 您最关注的财富目标</div>
-        <div class="opt-grid full" data-q="goal">
-          <div class="opt" data-v="edu"><div class="t">子女教育储备</div><div class="d">约 10 年规划期</div></div>
-          <div class="opt" data-v="retire"><div class="t">养老规划</div><div class="d">约 20 年长周期</div></div>
-          <div class="opt" data-v="grow"><div class="t">资产稳健增值</div><div class="d">约 10 年规划期</div></div>
-          <div class="opt" data-v="liquid"><div class="t">保留灵活流动性</div><div class="d">约 5 年短周期</div></div>
+        <div class="q-label">您做这笔规划，主要想实现？</div>
+        <div class="hint" style="margin:-6px 0 8px;">决定第二步重点展示哪类结果；选"未来大额资金规划"也不会出现"留给孩子"等敏感字样。</div>
+        <div class="opt-grid" data-q="planIntent">
+          <div class="opt" data-v="cashflow"><div class="t">安享晚年 · 月度现金流</div><div class="d">保障退休后每月花销（默认）</div></div>
+          <div class="opt" data-v="lumpsum"><div class="t">未来大额资金规划</div><div class="d">传承 / 支持子女 / 大额支出</div></div>
+          <div class="opt" data-v="both"><div class="t">两者都要</div><div class="d">既要月月稳，也要留一笔</div></div>
+        </div>
+        <div class="q-label">期望退休后每月生活开销</div>
+        <div class="hint" style="margin:-6px 0 8px;">用来对比"每月能领多少"，直观看出养老缺口或盈余（无则填 0）。</div>
+        <div class="name-row" style="margin-bottom:6px;">
+          <input class="q-input" id="qTargetMonthly" type="number" min="0" step="500" placeholder="如 6000" value="6000" style="width:160px;">
+          <span class="g-tip">元/月</span>
+        </div>
+        <div id="qTargetPreview" style="display:none;margin:0 0 10px;padding:8px 12px;border-radius:10px;background:rgba(63,156,131,.14);color:#0f6e56;font-size:13px;line-height:1.6;"></div>
+        <div class="more-toggle" id="moreToggle" style="margin-top:4px;">▾ 更多设置（领取年限 / 养老金性质）</div>
+        <div class="inline-sec" id="moreSec">
+          <div class="q-label">领取退休金的年限</div>
+          <div class="hint" style="margin:-6px 0 8px;">建议按 25–30 年估算，覆盖退休生活周期，默认停留在 30 年。</div>
+          <div class="opt-grid" data-q="decYears">
+            <div class="opt" data-v="10"><div class="t">10 年</div></div>
+            <div class="opt" data-v="20"><div class="t">20 年</div></div>
+            <div class="opt" data-v="30"><div class="t">30 年（默认）</div></div>
+            <div class="opt" data-v="40"><div class="t">40 年</div></div>
+          </div>
+          <div class="q-label" style="margin-top:10px;">现有养老金领取性质</div>
+          <div class="hint" style="margin:-6px 0 8px;">仅作说明标注，不影响测算。</div>
+          <select id="qPensionAdj" style="display:block;width:100%;padding:8px 10px;font-size:13.5px;border-radius:8px;border:1px solid var(--border);">
+            <option value="infl">随通胀调整（默认）</option>
+            <option value="fixed">固定金额</option>
+          </select>
         </div>
       </div>
     </div>
 
     <!-- 步骤 2：资产配置（合并 资产现状 + 未来规划 + 测算假设） -->
     <div class="step" data-step="1">
-      <div class="card">
-        <h2>💰 我的资产 <span class="tag">简单录入</span></h2>
-        <div class="hint">先填个大概金额即可，系统按您的问卷口径自动测算。需要更精细，点下方「详细定制资产」逐项拆分。</div>
-        <div id="simpleList"></div>
-        <button class="btn soft sm" id="btnDetail" style="margin-top:10px;width:100%;">📝 详细定制资产（展开完整录入）</button>
-        <div class="inline-sec" id="detailInline">
-          <div id="detailSections"></div>
-          <button class="btn" id="dClose" style="margin-top:12px;width:100%;">完成</button>
+      <!-- 客户模板一键载入 -->
+      <div class="card tpl-card">
+        <h2>⚡ 客户模板一键载入</h2>
+        <div class="hint">点一下即可填好典型客户画像，再按需微调。经理面访更高效。</div>
+        <div class="tpl-row">
+          <button class="btn soft sm tpl-btn" data-tpl="steady">稳健退休型</button>
+          <button class="btn soft sm tpl-btn" data-tpl="aggr">进取退休型</button>
+          <button class="btn soft sm tpl-btn" data-tpl="hnw">多保单高净值</button>
         </div>
       </div>
       <div class="card">
-        <h2>📥 未来投入规划 <span class="tag">让长远测算更真实</span></h2>
-        <div class="hint">填写您未来每年计划新增的投入，并按下方比例分摊到各账户参与增长。留空则仅按现有资产增值——改一改数字，就能直观对比不同规划的未来差别。</div>
+        <h2>💰 我的资产 <span class="tag">详细录入</span></h2>
+        <div class="hint">逐项填入各类资产金额；需要快速填总额，点下方「⚡ 快速估算」展开。</div>
+        <div class="inline-sec open" id="detailInline">
+          <div id="detailSections"></div>
+        </div>
+        <div class="more-toggle" id="quickToggle" style="margin-top:12px;">▾ ⚡ 快速估算（填总额即可）</div>
+        <div class="inline-sec" id="quickInline">
+          <div id="simpleList"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2 id="planCardTitle">📥 养老金结余再投入 <span class="tag">让长远测算更真实</span></h2>
+        <div class="hint" id="planCardHint">每月养老金扣除生活开销后，预计每年结余多少，按以下比例分配到各类资产。没有结余则留空。</div>
         <div id="planInsNote" class="ins-note" style="display:none;"></div>
         <div class="field"><label>每年计划额外新增投入（元，不含保单固定缴费）</label><input type="number" min="0" step="1000" id="planAnnual" placeholder="如：60000"></div>
         <div class="chart-title" style="margin:6px 0 2px;">各方面分摊比例（合计需 100%）</div>
@@ -516,21 +764,35 @@
           <button class="btn soft sm" id="btnPlanStd">按问卷标准比例</button>
         </div>
       </div>
+      <div class="card" id="qLumpRow" style="display:none;">
+        <h2>🎯 未来大额资金规划 <span class="tag">传承 / 支持子女 / 大额支出</span></h2>
+        <div class="hint">在保障您每月生活之外，留一笔钱用于长期大额安排。设定目标后，看板会对比"预计可留存"与"目标金额"。</div>
+        <div class="q-label">目标金额</div>
+        <div class="opt-grid" data-q="lumpTarget" style="margin-bottom:6px;">
+          <div class="opt" data-v="100000"><div class="t">10 万</div></div>
+          <div class="opt" data-v="300000"><div class="t">30 万</div></div>
+          <div class="opt" data-v="500000"><div class="t">50 万</div></div>
+          <div class="opt" data-v="1000000"><div class="t">100 万</div></div>
+        </div>
+        <div class="name-row" style="margin-bottom:10px;">
+          <input class="q-input" id="qLumpTarget" type="number" min="0" step="10000" placeholder="其它金额" value="100000" style="width:160px;">
+          <span class="g-tip">元</span>
+        </div>
+        <div class="q-label">希望达成的大致时点</div>
+        <div class="opt-grid" data-q="lumpYear" style="margin-bottom:6px;">
+          <div class="opt" data-v="10"><div class="t">10 年后</div></div>
+          <div class="opt" data-v="20"><div class="t">20 年后（默认）</div></div>
+          <div class="opt" data-v="30"><div class="t">30 年后</div></div>
+        </div>
+      </div>
       <div class="card">
         <h2>⚙️ 测算假设 <span class="tag">问卷自动生成</span></h2>
         <div class="chip-row" id="paramChips"></div>
-        <button class="btn soft sm" id="btnAdv" style="margin-top:12px;">⚙ 高级参数（年限 / 通胀 / 降息 / 收益假设 / 递增率）</button>
-        <div class="inline-sec" id="advInline">
-          <div class="field"><label>测算总年限</label>
-            <select id="p_years">
-              <option value="5">5 年</option><option value="10">10 年</option><option value="15">15 年</option><option value="20">20 年</option>
-            </select>
-          </div>
+        <div class="inline-sec open" id="advInline">
           <div class="field"><label>年度通胀率(%) — 用于折算实际购买力</label><input id="p_infl" type="number" step="0.1" value="2"></div>
           <div class="field"><label>活期资金年化收益假设(%)</label><input id="p_cash" type="number" step="0.05" value="0.2"></div>
           <div class="field"><label>进取投资年化收益假设(%)</label><input id="p_agg" type="number" step="0.5" value="6"></div>
           <div class="field"><label>未来投入年递增率(%) — 每年新增投入的涨幅</label><input id="p_growth" type="number" step="0.5" value="0"></div>
-          <div class="field" id="goalTargetField"><label id="goalTargetLabel">财富目标金额(元)</label><input id="p_goalTarget" type="number" min="0" step="10000" placeholder="留空则使用默认参考值"></div>
           <div class="sec-divider" style="height:1px;background:var(--border);margin:12px 0;"></div>
           <div class="row-flex" style="justify-content:space-between;display:flex;">
             <strong style="font-size:13.5px;color:var(--green-d);">分层降息设置</strong>
@@ -554,43 +816,62 @@
 
 <!-- 看板主页面（从演示末页进入） -->
 <div id="reportView" class="report-view">
-  <div class="card">
-    <h2>📊 演算结果看板</h2>
-    <div id="introBox"></div>
-    <div class="summary">
-      <div class="stat"><div class="k">期末名义总值(A)</div><div class="v" id="s_a">¥0.00</div></div>
-      <div class="stat alt"><div class="k">期末实际价值(B)</div><div class="v" id="s_b">¥0.00</div></div>
-      <div class="stat"><div class="k">差额(A−B)</div><div class="v" id="s_diff">¥0.00</div></div>
-      <div class="stat alt"><div class="k">累计投入本金(含未来)</div><div class="v" id="s_inv">¥0.00</div></div>
-    </div>
-    <div class="chart-title">① 资产增长对比（五类资产 + 总资产 / 通胀实际）</div>
-    <div class="chart-box"><canvas id="lineCanvas" height="300"></canvas></div>
-    <div class="chart-title">② 期末资产结构占比（五类资产）</div>
-    <div class="chart-box"><canvas id="pieCanvas" height="240"></canvas></div>
-    <div class="legend" id="pieLegend"></div>
-    <div class="chart-title" style="margin-top:14px;">③ 年度资产明细</div>
-    <div class="list-wrap" style="max-height:none;"><table class="data" id="detailTable"></table></div>
-    <div class="chart-title" style="margin-top:14px;">④ 资产配置深度解读</div>
-    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
-      <button class="btn sm" id="btnAI">生成财富解读</button>
-      <span style="font-size:12.5px;color:var(--sub);">展示版本：</span>
-      <span class="ai-ver-toggle" id="aiToggle">
-        <button class="ver-btn active" data-ver="elderly" id="verElderly">📘 专业版</button>
-        <button class="ver-btn" data-ver="young" id="verYoung">📗 通俗版</button>
-      </span>
-    </div>
-    <div class="ai-box" id="aiBox" style="margin-top:8px;">
-      <p style="color:var(--sub);font-size:12.5px;">点击「生成财富解读」按钮，基于当前演算数据生成双版本话术与优化建议。</p>
-    </div>
-    <div class="disclaimer">合规免责：本测算仅为情景演示，不构成任何收益承诺；保险现金价值、年金以保险合同为准；理财收益存在波动风险，仅供财富规划参考。所有数据仅存于当前页面内存，刷新或关闭后彻底销毁。</div>
-    <div class="grid2" style="margin-top:14px;">
-      <button class="btn ghost sm" id="btnExportImg" style="width:100%;">🖼 导出图片</button>
-      <button class="btn ghost sm" id="btnExportPdf" style="width:100%;">📄 导出PDF</button>
-    </div>
+  <div class="report-tools" id="reportTools">
+    <button class="tool-ic" id="btnExportImg" title="导出图片">🖼</button>
+    <button class="tool-ic" id="btnExportPdf" title="导出PDF">📄</button>
+    <button class="tool-ic" id="backToPres" title="返回演示">↩</button>
+    <button class="tool-ic" id="btnShow2" title="重新播放演示">▶</button>
   </div>
-  <div class="grid2" style="margin-bottom:14px;">
-    <button class="btn ghost sm" id="backToPres" style="width:100%;">← 返回演示</button>
-    <button class="btn sm" id="btnShow2" style="width:100%;">📊 重新播放演示</button>
+
+  <!-- 区块1 · 封面头 -->
+  <div class="pb-cover">
+    <div class="pb-cover-title">邮储银行养老财富规划书</div>
+    <div class="pb-cover-sub" id="pbCoverSub"></div>
+    <div class="pb-cover-concl" id="pbCoverConcl"></div>
+  </div>
+
+  <!-- 区块2 · 核心数字卡 -->
+  <div class="pb-cards" id="pbCards"></div>
+
+  <!-- 区块3 · 您的资产现状 -->
+  <div class="pb-section">
+    <h2 class="pb-h2">您的资产现状</h2>
+    <div class="pb-asset-total" id="pbAssetTotal"></div>
+    <div id="pbAssets"></div>
+    <div class="pb-divider"></div>
+  </div>
+
+  <!-- 区块3.5 · 退休时的资产情况（仅未退休显示） -->
+  <div class="pb-section" id="pbRetireAt" style="display:none;">
+    <h2 class="pb-h2" id="pbRetireAtTitle">退休时的资产情况</h2>
+    <div class="pb-asset-total" id="pbRetireAtTotal"></div>
+    <div id="pbRetireAtAssets"></div>
+    <div class="pb-divider"></div>
+  </div>
+
+  <!-- 区块4 · 资产走势图 -->
+  <div class="pb-section">
+    <h2 class="pb-h2">资产走势图</h2>
+    <div class="pb-sub" id="pbDrawNote"></div>
+    <div class="chart-box"><canvas id="retireCanvas" height="320"></canvas></div>
+  </div>
+
+  <!-- 区块5 · 养老需求对比 -->
+  <div class="pb-section">
+    <h2 class="pb-h2">养老需求对比</h2>
+    <div class="pb-compare" id="pbCompare"></div>
+  </div>
+
+  <!-- 区块6 · 配置建议 -->
+  <div class="pb-section">
+    <h2 class="pb-h2">给您的配置建议</h2>
+    <div id="pbAdvice"></div>
+  </div>
+
+  <!-- 区块7 · 页脚 -->
+  <div class="pb-footer">
+    <div class="pb-assume" id="pbAssume"></div>
+    <div class="disclaimer">合规免责：本测算仅为情景演示，不构成任何收益承诺；保险现金价值、年金以保险合同为准；理财收益存在波动风险，仅供财富规划参考。</div>
   </div>
 </div>
 
@@ -669,15 +950,26 @@ const NAMES = Object.fromEntries(CLASSES.map(c=>[c.key,c.name]));
 const COLORS = Object.fromEntries(CLASSES.map(c=>[c.key,c.color]));
 
 const state = {
-  profile: { age:'', occ:'', risk:'steady', goal:'grow', name:'', gender:'' },
+  profile: { age:'45岁', occ:'biz', risk:'steady', goal:'retire', name:'李', gender:'m' },
   items: { cash:[], aggressive:[], insurance:[], deposit:[], wealth:[] },
   insurancePolicies: [],           // 上传保单计划书的独立明细（含 cashCurve）
   pendingPlan: null,               // 解析后待确认新增的保单
-  params: { years:10, inflation:2.0, rateCuts:[], retCash:0.2, retAgg:6, goalTarget:0 },
+  params: { years:30, inflation:2.0, rateCuts:[], retCash:0.2, retAgg:6 },
   plan: { annual:0, ratios:{cash:0,aggressive:0,insurance:0,deposit:0,wealth:0}, growth:0 },
   aiVersion: 'elderly',
-  reportStyle: 'plain',   // 'plain'通俗版 / 'pro'专业版，用于结果看板开篇与AI解读
-  _goalTargetManual: false
+  reportStyle: 'plain',
+  retired:false,
+  retireAge:60,
+  decYears:30,
+  exactAge:45,
+  pensionPerMonth:0,
+  futurePensionPerMonth:3500,
+  pensionType:'infl',
+  reserveAmount:100000,
+  targetMonthly:6000,
+  planIntent:'both',
+  lumpTarget:100000,
+  lumpYear:20
 };
 let _series = null;
 /* WebLLM 本地推理状态缓存（演示机浏览器内 WebGPU 运行，数据不出本机） */
@@ -687,10 +979,9 @@ const $ = id => document.getElementById(id);
 const num = v => { const n = parseFloat(v); return isNaN(n) ? 0 : n; };
 const fmt = n => '¥' + (n||0).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmtW = n => (n/10000).toLocaleString('zh-CN',{minimumFractionDigits:1,maximumFractionDigits:1}) + '万';
+const fmtDash = n => (+n||0)<=0 ? '—' : fmt(n);
 const uid = () => Math.random().toString(36).slice(2,9);
 /* 各财富目标默认参考金额（元），可在高级参数中手动调整 */
-const GOAL_TARGET_DEFAULTS = { edu:300000, retire:800000, grow:null, liquid:null };
-const GOAL_LABELS = { edu:'子女教育储备', retire:'养老规划', grow:'资产稳健增值', liquid:'保留灵活流动性' };
 
 let _toastT;
 function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(_toastT); _toastT=setTimeout(()=>t.classList.remove('show'),1800); }
@@ -700,33 +991,20 @@ function hideMask(id){ $(id).classList.remove('show'); }
 /* ============ 问卷推导 ============ */
 function deriveParams(){
   const p = state.profile;
-  // 年限：目标基准 + 年龄封顶
-  let years = {edu:10, retire:20, grow:10, liquid:5}[p.goal] || 10;
-  if(p.age==='o60') years = Math.min(years,5);
-  else if(p.age==='45-60') years = Math.min(years,15);
-  else if(p.age==='u30' && years<10) years = 10;
-  // 进取收益假设：风险偏好
-  let retAgg = {cons:4, steady:6, agg:8}[p.risk] ?? 6;
+  // 银发经济版：测算年限直接采用"领取退休金的年限"(decYears)，与问卷口径一致
+  const retAgg = {cons:4, steady:6, agg:8}[p.risk] ?? 6;
   // 降息预设：风险越保守，预设降息轮数越多（让情景更直观）
   let cuts = [];
   if(p.risk==='cons') cuts = [{year:3,depositCut:0.25,wealthCut:0.5},{year:7,depositCut:0.25,wealthCut:0.5}];
   else if(p.risk==='steady') cuts = [{year:5,depositCut:0.25,wealthCut:0.5}];
   else cuts = [];
-  state.params.years = years;
+  state.params.years = Math.max(5, Number(state.decYears) || 30);
   state.params.retAgg = retAgg;
   state.params.rateCuts = cuts;
   state.params.inflation = 2.0;
-  if($('p_years')) $('p_years').value = years;
   if($('p_agg')) $('p_agg').value = retAgg;
   if($('p_infl')) $('p_infl').value = 2.0;
-  ensureGoalTarget();
   renderCuts();
-}
-function ensureGoalTarget(){
-  if(state._goalTargetManual) return;
-  const def = GOAL_TARGET_DEFAULTS[state.profile.goal];
-  state.params.goalTarget = def || 0;
-  if($('p_goalTarget')) $('p_goalTarget').value = state.params.goalTarget || '';
 }
 
 /* ============ 简单录入 ↔ 详细项 ============ */
@@ -1248,6 +1526,55 @@ function computeSeries(){
   return {years,A,B,diff,perClass,N,invested: baseInvested+contribInvested, baseInvested, contributed:contribInvested};
 }
 
+/* 银发版：按客户当前资产配置，测算退休领取期可持续月领额 */
+function blendedRealRate(s){
+  const N=s.N, infl=state.params.inflation/100;
+  let tot=0; const w={};
+  CLASSES.forEach(c=>{ const v=(s.perClass[c.key]&&s.perClass[c.key][N])||0; w[c.key]=v; tot+=v; });
+  if(tot<=0) return 0;
+  let real=0;
+  CLASSES.forEach(c=>{
+    const rate = c.key==='cash'?state.params.retCash : c.key==='aggressive'?state.params.retAgg : c.defRate;
+    real += (w[c.key]/tot)*(rate/100 - infl);
+  });
+  return real;
+}
+function computeDecumulation(s){
+  const decYears = Math.max(5, Number(state.decYears) || 30);
+  const realRate = blendedRealRate(s);
+  const eff = Math.max(realRate, 0.005);
+  const reserve = Math.max(0, state.reserveAmount || 0);
+  const infl = state.params.inflation/100;
+  // 测算起点：已退休客户从当前（第0年）开始领取；未退休客户从退休时点开始领取
+  const startIdx = state.retired ? 0 : Math.max(1, Math.min((state.retireAge||60)-(state.exactAge||0), s.N));
+  // 预留备用金是名义金额，需按起点年份折为实际购买力后再与资产口径对齐扣减
+  const reserveReal = reserve / Math.pow(1+infl, startIdx);
+  let realPot = Math.max(0, s.B[startIdx] - reserveReal);
+  const yearly = eff>0 ? realPot*eff/(1-Math.pow(1+eff,-decYears)) : realPot/decYears;
+  const monthly = yearly/12;
+  const pension = state.retired ? Math.max(0, state.pensionPerMonth || 0) : Math.max(0, state.futurePensionPerMonth || 0);
+  const totalMonthly = monthly + pension;
+  const target = Math.max(0, state.targetMonthly || 0);
+  const gap = target>0 ? (target - totalMonthly) : 0;     // >0 缺口，<=0 盈余
+  return { realRate, eff, decYears, realPot, yearly, monthly, pension, totalMonthly, reserve, reserveReal, target, gap, gapSurplus:gap<=0, totalDrawn:yearly*decYears, nominalPot:s.A[s.N] };
+}
+/* 覆盖自身月度生活后，长期可留存的大额资金（传承 / 支持子女 / 大额支出）
+   不含外部养老金，仅按资产每月补充部分扣减；含预留备用金（其本就不参与月度领取）
+   注意：月度支取 d.monthly 仅发生在退休后的领取期，积累期内不扣减，故按 (y - 退休时点) 年计 */
+function largeFundAt(s, yr){
+  const d=computeDecumulation(s);
+  const y=Math.max(1, Math.min(yr||s.N, s.N));
+  const R = state.retired ? 0 : Math.max(1, Math.min((state.retireAge||60)-(state.exactAge||0), s.N));
+  const withdrawYears = Math.max(0, y - R);
+  const assetDraw = d.monthly*12*withdrawYears;
+  return Math.max(0, s.B[y]-assetDraw);
+}
+function retirePhaseText(){
+  const ageRep = state.exactAge>0?state.exactAge:63;
+  if(state.retired) return `您约 ${ageRep} 岁，已退休，计划立即开始领取`;
+  return `您约 ${ageRep} 岁，计划 ${state.retireAge} 岁退休，积累期约 ${Math.max(0,state.retireAge-ageRep)} 年`;
+}
+
 /* ============ 图表 ============ */
 function setupCanvas(canvas, cssH){
   const dpr = window.devicePixelRatio || 1;
@@ -1294,76 +1621,126 @@ function drawPie(canvas, s){
   let ly=cy-r-6; const lx=cx+r+24;
   segs.forEach(seg=>{ ctx.fillStyle=seg.color; ctx.fillRect(lx,ly-6,12,12); ctx.fillStyle='#444'; ctx.fillText(seg.label+'  '+fmt(seg.value), lx+18, ly); ly+=24; });
 }
-function renderCharts(s){ drawLineChart($('lineCanvas'), s); drawPie($('pieCanvas'), s); }
-function renderLegend(s){
-  $('pieLegend').innerHTML = CLASSES.map(c=>{
-    const v=s.perClass[c.key][s.N], tot=CLASSES.reduce((a,b)=>a+s.perClass[b.key][s.N],0)||1;
-    return `<span><i style="background:${c.color}"></i>${c.name} ${(v/tot*100).toFixed(1)}%</span>`;
-  }).join('');
-}
-function renderTable(s){
-  let html='<thead><tr><th>年度</th><th class="num">基准(A)</th><th class="num">降息+通胀(B)</th><th class="num">差额</th></tr></thead><tbody>';
-  for(let i=0;i<=s.N;i++){ html+=`<tr><td>${s.years[i]}年</td><td class="num">${fmt(s.A[i])}</td><td class="num">${fmt(s.B[i])}</td><td class="num">${fmt(s.diff[i])}</td></tr>`; }
-  html+='</tbody>'; $('detailTable').innerHTML=html;
+/* 资产走势图：从测试当年起，经退休时点，画到养老金领取期结束 */
+function drawRetireDrawdown(s){
+  const canvas=$('retireCanvas'); if(!canvas) return;
+  const d=computeDecumulation(s);
+  const decYears=d.decYears, infl=state.params.inflation/100;
+  const R = state.retired ? 0 : Math.max(0, Math.min((state.retireAge||60)-(state.exactAge||0), s.N));
+  const endYear = R + decYears;                 // 从测试当年到领取期结束
+  // 未来大额支出：按客户规划时点（第 lumpYear 年）扣除；若规划在退休后，则在领取期对应年份扣除
+  const lumpTarget = (state.lumpTarget && state.planIntent!=='cashflow') ? Math.max(0, Number(state.lumpTarget)) : 0;
+  const lumpYear = lumpTarget>0 ? Math.max(0, Math.min(Number(state.lumpYear)||0, endYear)) : -1;
+  // 为了直观呈现扣款断崖，在 lumpYear/R 处插入「高点→低点」两个相邻点
+  const pts=[]; const nominalAtT={};
+  let lumpDeduction=0;
+  for(let t=0; t<R; t++){
+    const high = s.A[t] - lumpDeduction;
+    pts.push({t, v:high, real:high/Math.pow(1+infl, t)}); nominalAtT[t]=high;
+    if(t===lumpYear && lumpYear<R){
+      lumpDeduction += lumpTarget;
+      const low = s.A[t] - lumpDeduction;
+      pts.push({t, v:low, real:low/Math.pow(1+infl, t)}); nominalAtT[t+'_low']=low;
+    }
+  }
+  // R 处（退休/开始领取）：高点=总资产(已扣退休前大额支出)，低点=再扣预留金后可用于领取资产
+  const retireHigh = s.A[R] - lumpDeduction;
+  pts.push({t:R, v:retireHigh, real:retireHigh/Math.pow(1+infl, R)}); nominalAtT[R]=retireHigh;
+  let bal = Math.max(0, retireHigh - (lumpYear===R?lumpTarget:0) - d.reserve); let depletedAt=-1;
+  pts.push({t:R, v:bal, real:bal/Math.pow(1+infl, R)}); nominalAtT[R+'_low']=bal;
+  // 阶段2：领取期逐年支取（若规划的大额支出在退休后发生，于对应年份扣减）
+  for(let k=1; k<=decYears; k++){
+    const t=R+k;
+    if(t===lumpYear && lumpYear>R){
+      bal = Math.max(0, bal - lumpTarget);
+      pts.push({t, v:bal, real:bal/Math.pow(1+infl, t)}); nominalAtT[t+'_low']=bal;
+    }
+    const yearlyDraw = d.monthly*12*Math.pow(1+infl, k); // 第k年名义年支取随通胀递增
+    bal = bal*(1+d.eff) - yearlyDraw;
+    if(bal<0 && depletedAt<0) depletedAt=t;
+    pts.push({t, v:bal, real:bal/Math.pow(1+infl, t)}); nominalAtT[t]=bal;
+  }
+  const {ctx,w,h}=setupCanvas(canvas,320); ctx.clearRect(0,0,w,h);
+  const maxV=Math.max(...pts.map(p=>p.v).filter(v=>v>0), ...pts.map(p=>p.real).filter(v=>v>0), 1)*1.12;
+  const minV=Math.min(0, ...pts.map(p=>p.v), ...pts.map(p=>p.real));
+  const padL=64,padR=14,padT=34,padB=42, pw=w-padL-padR, ph=h-padT-padB;
+  const Y=v=>padT+ph-(v-minV)/(maxV-minV)*ph;
+  const X=t=>padL+(endYear===0?0:(t/endYear)*pw);
+  ctx.font='11px system-ui,sans-serif'; ctx.strokeStyle='#e8eceb'; ctx.fillStyle='#9aa19e'; ctx.lineWidth=1;
+  ctx.textAlign='right'; ctx.textBaseline='middle';
+  for(let i=0;i<=5;i++){ const val=minV+(maxV-minV)*i/5, gy=Y(val); ctx.beginPath(); ctx.moveTo(padL,gy); ctx.lineTo(padL+pw,gy); ctx.stroke(); ctx.fillText(fmtW(val), padL-7, gy); }
+  if(minV<0){ const gz=Y(0); ctx.save(); ctx.strokeStyle='#d9534f'; ctx.setLineDash([5,4]); ctx.beginPath(); ctx.moveTo(padL,gz); ctx.lineTo(padL+pw,gz); ctx.stroke(); ctx.restore(); }
+  // 退休/领取起点的竖线标注
+  if(R>=0 && R<endYear){
+    const rx=X(R);
+    ctx.save(); ctx.strokeStyle='#c5891f'; ctx.setLineDash([4,3]); ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(rx,padT); ctx.lineTo(rx,padT+ph); ctx.stroke(); ctx.restore();
+    ctx.fillStyle='#c5891f'; ctx.font='11px system-ui'; ctx.textAlign='center'; ctx.textBaseline='bottom';
+    ctx.fillText(state.retired?'开始领取':'预计'+state.retireAge+'岁退休', rx, padT-4);
+    // 下降起点/当前起点标注：扣掉预留金（fmtW 已含「万」）
+    if(d.reserve>0){
+      ctx.font='10.5px system-ui'; ctx.textBaseline='top';
+      if(R>0){
+        ctx.textAlign='center';
+        ctx.fillText('扣掉预留金 '+fmtW(d.reserve), rx, padT+ph+20);
+      } else {
+        ctx.textAlign='left';
+        ctx.fillText('扣掉预留金 '+fmtW(d.reserve), rx+4, padT+ph+20);
+      }
+    }
+  }
+  // 未来大额支出节点标注
+  if(lumpYear>=0 && lumpYear<endYear){
+    const lx=X(lumpYear);
+    ctx.save(); ctx.strokeStyle='#7c4dff'; ctx.setLineDash([3,3]); ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(lx,padT); ctx.lineTo(lx,padT+ph); ctx.stroke(); ctx.restore();
+    ctx.fillStyle='#7c4dff'; ctx.font='10.5px system-ui'; ctx.textAlign='center'; ctx.textBaseline='top';
+    // 若与退休/领取起点重叠，把大额标注下移一行，避免覆盖「扣掉预留金」
+    const lumpLblY = (R>=0 && lumpYear===R) ? padT+ph+36 : padT+ph+20;
+    ctx.fillText('大额支出 '+fmtW(lumpTarget), lx, lumpLblY);
+  }
+  // X轴刻度
+  const step=endYear>30?10:5;
+  const xt=[0];
+  for(let t=step; t<endYear; t+=step) xt.push(t);
+  xt.push(endYear);
+  if(R>0 && !xt.includes(R)) xt.push(R);
+  if(lumpYear>=0 && !xt.includes(lumpYear)) xt.push(lumpYear);
+  xt.sort((a,b)=>a-b);
+  ctx.textAlign='center'; ctx.textBaseline='top'; ctx.fillStyle='#9aa19e';
+  xt.forEach(t=>{
+    let label='第'+t+'年';
+    if(t===0) label='测试当年';
+    else if(t===R) label=state.retireAge+'岁';
+    else if(t===lumpYear) label='大额支出';
+    ctx.fillText(label, X(t), padT+ph+6);
+  });
+  const plotP=(pts,color,width,dash)=>{ ctx.strokeStyle=color; ctx.lineWidth=width; ctx.setLineDash(dash||[]); ctx.beginPath(); pts.forEach((p,i)=>{ const gx=X(p.t), gy=Y(p.v); i===0?ctx.moveTo(gx,gy):ctx.lineTo(gx,gy); }); ctx.stroke(); ctx.setLineDash([]); };
+  plotP(pts,'#006341',3); plotP(pts.map(p=>({t:p.t,v:p.real})),'#999999',2,[6,4]);
+  // 标注
+  ctx.fillStyle='#004f35'; ctx.font='11px system-ui,sans-serif'; ctx.textAlign='left'; ctx.textBaseline='bottom';
+  ctx.fillText((R===0?'当前可领 ':'当前资产 ')+fmtW(pts[0].v), padL+4, Y(pts[0].v)-4);
+  if(depletedAt>=0){
+    ctx.fillStyle='#d9534f'; ctx.textAlign='right'; ctx.textBaseline='top';
+    ctx.fillText('第'+depletedAt+'年耗尽', X(depletedAt), Y(nominalAtT[depletedAt])-4);
+  } else {
+    ctx.fillStyle='#666'; ctx.textAlign='right'; ctx.textBaseline='bottom';
+    ctx.fillText('第'+endYear+'年 '+fmtW(nominalAtT[endYear]), padL+pw-4, Y(nominalAtT[endYear])-4);
+  }
+  const lg=[['#006341','总资产',false],['#999999','总资产(实际购买力)',true]]; let lx=padL, ly=12;
+  ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.font='11px system-ui';
+  lg.forEach(([c,t,ds])=>{ ctx.strokeStyle=c; ctx.lineWidth=ds?2:3; ctx.setLineDash(ds?[4,3]:[]); ctx.beginPath(); ctx.moveTo(lx,ly); ctx.lineTo(lx+18,ly); ctx.stroke(); ctx.setLineDash([]); ctx.fillStyle='#666'; ctx.fillText(t,lx+22,ly); lx+=22+ctx.measureText(t).width+16; });
 }
 function render(){
   renderPlanInsNote();
   _series = computeSeries(); const s=_series;
-  $('s_a').textContent=fmt(s.A[s.N]); $('s_b').textContent=fmt(s.B[s.N]);
-  $('s_diff').textContent=fmt(s.diff[s.N]); $('s_inv').textContent=fmt(s.invested);
-  renderCharts(s); renderLegend(s); renderTable(s); renderParamChips(); renderIntroBox(s);
+  renderParamChips();
+  renderPlanCover(s); renderCoreCards(s); renderAssetStatus(s); renderRetireAt(s); drawRetireDrawdown(s); renderCompare(s); renderAdvice(s); renderFooter(s);
+  const cuts=state.params.rateCuts;
+  if(cuts.length>0){ const descs=cuts.map(c=>`第${c.year}年存款降${c.depositCut}%、理财降${c.wealthCut}%`).join('；'); $('pbDrawNote').textContent=`本测算含 ${cuts.length} 轮降息假设：${descs}。实际利率走势可能不同，仅供情景参考。`; }
+  else { $('pbDrawNote').textContent='本测算未设降息情景，按当前利率维持测算。'; }
+  generateAI(true);
 }
 
 /* 目标达成描述（演示页脚 + 通俗版看板顶部卡片共用） */
-function goalStatement(s, tone='plain'){
-  if(!s) return '';
-  const N=s.N, A=s.A[N], B=s.B[N], diff=s.diff[N], invested=s.invested, cashV=s.perClass.cash[N];
-  const goal=state.profile.goal, target=state.params.goalTarget || 0;
-  const goalLabel=GOAL_LABELS[goal]||'财富目标';
-  let main='';
-  if((goal==='edu' || goal==='retire') && target>0){
-    const ratio=Math.min(999, Math.round(B/target*100));
-    let ratioText='';
-    if(ratio>=100) ratioText=`已经覆盖了 <b>${ratio}%</b>，超出参考目标，给未来留出了更多选择空间。`;
-    else if(ratio>=80) ratioText=`大约能覆盖 <b>${ratio}%</b>，已经很接近参考目标，再坚持一段时间就能更从容。`;
-    else ratioText=`大约能覆盖 <b>${ratio}%</b>，距离目标还有一定空间，建议适当提高年投入或优化资产配置。`;
-    main = tone==='plain'
-      ? `到第 <b>${N}</b> 年，您实际能花的钱大约有 <b>${fmt(B)}</b>。按 <b>${goalLabel}</b> 的参考目标 <b>${fmt(target)}</b> 来算，${ratioText}`
-      : `经过 <b>${N}</b> 年，您的资产预计达到 <b>${fmt(B)}</b>。按 <b>${goalLabel}</b> 参考目标 <b>${fmt(target)}</b> 计算，${ratioText}`;
-  } else if(goal==='grow'){
-    const gain=B-invested;
-    main = tone==='plain'
-      ? (gain>=0
-        ? `到第 <b>${N}</b> 年，您的钱预计从 <b>${fmt(invested)}</b> 变成 <b>${fmt(B)}</b>，相当于额外攒下了 <b>${fmt(gain)}</b> 的购买力。`
-        : `到第 <b>${N}</b> 年，受通胀与降息影响，您的资产实际购买力预计为 <b>${fmt(B)}</b>，低于累计投入的 <b>${fmt(invested)}</b>。建议尽早优化结构、提升稳健资产占比。`)
-      : (gain>=0
-        ? `经过 <b>${N}</b> 年，您的资产预计从 <b>${fmt(invested)}</b> 增长到 <b>${fmt(B)}</b>，相当于额外积累了 <b>${fmt(gain)}</b> 的购买力。`
-        : `经过 <b>${N}</b> 年，受通胀与降息影响，您的资产实际购买力预计为 <b>${fmt(B)}</b>，低于累计投入 <b>${fmt(invested)}</b>。建议优化结构、提升稳健资产占比。`);
-  } else if(goal==='liquid'){
-    const months=Math.max(0, Math.floor(cashV/8000));
-    main = tone==='plain'
-      ? (cashV>0
-        ? `您手边保留了约 <b>${fmt(cashV)}</b> 的活钱，按普通家庭每月开销估算，大约能撑 <b>${months}</b> 个月。`
-        : `您当前活钱配置较少，建议至少保留 <b>3–6 个月</b>家庭开支作为应急缓冲。`)
-      : (cashV>0
-        ? `您保留了约 <b>${fmt(cashV)}</b> 的活钱，相当于约 <b>${months}</b> 个月的家庭应急缓冲。`
-        : `您当前活钱配置较少，建议至少保留 <b>3–6 个月</b>家庭开支作为应急缓冲。`);
-  } else {
-    main = `经过 <b>${N}</b> 年，您的资产预计达到 <b>${fmt(B)}</b>。`;
-  }
-  const realLine = tone==='plain'
-    ? `相比账面上的 <b>${fmt(A)}</b>，通胀和降息会让实际购买力少掉 <b>${fmt(diff)}</b>。`
-    : `相比名义资产 <b>${fmt(A)}</b>，通胀与降息让实际购买力减少了 <b>${fmt(diff)}</b>。`;
-  const cls=['cash','aggressive','deposit','wealth','insurance'].map(k=>({k,v:s.perClass[k][N],name:NAMES[k]}));
-  cls.sort((a,b)=>b.v-a.v);
-  const [top,second]=cls;
-  const allocLine = tone==='plain'
-    ? `现在您的钱主要放在 <b>${top.name}</b>${second.v>0 ? '，其次是 <b>'+second.name+'</b>' : ''}。建议结合目标周期做再平衡，让结构更稳。`
-    : `当前资产搭配以 <b>${top.name}</b> 为主${second.v>0 ? '，其次是 <b>'+second.name+'</b>' : ''}，建议结合目标周期做再平衡。`;
-  if(tone==='plain') return `${main}${realLine} ${allocLine}`;
-  return `<p>${main}</p><p>${realLine} ${allocLine}</p>`;
-}
-
 /* 购买力侵蚀类比：按金额 + 年龄段动态匹配生活化实物 */
 function purchasePowerAnalogy(diff, age=''){
   // age 取值 u30 / 30-45 / 45-60 / o60 或空
@@ -1417,33 +1794,168 @@ function fmtSalutation(mode='name'){
   return mode==='greet' ? `${full}，您好` : full;
 }
 
-function renderIntroBox(s){
-  if(!s) return;
-  const N=s.N, A=s.A[N], B=s.B[N], diff=s.diff[N], invested=s.invested;
-  const title=fmtSalutation();
-  const hasCut=state.params.rateCuts.length>0;
-  const gainA=A-invested, gainB=B-invested;
+/* 区块1 · 封面头 */
+function renderPlanCover(s){
+  const d=computeDecumulation(s);
+  const name=fmtSalutation();
+  const age=state.exactAge>0?state.exactAge:'—';
+  const dateStr=new Date().toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric'});
+  $('pbCoverSub').innerHTML = `${name}　·　${age}岁　·　测算日期：${dateStr}`;
+  let concl;
+  if(d.target>0 && !d.gapSurplus){ concl = `每月养老缺口约 <b>${fmt(d.gap)}</b>，建议通过配置调整补足`; }
+  else { concl = `您的养老现金流预计可稳定覆盖 <b>${d.decYears}</b> 年，每月合计约 <b>${fmt(d.totalMonthly)}</b>`; }
+  if(state.planIntent!=='cashflow'){
+    const lf=largeFundAt(s, state.lumpYear);
+    concl += `；未来大额规划预计可留存约 <b>${fmt(lf)}</b>`;
+  }
+  $('pbCoverConcl').innerHTML = concl;
+}
+/* 区块2 · 核心数字卡 */
+function renderCoreCards(s){
+  const d=computeDecumulation(s);
+  const hasTarget = state.targetMonthly>0;
+  let gapCls='', gapHtml;
+  if(!hasTarget){ gapHtml='<span class="pb-card-v">—</span>'; }
+  else if(d.gapSurplus){ gapCls='surplus'; gapHtml=`<span class="pb-card-v">每月盈余 ${fmtDash(Math.abs(d.gap))}</span>`; }
+  else { gapCls='gap'; gapHtml=`<span class="pb-card-v">每月缺口 ${fmt(d.gap)}</span>`; }
+  $('pbCards').innerHTML = `
+    <div class="pb-card hl"><div class="pb-card-k">每月可补充养老金</div><div class="pb-card-v">${fmtDash(d.monthly)}</div></div>
+    <div class="pb-card"><div class="pb-card-k">合计每月现金流</div><div class="pb-card-v">${fmtDash(d.totalMonthly)}</div></div>
+    <div class="pb-card ${gapCls}"><div class="pb-card-k">养老缺口 / 盈余</div>${gapHtml}</div>
+    <div class="pb-card"><div class="pb-card-k">可用于领取的资产</div><div class="pb-card-v">${fmtDash(d.realPot)}</div></div>`;
+}
+/* 区块3 · 您的资产现状（动态粒度） */
+function isDetailed(key){
+  if(key==='insurance') return state.items.insurance.length>1 || (state.items.insurance.length===1 && state.items.insurance[0].custom) || state.insurancePolicies.length>0;
+  return state.items[key].length>1 || (state.items[key].length===1 && state.items[key][0].custom);
+}
+function renderAssetStatus(s){
+  const roles={ cash:'应急钱，随时可取', aggressive:'有波动，占比不高', insurance:'安全垫，锁定长期利率', deposit:'压舱石，到期固定收益', wealth:'稳健增值，收益略高于定存' };
+  const total=CLASSES.reduce((a,c)=>a+currentClassValue(c.key),0)||1;
+  $('pbAssetTotal').innerHTML = `资产合计　<b>${fmt(total)}</b>`;
   let html='';
-  if(state.reportStyle==='pro'){
-    html=`<div class="intro-box">
-      <div class="intro-h">${title?title+'，':''}这是为您测算的财富全景图 <span class="intro-badge">专业版</span></div>
-      <p>本报告基于您录入的<b>活钱、进取投资、保险、定期存款、理财/资管</b>五类资产，以及未来每年计划新增投入，做了两套情景演算：
-      <b>名义总值</b>按当前利率测算，<b>实际价值</b>再扣除每年 ${state.params.inflation}% 的通胀与预设降息影响。</p>
-      <p>测算显示，${N} 年后您的资产名义总值约 <b>${fmt(A)}</b>，考虑通胀与降息后的实际购买力约 <b>${fmt(B)}</b>，两者差额约 <b>${fmt(diff)}</b>。
-      下面的图表会带您逐层看清：钱从哪来、放到哪去、利率下行会让账面数字缩水多少，以及怎样通过资产配置让结构更稳。</p>
-    </div>`;
-  } else {
-    html=`<div class="intro-box">
-      <div class="intro-h">${title?title+'，':''}先看一个您最关心的数字 <span class="intro-badge">通俗版</span></div>
-      <div class="goal-card">🎯 您的「${GOAL_LABELS[state.profile.goal]||'财富目标'}」达成预览<br><span class="goal-card-sub">${goalStatement(s,'plain')}</span></div>
-      <p>如果把您现在和以后要继续投入的钱，按当前利率一路算下来，<b>${N} 年后账面上大约会有 ${fmt(A)}</b>。
-      但 everyday 的物价每年也在涨（按 ${state.params.inflation}% 估算），再加上存款、理财利率可能下行，
-      这些钱真正能买到的东西，大概相当于今天的 <b>${fmt(B)}</b>——中间差了 <b>${fmt(diff)}</b>。</p>
-      <p>别担心，这不是坏事，而是提醒我们：钱不能全放在同一个地方。接下来几张图，会帮您看清五类钱该怎么搭配，才能在保住本金的同时，让收益更稳、更抗跌。</p>
+  const missing=[];
+  CLASSES.forEach(c=>{
+    const v=currentClassValue(c.key);
+    const pct=(v/total*100);
+    if(v<=0){ missing.push(c.name); return; }
+    if(!isDetailed(c.key)){
+      html+=`<div class="asset-row">
+        <div class="asset-row-main"><span class="dot" style="background:${c.color}"></span>
+          <div class="asset-name-wrap"><span class="asset-name">${c.name}</span><span class="asset-role">${roles[c.key]}</span></div>
+        </div>
+        <div class="asset-row-side"><span class="asset-amt">${fmt(v)}</span><span class="asset-pct">${pct.toFixed(1)}%</span></div>
+      </div>`;
+    } else {
+      let rows='';
+      state.items[c.key].forEach(it=>{
+        rows+=`<div class="asset-item">
+          <div class="asset-item-main"><span class="asset-item-prefix">└</span><span class="asset-item-name">${it.name||'(未命名)'}</span></div>
+          <div class="asset-row-side"><span class="asset-item-amt">${fmt(it.principal)}</span><span class="asset-item-meta">${it.rate}% · ${it.startYear}年起</span></div>
+        </div>`;
+      });
+      if(c.key==='insurance'){
+        state.insurancePolicies.forEach(p=>{
+          rows+=`<div class="asset-item">
+            <div class="asset-item-main"><span class="asset-item-prefix">└</span><span class="asset-item-name">${p.name||'(未命名)'} · ${p.type||'保险'}</span></div>
+            <div class="asset-row-side"><span class="asset-item-amt">${fmt(insDisplayValue(p))}</span><span class="asset-item-meta">按计划书现金价值测算</span></div>
+          </div>`;
+        });
+      }
+      html+=`<div class="asset-sub-block">
+        <div class="asset-sub-row">
+          <div class="asset-row-main"><span class="dot" style="background:${c.color}"></span><div class="asset-name-wrap"><span class="asset-name">${c.name}</span></div></div>
+          <div class="asset-row-side"><span class="asset-sub-sum">${fmt(v)}</span><span class="asset-pct">${pct.toFixed(1)}%</span></div>
+        </div>
+        <div class="asset-items">${rows}</div>
+      </div>`;
+    }
+  });
+  if(missing.length) html+=`<div class="asset-missing">另有 ${missing.join('、')} 暂未录入</div>`;
+  $('pbAssets').innerHTML=html;
+}
+/* 区块3.5 · 退休时的资产情况（仅未退休显示） */
+function renderRetireAt(s){
+  const block=$('pbRetireAt'); if(!block) return;
+  if(state.retired){ block.style.display='none'; return; }
+  block.style.display='';
+  const R=Math.max(1, Math.min((state.retireAge||60)-(state.exactAge||0), s.N));
+  const d=computeDecumulation(s);
+  const nomA=s.A[R]||0, realB=s.B[R]||0, reserveReal=d.reserveReal||0;
+  if($('pbRetireAtTitle')) $('pbRetireAtTitle').textContent='退休时的资产情况（预计 '+state.retireAge+' 岁）';
+  $('pbRetireAtTotal').innerHTML=
+    '预计退休时资产合计　<b>'+fmt(nomA)+'</b>　·　剔除通胀实际购买力 <b>'+fmtW(realB)+'</b> 万'+
+    '<span style="margin-left:12px;color:#7a8285;font-size:12px;font-weight:400;">（已预留 '+fmtW(reserveReal)+' 万备用金，可用于领取约 '+fmt(d.realPot)+'）</span>';
+  const total=CLASSES.reduce((a,c)=>a+(s.perClass[c.key][R]||0),0)||1;
+  let html='';
+  const missing=[];
+  CLASSES.forEach(c=>{ const v=s.perClass[c.key][R]||0, pct=v/total*100;
+    if(v<=0){ missing.push(c.name); return; }
+    html+='<div class="asset-row"><div class="asset-row-main"><span class="dot" style="background:'+c.color+'"></span><div class="asset-name-wrap"><span class="asset-name">'+c.name+'</span></div></div><div class="asset-row-side"><span class="asset-amt">'+fmt(v)+'</span><span class="asset-pct">'+pct.toFixed(1)+'%</span></div></div>';
+  });
+  if(missing.length) html+='<div class="asset-missing">另有 '+missing.join('、')+' 暂未录入</div>';
+  $('pbRetireAtAssets').innerHTML=html;
+}
+/* 区块5 · 养老需求对比 */
+function renderCompare(s){
+  const d=computeDecumulation(s);
+  const lt = d.target>0 ? (d.gapSurplus ? `每月盈余 ${fmt(Math.abs(d.gap))}，规划从容` : `每月还差 ${fmt(d.gap)}，建议补足`) : '填写期望月开销可看缺口';
+  const left=`<div class="cmp-card">
+    <div class="cmp-col"><div class="cmp-num">${fmt(d.target||0)}</div><div class="cmp-lab">每月生活开销</div></div>
+    <div class="cmp-vs">vs</div>
+    <div class="cmp-col"><div class="cmp-num">${fmt(d.totalMonthly)}</div><div class="cmp-lab">每月到账</div></div>
+    <div class="cmp-foot">${lt}</div>
+  </div>`;
+  let right='';
+  if(state.planIntent!=='cashflow'){
+    const lf=largeFundAt(s, state.lumpYear);
+    const rate = state.lumpTarget>0 ? Math.round(lf/state.lumpTarget*100) : 0;
+    const rfoot = lf>=state.lumpTarget ? '目标可达成' : `还差 ${fmt(state.lumpTarget-lf)}，可提升稳健资产占比`;
+    right=`<div class="cmp-card">
+      <div class="cmp-col"><div class="cmp-num">${fmt(state.lumpTarget||0)}</div><div class="cmp-lab">大额规划目标</div></div>
+      <div class="cmp-vs">vs</div>
+      <div class="cmp-col"><div class="cmp-num">${fmt(lf)}</div><div class="cmp-lab">预计可留存</div></div>
+      <div class="cmp-foot">达成率 ${rate}%　·　${rfoot}</div>
     </div>`;
   }
-  $('introBox').innerHTML=html;
+  $('pbCompare').innerHTML=left+right;
 }
+/* 区块6 · 配置建议（基于金字塔偏差，取前3条；专业版/通俗版分流） */
+function generateAdviceTips(s){
+  const std=presStd4(), act=presAct4();
+  const N=s.N, _totA=s.A[N]||1, _money=p=>fmtW(p/100*_totA);
+  /* 版本判定：elderly/pro = 专业版，young/plain = 通俗版 */
+  const ver=(state.aiVersion==='young' || state.reportStyle==='plain') && state.aiVersion!=='elderly' ? 'young' : 'elderly';
+  const tips=[];
+  /* —— 专业版：结构偏差 + 具体金额调整 —— */
+  if(ver==='elderly'){
+    if(act['进攻']>std['进攻']+10) tips.push(`<b>进攻投资占比偏高</b>：实际 ${act['进攻'].toFixed(0)}% 高于标准 ${std['进攻'].toFixed(0)}%，市场波动会放大组合回撤。建议将约 <b>${_money(act['进攻']-std['进攻'])}</b> 从股票/基金转入稳健层（大额存单、国债、低风险理财）与保障层（年金、增额寿险），让收益与安稳并存。`);
+    if(act['保障']<std['保障']-10) tips.push(`<b>保障层偏弱</b>：实际 ${act['保障'].toFixed(0)}% 低于标准 ${std['保障'].toFixed(0)}%，安全垫不足。建议增配约 <b>${_money(std['保障']-act['保障'])}</b> 长期安全资产（长期定存、国债、年金险、增额终身寿），锁定长期利率并筑牢底线。`);
+    if(act['活钱']>std['活钱']+10) tips.push(`<b>活钱占比偏高</b>：实际 ${act['活钱'].toFixed(0)}% 高于标准 ${std['活钱'].toFixed(0)}%，长期闲置会被通胀侵蚀。保留 6–12 个月应急资金后，将约 <b>${_money(act['活钱']-std['活钱'])}</b> 转投稳健增值产品（大额存单、国债、低风险理财）或长期保障资产，提升整体效率。`);
+    if(act['稳健']<std['稳健']-10) tips.push(`<b>稳健层偏薄</b>：实际 ${act['稳健'].toFixed(0)}% 低于标准 ${std['稳健'].toFixed(0)}%，组合缺少"压舱石"。建议增配约 <b>${_money(std['稳健']-act['稳健'])}</b> 大额存单、国债、低风险理财或债券基金，降低组合波动；若担心利率下行，可优先通过长期定存、国债或年金保险锁定长期利率。`);
+    if(!tips.length) tips.push('您的资产结构整体均衡，进攻、稳健、保障、活钱四层配比合理（偏差均在 10% 以内）。建议坚持每年投入，并随年龄增长逐步提升稳健与保障比例，让财富穿越利率周期。');
+  }
+  /* —— 通俗版：生活化表达 + 方向性提示 —— */
+  else {
+    if(act['进攻']>std['进攻']+10) tips.push(`<b>博高收益的钱偏多</b>：股票、基金这类"涨跌都大"的资产比例略高。建议把其中一小部分挪到更安稳的地方（大额存单、国债、年金险），进可攻、退可守，晚上睡得踏实。`);
+    if(act['保障']<std['保障']-10) tips.push(`<b>保底的安全垫偏薄</b>：能"锁住长期利率"的年金、增额寿、长期定存还不多。趁现在利率尚可，补一点进去，等于给未来的自己留一份确定的底气。`);
+    if(act['活钱']>std['活钱']+10) tips.push(`<b>活期闲钱偏多</b>：留足半年左右急用钱后，剩下的别都躺在活期里"被通胀悄悄拿走"，转去大额存单、国债这类稳妥增值的产品更划算。`);
+    if(act['稳健']<std['稳健']-10) tips.push(`<b>稳当的底仓偏少</b>：组合里"压舱石"不够厚，遇到波动容易心慌。多配些大额存单、国债、低风险理财，让整体更平稳；担心利率往下走的话，优先用长期定存或年金险把收益先"锁死"。`);
+    if(!tips.length) tips.push('您的钱分得挺匀称——活钱、进攻、稳健、保障四层比例都合理。接下来只要每年稳住投入，年纪再大一点就多往"稳"和"保底"那边挪一挪，财富就能平平稳稳过利率周期。');
+  }
+  return tips.slice(0,3);
+}
+function renderAdvice(s){
+  $('pbAdvice').innerHTML = generateAdviceTips(s).map(t=>`<div class="advice-item">${t}</div>`).join('');
+}
+/* 区块7 · 页脚 */
+function renderFooter(s){
+  const M=state.params.rateCuts.length;
+  $('pbAssume').innerHTML = `通胀率 ${state.params.inflation}% · 测算年限 ${s.N} 年 · 含 ${M} 轮降息假设 · 数据仅存本地内存，刷新即销毁`;
+}
+/* renderRetireBox 已废弃：退休领取测算并入规划书区块2（核心数字卡）+ 区块4（支取曲线）+ 区块5（需求对比） */
+
+
 
 /* ============ AI ============ */
 function generateAI(silent){
@@ -1462,12 +1974,12 @@ function generateAI(silent){
   if(insV>0) tips.push(`保险资产约 ${fmt(insV)} 元在组合中承担"安全垫"角色，能在利率下行时提供确定性现金价值，建议根据家庭责任动态调整保额与年期。`);
   if(aggV>0) tips.push(`进取投资约 ${fmt(aggV)} 元承担了较高波动，建议与定期、理财、保险等稳健资产搭配，避免单一博收益。`);
   if(annual>0) tips.push(`未来 ${N} 年您计划每年新增投入约 ${fmt(annual)} 元${state.plan.growth>0?('（按每年递增 '+state.plan.growth+'%）'):''}，按设定比例分摊到各账户参与增长；这部分持续投入是资产滚雪球的重要来源，建议保持稳定节奏，并在收入提升时同步上调。`);
-  const proText=`${fmtSalutation('greet')}。根据您提供的家庭资产资料，我们做了一次全口径情景演示。在维持当前利率、且不计入通胀的情况下，您的家庭资产在 ${N} 年后预计可达 ${fmt(A)}（名义总值）；若未来进入利率下行周期、并按每年 ${infl}% 的通胀折算实际购买力，扣除影响后实际价值约为 ${fmt(B)}。两套情景的期末差额约 ${fmt(diff)}，其中名义口径累计收益约 ${fmt(gainA)}，实际口径累计收益约 ${fmt(gainB)}。整体来看，通胀与降息会共同削弱账面数字的"含金量"，建议在能力范围内尽早把一部分收益通过长期定存、国债或年金保险等方式锁定。`;
-  const plainText=`简单说：${N} 年后，按现在的利率您资产大约 ${fmt(A)}；但如果降息+通胀一起来，实际到手大约 ${fmt(B)}，中间差了 ${fmt(diff)}。一句话建议：别把钱全放在活期和短期里，趁利率还行，先把一部分"锁死"成长期收益，剩下的再去博更高回报。`;
+  const proText=`根据您提供的家庭资产资料，我们做了一次全口径情景演示。如上图，受通胀与降息影响，到第 ${N} 年您的名义口径累计收益约 ${fmt(gainA)}、实际口径累计收益约 ${fmt(gainB)}——账面数字的"含金量"已被悄悄削弱。整体来看，建议在能力范围内尽早把一部分收益通过长期定存、国债或年金保险等方式锁定。`;
+  const plainText=`简单说：如上图，降息+通胀一来，您第 ${N} 年的实际到手会比名义总值少约 ${fmt(diff)}。一句话建议：别把钱全放在活期和短期里，趁利率还行，先把一部分"锁死"成长期收益，剩下的再去博更高回报。`;
   const ver=(state.aiVersion==='young' || state.reportStyle==='plain') && state.aiVersion!=='elderly' ? 'young' : 'elderly';
   let html = ver==='elderly' ? `<h3>💡 小邮财富解读</h3><p>${proText.replace(/\n/g,'<br>')}</p>` : `<h3>💡 小邮财富解读</h3><p>${plainText.replace(/\n/g,'<br>')}</p>`;
   html+=`<h3 style="margin-top:10px;">💡 五类资产优化提示</h3><ul>${tips.map(t=>'<li>'+t+'</li>').join('')}</ul>`;
-  $('aiBox').innerHTML=html;
+  if($('aiBox')) $('aiBox').innerHTML=html;
   const coach=[];
   coach.push(`<b>【开场锚定】</b>先用大数建立画面感："${N} 年后按当前利率，您家庭资产预计约 <b>${fmt(A)}</b>；但考虑降息与每年 ${infl}% 通胀，实际购买力约 <b>${fmt(B)}</b>——中间差了约 <b>${fmt(diff)}</b>。"让客户直观感到"账面价值 ≠ 真实购买力"，再展开规划。`);
   if(hasCut) coach.push(`<b>【降息沟通】</b>用本轮已设 <b>${state.params.rateCuts.length}</b> 轮分层降息切入，强调"现在锁定 ≈ 给未来利率上保险"，引导增配可锁息的长期定存、国债 / 年金险。`);
@@ -1481,34 +1993,297 @@ function generateAI(silent){
 
 /* ============ 导出（截图当前看板） ============ */
 function makeReportCanvas(){
-  const scale=2, W=1000, s=_series, m=document.createElement('canvas').getContext('2d');
-  const titleH=70, sumH=120, gap=20, lineH=280, pieH=240, tableH=40+(s.N+1)*26, aiH=estimateAIHeight(m,W-80)+30, discH=60, pad=40;
-  const H=pad*2+titleH+gap+sumH+gap+lineH+gap+pieH+gap+tableH+gap+aiH+discH;
+  const scale=2, W=1000, s=_series;
+  const pad=40, gap=24, coverH=132;
+  const coreH=96, secTitleH=38;
+  const assetH=estAssetHeight(s);
+  const retireAtH=state.retired?0:estRetireAtHeight(s);
+  const drawNoteH=46, drawH=320;
+  const compareH=state.planIntent!=='cashflow'?150:110;
+  const adviceH=estAdviceHeight(s);
+  const footerH=86;
+  const H=pad*2+coverH+gap + coreH+gap + secTitleH+assetH+gap + (state.retired?0:secTitleH+retireAtH+gap) + secTitleH+drawNoteH+drawH+gap + secTitleH+compareH+gap + secTitleH+adviceH+gap + footerH;
   const cv=document.createElement('canvas'); cv.width=W*scale; cv.height=H*scale; const ctx=cv.getContext('2d'); ctx.scale(scale,scale);
-  ctx.fillStyle='#fff'; ctx.fillRect(0,0,W,H); let y=pad;
-  ctx.fillStyle='#004f35'; ctx.font='bold 22px system-ui'; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText('邮储财富演算报告', pad, y);
-  ctx.fillStyle='#7a8285'; ctx.font='12px system-ui'; ctx.fillText('生成时间：'+new Date().toLocaleString('zh-CN')+'　测算年限：'+s.N+'年　年度通胀：'+state.params.inflation+'%', pad, y+30);
-  y+=titleH+gap;
-  const stats=[['期末名义总值(A)',fmt(s.A[s.N])],['期末实际价值(B)',fmt(s.B[s.N])],['期末差额(A−B)',fmt(s.diff[s.N])],['累计投入本金',fmt(s.invested)]];
-  const sw=(W-pad*2-3*10)/4; stats.forEach((st,i)=>{ const x=pad+i*(sw+10); ctx.fillStyle='#e6f1ec'; rr(ctx,x,y,sw,sumH-50,10); ctx.fill(); ctx.fillStyle='#004f35'; ctx.font='12px system-ui'; ctx.fillText(st[0],x+10,y+12); ctx.fillStyle='#222'; ctx.font='bold 17px system-ui'; ctx.fillText(st[1],x+10,y+34); });
-  y+=sumH+gap;
-  ctx.fillStyle='#555'; ctx.font='13px system-ui'; ctx.textBaseline='top'; ctx.fillText('① 资产增长对比（五类资产 + 总资产 / 通胀实际）', pad, y); y+=24;
-  drawLineOn(ctx, pad, y, W-pad*2, lineH-24, s); y+=lineH-24+gap;
-  ctx.fillText('② 期末资产结构占比', pad, y); y+=24;
-  drawPieOn(ctx, pad+(W-pad*2)*0.32, y+(pieH-24)/2, Math.min((W-pad*2)*0.24,(pieH-24)*0.42), s); y+=pieH-24+gap;
-  ctx.fillText('③ 年度资产明细', pad, y); y+=24;
-  const cols=[['年度',0.8],['基准场景(A)',2],['降息+通胀(B)',2.2],['差额(A−B)',2]]; const tw=W-pad*2, wsum=cols.reduce((a,c)=>a+c[1],0), cw=cols.map(c=>c[1]/wsum*tw);
-  ctx.font='12px system-ui'; ctx.textBaseline='middle'; ctx.fillStyle='#e6f1ec'; ctx.fillRect(pad,y,tw,26);
-  let cx=pad; cols.forEach((c,i)=>{ ctx.fillStyle='#004f35'; ctx.textAlign=i===0?'left':'right'; ctx.fillText(c[0], cx+(i===0?8:cw[i]-8), y+13); cx+=cw[i]; }); y+=26;
-  for(let i=0;i<=s.N;i++){ cx=pad; const row=[s.years[i]+'年', fmt(s.A[i]), fmt(s.B[i]), fmt(s.diff[i])]; ctx.fillStyle=i%2?'#fafbfa':'#fff'; ctx.fillRect(pad,y,tw,26); row.forEach((v,i)=>{ ctx.fillStyle='#333'; ctx.textAlign=i===0?'left':'right'; ctx.fillText(v, cx+(i===0?8:cw[i]-8), y+13); cx+=cw[i]; }); y+=26; }
-  y+=gap; ctx.fillStyle='#333'; ctx.font='13px system-ui'; ctx.textAlign='left';
-  const aiParas=aiPlainText(s).split('\n');
-  aiParas.forEach((line,idx)=>{
-    if(line.startsWith('【基础优化提示】')) y+=14; // 模块间额外呼吸间距
-    y=drawWrapped(ctx, line, pad, y, W-pad*2, 19)+(idx===aiParas.length-1?4:8);
-  });
-  y+=discH-34; ctx.fillStyle='#cfd4d2'; ctx.fillRect(pad,y-6,tw,1); ctx.fillStyle='#9aa19e'; ctx.font='10.5px system-ui'; drawWrapped(ctx, DISCLAIMER, pad, y, W-pad*2, 15);
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,W,H);
+  let y=pad;
+  /* 区块1 · 封面头 */
+  const grad=ctx.createLinearGradient(0,0,W,coverH); grad.addColorStop(0,'#0e7a52'); grad.addColorStop(1,'#004f35');
+  ctx.fillStyle=grad; rr(ctx,pad,y,W-pad*2,coverH,14); ctx.fill();
+  const d=computeDecumulation(s), lf=largeFundAt(s, state.lumpYear);
+  const name=fmtSalutation(), age=state.exactAge>0?state.exactAge:'—';
+  const dateStr=new Date().toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric'});
+  ctx.fillStyle='#fff'; ctx.textAlign='left'; ctx.textBaseline='top';
+  ctx.font='bold 26px system-ui'; ctx.fillText('您的专属养老财富规划书', pad+20, y+20);
+  ctx.font='15px system-ui'; ctx.fillStyle='rgba(255,255,255,.92)'; ctx.fillText(name+'　·　'+age+'岁　·　测算日期：'+dateStr, pad+20, y+62);
+  let concl;
+  if(d.target>0 && !d.gapSurplus){ concl='每月养老缺口约 '+fmt(d.gap)+'，建议通过配置调整补足'; }
+  else { concl='您的养老现金流预计可稳定覆盖 '+d.decYears+' 年，每月合计约 '+fmt(d.totalMonthly); }
+  if(state.planIntent!=='cashflow'){ concl+='；未来大额规划预计可留存约 '+fmt(lf); }
+  ctx.font='bold 20px system-ui'; ctx.fillStyle='#ffd479'; ctx.fillText(concl, pad+20, y+88);
+  y+=coverH+gap;
+  /* 区块2 · 核心数字卡 */
+  drawCoreCardsOn(ctx, pad, y, W-pad*2, s); y+=coreH+gap;
+  /* 区块3 · 您的资产现状 */
+  ctx.fillStyle='#004f35'; ctx.font='bold 17px system-ui'; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText('您的资产现状', pad, y); y+=secTitleH;
+  y=drawAssetOn(ctx, pad, y, W-pad*2, s)+gap;
+  /* 区块3.5 · 退休时的资产情况（仅未退休显示） */
+  if(!state.retired){
+    ctx.fillStyle='#004f35'; ctx.font='bold 17px system-ui'; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText('退休时的资产情况（预计 '+state.retireAge+' 岁）', pad, y); y+=secTitleH;
+    y=drawRetireAtOn(ctx, pad, y, W-pad*2, s); y+=gap;
+  }
+  /* 区块4 · 资产走势图 */
+  ctx.fillStyle='#004f35'; ctx.font='bold 17px system-ui'; ctx.fillText('资产走势图', pad, y); y+=secTitleH;
+  ctx.font='12px system-ui'; ctx.fillStyle='#7a8285';
+  const cuts=state.params.rateCuts;
+  const noteTxt = cuts.length>0 ? ('本测算含 '+cuts.length+' 轮降息假设：'+cuts.map(c=>'第'+c.year+'年存款降'+c.depositCut+'%、理财降'+c.wealthCut+'%').join('；')+'。实际利率走势可能不同，仅供情景参考。') : '本测算未设降息情景，按当前利率维持测算。';
+  ctx.fillText(noteTxt, pad, y); y+=drawNoteH;
+  drawRetireOn(ctx, pad, y, W-pad*2, drawH, s); y+=drawH+gap;
+  /* 区块5 · 养老需求对比 */
+  ctx.fillStyle='#004f35'; ctx.font='bold 17px system-ui'; ctx.fillText('养老需求对比', pad, y); y+=secTitleH;
+  drawCompareOn(ctx, pad, y, W-pad*2, s); y+=compareH+gap;
+  /* 区块6 · 配置建议 */
+  ctx.fillStyle='#004f35'; ctx.font='bold 17px system-ui'; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText('给您的配置建议', pad, y); y+=secTitleH;
+  drawAdviceOn(ctx, pad, y, W-pad*2, s); y+=adviceH+gap;
+  /* 区块7 · 页脚 */
+  ctx.fillStyle='#9aa19e'; ctx.font='11px system-ui'; ctx.textAlign='left'; ctx.textBaseline='top';
+  ctx.fillText('通胀率 '+state.params.inflation+'% · 测算年限 '+s.N+' 年 · 含 '+cuts.length+' 轮降息假设 · 数据仅存本地内存，刷新即销毁', pad, y); y+=20;
+  ctx.fillStyle='#cfd4d2'; ctx.fillRect(pad,y-6,W-pad*2,1); y+=8;
+  ctx.fillStyle='#9aa19e'; ctx.font='10.5px system-ui'; drawWrapped(ctx, DISCLAIMER, pad, y, W-pad*2, 15);
   return cv;
+}
+/* ===== 规划书导出辅助绘制 ===== */
+function roleDesc(key){ return {cash:'应急钱，随时可取',aggressive:'有波动，占比不高',insurance:'安全垫，锁定长期利率',deposit:'压舱石，到期固定收益',wealth:'稳健增值，收益略高于定存'}[key]; }
+function estAssetHeight(s){
+  let h=46, missing=0;
+  CLASSES.forEach(c=>{
+    const v=currentClassValue(c.key);
+    if(v<=0){ missing++; return; }
+    if(!isDetailed(c.key)) h+=38; else { h+=30; let n=state.items[c.key].length + (c.key==='insurance'?state.insurancePolicies.length:0); h+=n*24; h+=6; }
+  });
+  if(missing) h+=18;
+  return h+4;
+}
+function estRetireAtHeight(s){
+  if(state.retired) return 0;
+  const R=Math.max(1, Math.min((state.retireAge||60)-(state.exactAge||0), s.N));
+  let rows=0, missing=0;
+  CLASSES.forEach(c=>{ const v=s.perClass[c.key][R]||0; if(v<=0) missing++; else rows++; });
+  return 58 + rows*36 + (missing?18:0) + 4;
+}
+function drawRetireAtOn(ctx,x,y,w,s){
+  const R=Math.max(1, Math.min((state.retireAge||60)-(state.exactAge||0), s.N));
+  const d=computeDecumulation(s);
+  const nomA=s.A[R]||0, realB=s.B[R]||0, reserveReal=d.reserveReal||0;
+  ctx.fillStyle='#f0f7f4'; rr(ctx,x,y,Math.min(w,360),36,8); ctx.fill();
+  ctx.fillStyle='#2b3330'; ctx.font='bold 15px system-ui'; ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText('预计退休时资产合计　'+fmt(nomA)+'　·　剔除通胀实际购买力 '+fmtW(realB)+' 万', x+14, y+18); y+=42;
+  ctx.fillStyle='#7a8285'; ctx.font='12px system-ui'; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText('（已预留 '+fmtW(reserveReal)+' 万备用金，可用于领取约 '+fmt(d.realPot)+'）', x+14, y); y+=22;
+  const total=CLASSES.reduce((a,c)=>a+(s.perClass[c.key][R]||0),0)||1;
+  const missing=[];
+  CLASSES.forEach(c=>{ const v=s.perClass[c.key][R]||0, pct=v/total*100;
+    if(v<=0){ missing.push(c.name); return; }
+    ctx.fillStyle=c.color; ctx.beginPath(); ctx.arc(x+6,y+9,6,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#2b3330'; ctx.font='bold 14px system-ui'; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText(c.name, x+20, y);
+    ctx.font='bold 18px system-ui'; ctx.textAlign='right'; ctx.fillText(fmt(v), x+w-90, y);
+    ctx.fillStyle='#9aa19e'; ctx.font='11px system-ui'; ctx.fillText(pct.toFixed(1)+'%', x+w-40, y);
+    y+=36;
+  });
+  if(missing.length){ ctx.fillStyle='#9aa19e'; ctx.font='11px system-ui'; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText('另有 '+missing.join('、')+' 暂未录入', x, y); y+=18; }
+  return y;
+}
+function drawCoreCardsOn(ctx,x,y,w,s){
+  const d=computeDecumulation(s);
+  const hasTarget=state.targetMonthly>0;
+  const cards=[
+    {k:'每月可补充养老金', v:fmtDash(d.monthly), bg:'#e6f1ec', kc:'#004f35', vc:'#004f35'},
+    {k:'合计每月现金流', v:fmtDash(d.totalMonthly), bg:'#ffffff', kc:'#7a8285', vc:'#2b3330'},
+    {k:'养老缺口 / 盈余', v:(!hasTarget?'—':(d.gapSurplus?'每月盈余 '+fmtDash(Math.abs(d.gap)):'每月缺口 '+fmt(d.gap))), bg:(!hasTarget?'#ffffff':(d.gapSurplus?'#e6f1ec':'#fdecea')), kc:'#7a8285', vc:(!hasTarget?'#2b3330':(d.gapSurplus?'#004f35':'#c0392b'))},
+    {k:'可用于领取的资产', v:fmtDash(d.realPot), bg:'#ffffff', kc:'#7a8285', vc:'#2b3330'}
+  ];
+  const cw=(w-3*16)/4, ch=92;
+  cards.forEach((c,i)=>{ const cx=x+i*(cw+16);
+    ctx.fillStyle=c.bg; rr(ctx,cx,y,cw,ch,12); ctx.fill(); ctx.strokeStyle='#e1e7e4'; ctx.lineWidth=1; ctx.stroke();
+    ctx.fillStyle=c.kc; ctx.font='12px system-ui'; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText(c.k, cx+14, y+14);
+    // 卡值自适应字号：单行放不下则缩小，仍放不下则拆成「前缀 + 金额」两行，避免超出格子
+    const maxValW=cw-28;
+    ctx.font='bold 24px system-ui';
+    if(ctx.measureText(c.v).width<=maxValW){
+      ctx.fillStyle=c.vc; ctx.fillText(c.v, cx+14, y+40);
+    } else {
+      ctx.font='bold 20px system-ui';
+      if(ctx.measureText(c.v).width<=maxValW){
+        ctx.fillStyle=c.vc; ctx.fillText(c.v, cx+14, y+42);
+      } else {
+        const sp=c.v.indexOf(' ');
+        ctx.font='bold 18px system-ui'; ctx.fillStyle=c.vc;
+        ctx.fillText(c.v.slice(0,sp), cx+14, y+38);
+        ctx.fillText(c.v.slice(sp+1), cx+14, y+62);
+      }
+    }
+  });
+}
+function drawAssetOn(ctx,x,y,w,s){
+  const total=CLASSES.reduce((a,c)=>a+currentClassValue(c.key),0)||1;
+  ctx.fillStyle='#f0f7f4'; rr(ctx,x,y,Math.min(w,260),36,8); ctx.fill();
+  ctx.fillStyle='#2b3330'; ctx.font='bold 15px system-ui'; ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText('资产合计　'+fmt(total), x+14, y+18); y+=46;
+  const missing=[];
+  CLASSES.forEach(c=>{
+    const v=currentClassValue(c.key), pct=(v/total*100);
+    if(v<=0){ missing.push(c.name); return; }
+    if(!isDetailed(c.key)){
+      y=drawAssetRowOn(ctx,x,y,w,c.color,c.name,roleDesc(c.key),fmt(v),pct.toFixed(1)+'%');
+    } else {
+      ctx.fillStyle=c.color; ctx.beginPath(); ctx.arc(x+6,y+9,6,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='#2b3330'; ctx.font='bold 14px system-ui'; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText(c.name, x+20, y);
+      ctx.font='bold 15px system-ui'; ctx.textAlign='right'; ctx.fillText(fmt(v), x+w-90, y);
+      ctx.fillStyle='#9aa19e'; ctx.font='11px system-ui'; ctx.fillText(pct.toFixed(1)+'%', x+w-40, y);
+      y+=28;
+      state.items[c.key].forEach(it=>{ y=drawAssetItem(ctx,x+22,y,w-22,it.name||'(未命名)',fmt(it.principal),it.rate+'% · '+it.startYear+'年起'); });
+      if(c.key==='insurance'){ state.insurancePolicies.forEach(p=>{ y=drawAssetItem(ctx,x+22,y,w-22,(p.name||'(未命名)')+' · '+(p.type||'保险'),fmt(insDisplayValue(p)),'按计划书现金价值测算'); }); }
+      y+=6;
+    }
+  });
+  if(missing.length){ ctx.fillStyle='#9aa19e'; ctx.font='11px system-ui'; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText('另有 '+missing.join('、')+' 暂未录入', x, y); y+=18; }
+  return y;
+}
+function drawAssetRowOn(ctx,x,y,w,color,name,role,amt,pct){
+  ctx.fillStyle=color; ctx.beginPath(); ctx.arc(x+6,y+9,6,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#2b3330'; ctx.font='bold 14px system-ui'; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText(name, x+20, y);
+  ctx.fillStyle='#7a8285'; ctx.font='12px system-ui'; ctx.fillText(role, x+20, y+17);
+  ctx.fillStyle='#2b3330'; ctx.font='bold 18px system-ui'; ctx.textAlign='right'; ctx.fillText(amt, x+w-90, y);
+  ctx.fillStyle='#9aa19e'; ctx.font='11px system-ui'; ctx.fillText(pct, x+w-40, y);
+  return y+36;
+}
+function drawAssetItem(ctx,x,y,w,name,amt,meta){
+  ctx.fillStyle='#9aa19e'; ctx.font='13px system-ui'; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText('└', x, y);
+  ctx.fillStyle='#2b3330'; ctx.font='13px system-ui'; ctx.fillText(name, x+16, y);
+  ctx.font='bold 13px system-ui'; ctx.textAlign='right'; ctx.fillText(amt, x+w-90, y);
+  ctx.fillStyle='#9aa19e'; ctx.font='11px system-ui'; ctx.fillText(meta, x+w-40, y);
+  return y+24;
+}
+function drawRetireOn(ctx,x,y,w,h,s){
+  const d=computeDecumulation(s);
+  const decYears=d.decYears, infl=state.params.inflation/100;
+  const R = state.retired ? 0 : Math.max(0, Math.min((state.retireAge||60)-(state.exactAge||0), s.N));
+  const endYear = R + decYears;
+  const reserve = d.reserve || 0;   // 名义预留备用金（不参与领取）
+  // 未来大额支出：按客户规划时点（第 lumpYear2 年）扣除；若规划在退休后，则在领取期对应年份扣除
+  const lumpTarget2 = (state.lumpTarget && state.planIntent!=='cashflow') ? Math.max(0, Number(state.lumpTarget)) : 0;
+  const lumpYear2 = lumpTarget2>0 ? Math.max(0, Math.min(Number(state.lumpYear)||0, endYear)) : -1;
+  // 为了直观呈现扣款断崖，在 lumpYear2/R 处插入「高点→低点」两个相邻点
+  const pts=[]; const nominalAtT={};
+  let lumpDeduction=0;
+  for(let t=0; t<R; t++){
+    const high = s.A[t] - lumpDeduction;
+    pts.push({t, v:high, real:high/Math.pow(1+infl, t)}); nominalAtT[t]=high;
+    if(t===lumpYear2 && lumpYear2<R){
+      lumpDeduction += lumpTarget2;
+      const low = s.A[t] - lumpDeduction;
+      pts.push({t, v:low, real:low/Math.pow(1+infl, t)}); nominalAtT[t+'_low']=low;
+    }
+  }
+  const retireHigh = s.A[R] - lumpDeduction;
+  pts.push({t:R, v:retireHigh, real:retireHigh/Math.pow(1+infl, R)}); nominalAtT[R]=retireHigh;
+  let bal = Math.max(0, retireHigh - (lumpYear2===R?lumpTarget2:0) - reserve); let depletedAt=-1;
+  pts.push({t:R, v:bal, real:bal/Math.pow(1+infl, R)}); nominalAtT[R+'_low']=bal;
+  for(let k=1; k<=decYears; k++){
+    const t=R+k;
+    if(t===lumpYear2 && lumpYear2>R){
+      bal = Math.max(0, bal - lumpTarget2);
+      pts.push({t, v:bal, real:bal/Math.pow(1+infl, t)}); nominalAtT[t+'_low']=bal;
+    }
+    const yearlyDraw = d.monthly*12*Math.pow(1+infl, k);
+    bal = bal*(1+d.eff) - yearlyDraw;
+    if(bal<0 && depletedAt<0) depletedAt=t;
+    pts.push({t, v:bal, real:bal/Math.pow(1+infl, t)}); nominalAtT[t]=bal;
+  }
+  ctx.save(); ctx.translate(x,y);
+  const maxV=Math.max(...pts.map(p=>p.v).filter(v=>v>0), ...pts.map(p=>p.real).filter(v=>v>0), 1)*1.12, minV=Math.min(0, ...pts.map(p=>p.v), ...pts.map(p=>p.real));
+  const padL=64,padR=14,padT=34,padB=42, pw=w-padL-padR, ph=h-padT-padB;
+  const Y=v=>padT+ph-(v-minV)/(maxV-minV)*ph, X=t=>padL+(endYear===0?0:(t/endYear)*pw);
+  ctx.font='11px system-ui,sans-serif'; ctx.strokeStyle='#e8eceb'; ctx.fillStyle='#9aa19e'; ctx.lineWidth=1; ctx.textAlign='right'; ctx.textBaseline='middle';
+  for(let i=0;i<=5;i++){ const val=minV+(maxV-minV)*i/5, gy=Y(val); ctx.beginPath(); ctx.moveTo(padL,gy); ctx.lineTo(padL+pw,gy); ctx.stroke(); ctx.fillText(fmtW(val), padL-7, gy); }
+  if(minV<0){ const gz=Y(0); ctx.save(); ctx.strokeStyle='#d9534f'; ctx.setLineDash([5,4]); ctx.beginPath(); ctx.moveTo(padL,gz); ctx.lineTo(padL+pw,gz); ctx.stroke(); ctx.restore(); }
+  if(R>=0 && R<endYear){
+    const rx=X(R);
+    ctx.save(); ctx.strokeStyle='#c5891f'; ctx.setLineDash([4,3]); ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(rx,padT); ctx.lineTo(rx,padT+ph); ctx.stroke(); ctx.restore();
+    ctx.fillStyle='#c5891f'; ctx.font='11px system-ui'; ctx.textAlign='center'; ctx.textBaseline='bottom';
+    ctx.fillText(state.retired?'开始领取':'预计'+state.retireAge+'岁退休', rx, padT-4);
+    if(d.reserve>0){
+      ctx.font='10.5px system-ui'; ctx.textBaseline='top';
+      if(R>0){
+        ctx.textAlign='center';
+        ctx.fillText('扣掉预留金 '+fmtW(d.reserve), rx, padT+ph+20);
+      } else {
+        ctx.textAlign='left';
+        ctx.fillText('扣掉预留金 '+fmtW(d.reserve), rx+4, padT+ph+20);
+      }
+    }
+  }
+  if(lumpYear2>=0 && lumpYear2<endYear){
+    const lx=X(lumpYear2);
+    ctx.save(); ctx.strokeStyle='#7c4dff'; ctx.setLineDash([3,3]); ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(lx,padT); ctx.lineTo(lx,padT+ph); ctx.stroke(); ctx.restore();
+    ctx.fillStyle='#7c4dff'; ctx.font='10.5px system-ui'; ctx.textAlign='center'; ctx.textBaseline='top';
+    const lumpLblY2 = (R>=0 && lumpYear2===R) ? padT+ph+36 : padT+ph+20;
+    ctx.fillText('大额支出 '+fmtW(lumpTarget2), lx, lumpLblY2);
+  }
+  const step=endYear>30?10:5;
+  const xt=[0];
+  for(let t=step; t<endYear; t+=step) xt.push(t);
+  xt.push(endYear);
+  if(R>0 && !xt.includes(R)) xt.push(R);
+  if(lumpYear2>=0 && !xt.includes(lumpYear2)) xt.push(lumpYear2);
+  xt.sort((a,b)=>a-b);
+  ctx.textAlign='center'; ctx.textBaseline='top'; ctx.fillStyle='#9aa19e';
+  xt.forEach(t=>{
+    let label='第'+t+'年';
+    if(t===0) label='测试当年';
+    else if(t===R) label=state.retireAge+'岁';
+    else if(t===lumpYear2) label='大额支出';
+    ctx.fillText(label, X(t), padT+ph+6);
+  });
+  const plotP=(pts,color,width,dash)=>{ ctx.strokeStyle=color; ctx.lineWidth=width; ctx.setLineDash(dash||[]); ctx.beginPath(); pts.forEach((p,i)=>{ const gx=X(p.t), gy=Y(p.v); i===0?ctx.moveTo(gx,gy):ctx.lineTo(gx,gy); }); ctx.stroke(); ctx.setLineDash([]); };
+  plotP(pts,'#006341',3); plotP(pts.map(p=>({t:p.t,v:p.real})),'#999999',2,[6,4]);
+  ctx.fillStyle='#004f35'; ctx.font='11px system-ui,sans-serif'; ctx.textAlign='left'; ctx.textBaseline='bottom';
+  ctx.fillText((R===0?'当前可领 ':'当前资产 ')+fmtW(pts[0].v), padL+4, Y(pts[0].v)-4);
+  if(depletedAt>=0){ ctx.fillStyle='#d9534f'; ctx.textAlign='right'; ctx.textBaseline='top'; ctx.fillText('第'+depletedAt+'年耗尽', X(depletedAt), Y(nominalAtT[depletedAt])-4); }
+  else { ctx.fillStyle='#666'; ctx.textAlign='right'; ctx.textBaseline='bottom'; ctx.fillText('第'+endYear+'年 '+fmtW(nominalAtT[endYear]), padL+pw-4, Y(nominalAtT[endYear])-4); }
+  const lg=[['#006341','总资产',false],['#999999','总资产(实际购买力)',true]]; let lx=padL, ly=12;
+  ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.font='11px system-ui';
+  lg.forEach(([c,t,ds])=>{ ctx.strokeStyle=c; ctx.lineWidth=ds?2:3; ctx.setLineDash(ds?[4,3]:[]); ctx.beginPath(); ctx.moveTo(lx,ly); ctx.lineTo(lx+18,ly); ctx.stroke(); ctx.setLineDash([]); ctx.fillStyle='#666'; ctx.fillText(t,lx+22,ly); lx+=22+ctx.measureText(t).width+16; });
+  ctx.restore();
+}
+function drawCompareOn(ctx,x,y,w,s){
+  const d=computeDecumulation(s);
+  const colW=(w-12)/2, ch=state.planIntent!=='cashflow'?150:110;
+  drawCompareCard(ctx,x,y,colW,ch,fmt(d.target||0),'每月生活开销',fmt(d.totalMonthly),'每月到账', d.target>0?(d.gapSurplus?'每月盈余 '+fmt(Math.abs(d.gap))+'，规划从容':'每月还差 '+fmt(d.gap)+'，建议补足'):'填写期望月开销可看缺口');
+  if(state.planIntent!=='cashflow'){ const lf=largeFundAt(s,state.lumpYear); const rate=state.lumpTarget>0?Math.round(lf/state.lumpTarget*100):0; const rfoot=lf>=state.lumpTarget?'目标可达成':'还差 '+fmt(state.lumpTarget-lf)+'，可提升稳健资产占比'; drawCompareCard(ctx,x+colW+12,y,colW,ch,fmt(state.lumpTarget||0),'大额规划目标',fmt(lf),'预计可留存','达成率 '+rate+'% · '+rfoot); }
+}
+function drawCompareCard(ctx,x,y,w,h,num1,lab1,num2,lab2,foot){
+  ctx.fillStyle='#fff'; ctx.strokeStyle='#e1e7e4'; ctx.lineWidth=1; rr(ctx,x,y,w,h,10); ctx.fill(); ctx.stroke();
+  const cx=x+w/2; ctx.textAlign='center'; ctx.textBaseline='top';
+  ctx.fillStyle='#222'; ctx.font='bold 22px system-ui'; ctx.fillText(num1, cx, y+12);
+  ctx.fillStyle='#7a8285'; ctx.font='12px system-ui'; ctx.fillText(lab1, cx, y+38);
+  ctx.fillStyle='#004f35'; ctx.font='bold 13px system-ui'; ctx.fillText('vs', cx, y+56);
+  ctx.fillStyle='#222'; ctx.font='bold 22px system-ui'; ctx.fillText(num2, cx, y+72);
+  ctx.fillStyle='#7a8285'; ctx.font='12px system-ui'; ctx.fillText(lab2, cx, y+98);
+  ctx.fillStyle='#7a8285'; ctx.font='12px system-ui'; ctx.fillText(foot, cx, y+h-18);
+}
+function drawAdviceOn(ctx,x,y,w,s){
+  const tips=generateAdviceTips(s); ctx.textAlign='left'; ctx.textBaseline='top';
+  const lh=22, gap=10, maxW=w-18;
+  tips.forEach(t=>{ const plain=t.replace(/<\/?b>/g,'');
+    ctx.fillStyle='#0f6e56'; ctx.font='bold 14px system-ui'; ctx.fillText('•', x, y);
+    ctx.fillStyle='#333'; ctx.font='13.5px system-ui';
+    y = drawWrapped(ctx, plain, x+18, y, maxW, lh) + gap;
+  });
+  return y;
+}
+function estAdviceHeight(s){
+  const tips=generateAdviceTips(s); const lh=22, gap=10, maxW=1000-40*2-18;
+  const m=document.createElement('canvas').getContext('2d'); m.font='13.5px system-ui';
+  let adv=0;
+  tips.forEach(t=>{ const plain=t.replace(/<\/?b>/g,''); let lines=1, line=''; for(const ch of plain){ if(m.measureText(line+ch).width>maxW && line){ lines++; line=ch; } else line+=ch; } adv+=(lines-1)*lh+gap; });
+  return adv;
 }
 function rr(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
 function estimateAIHeight(m,W){
@@ -1551,51 +2326,139 @@ function buildPDF(jb,pxW,pxH){ const scale=595/pxW, dispW=595, dispH=Math.round(
   const xr=len; ps("xref\n0 6\n0000000000 65535 f \n"); for(let i=1;i<=5;i++) ps(String(off[i]).padStart(10,'0')+' 00000 n \n'); ps("trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n"+xr+"\n%%EOF"); return ch; }
 
 /* ============ 向导：步骤1 客户档案 ============ */
-const questAnswers={};
+const questAnswers={ occ:'biz', risk:'steady', goal:'retire', retired:'no', retireAge:'60', decYears:'30', planIntent:'both', lumpYear:'20' };
 document.querySelectorAll('#step0 .opt').forEach(o=>{
   o.onclick=()=>{ const q=o.parentElement.dataset.q; questAnswers[q]=o.dataset.v;
     o.parentElement.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel')); o.classList.add('sel'); };
 });
+document.querySelectorAll('[data-q="retired"] .opt').forEach(o=>{ o.addEventListener('click',()=>{ const yes=o.dataset.v==='yes'; if($('qNotRetired')) $('qNotRetired').style.display=yes?'none':'block'; if($('qPensionRow')) $('qPensionRow').style.display=yes?'block':'none'; if($('qFuturePensionRow')) $('qFuturePensionRow').style.display=yes?'none':'block'; if($('qOccRow')) $('qOccRow').style.display=yes?'none':'block'; }); });
+document.querySelectorAll('[data-q="planIntent"] .opt').forEach(o=>{ o.addEventListener('click',()=>{ const v=o.dataset.v; if($('qLumpRow')) $('qLumpRow').style.display=(v!=='cashflow')?'block':'none'; }); });
+/* 预留备用金 / 未来大额目标：档位按钮直接写入数字框；onPick 可选实时同步 state */
+function bindChipsToInput(q, inputId, onPick){
+  document.querySelectorAll(`[data-q="${q}"] .opt`).forEach(o=>{
+    o.addEventListener('click',()=>{
+      questAnswers[q]=o.dataset.v; // 同步答案册
+      document.querySelectorAll(`[data-q="${q}"] .opt`).forEach(x=>x.classList.remove('sel')); o.classList.add('sel');
+      const el=$(inputId); if(el) el.value=o.dataset.v;
+      if(onPick) onPick(o.dataset.v);
+    });
+  });
+}
+bindChipsToInput('reserve','qReserve');
+bindChipsToInput('lumpTarget','qLumpTarget', v=>{ state.lumpTarget=Math.max(0,num(v)); if(state.planIntent!=='cashflow'){ render(); renderParamChips(); } });
+bindChipsToInput('lumpYear', null, v=>{ state.lumpYear=Math.max(1,Number(v)||20); if(state.planIntent!=='cashflow'){ render(); renderParamChips(); } });
+if($('qLumpTarget')) $('qLumpTarget').addEventListener('input',()=>{ state.lumpTarget=Math.max(0,num($('qLumpTarget').value)); if(state.planIntent!=='cashflow'){ render(); renderParamChips(); } });
+/* 实时预览：期望每月开销 → 每月可到手 / 缺口 */
+if($('qTargetMonthly')) $('qTargetMonthly').addEventListener('input',()=>{ const pe=$('qTargetPreview'); if(!_series){ pe.style.display='none'; return; } const d=computeDecumulation(_series); const t=Math.max(0,num($('qTargetMonthly').value)); const diff=t-d.totalMonthly; pe.style.display='block'; pe.innerHTML = diff<=0 ? `按当前配置，预计每月可到手约 <b>${fmt(d.totalMonthly)}</b>，对比期望 ${fmt(t)}/月，每月约有 <b>${fmt(-diff)}</b> 盈余。` : `按当前配置，预计每月可到手约 <b>${fmt(d.totalMonthly)}</b>，对比期望 ${fmt(t)}/月，每月尚有约 <b>${fmt(diff)}</b> 缺口。`; });
+/* 银发经济版：首屏即按退休 / 养老客群预选问卷 */
+document.querySelectorAll('#step0 .opt').forEach(o=>{ const q=o.parentElement.dataset.q; o.classList.toggle('sel', questAnswers[q]===o.dataset.v); });
+if($('qReserve')){ const rv=String(state.reserveAmount); document.querySelectorAll('[data-q="reserve"] .opt').forEach(x=>x.classList.toggle('sel', x.dataset.v===rv)); }
+if($('qLumpRow')){
+  const ly=String(state.lumpYear); document.querySelectorAll('[data-q="lumpYear"] .opt').forEach(x=>x.classList.toggle('sel', x.dataset.v===ly));
+  const lt=String(state.lumpTarget); document.querySelectorAll('[data-q="lumpTarget"] .opt').forEach(x=>x.classList.toggle('sel', x.dataset.v===lt));
+}
+$('qName').value=state.profile.name||'王';
+$('qAge').value=state.exactAge||'';
+$('qPension').value=state.pensionPerMonth||0;
+if($('qFuturePension')) $('qFuturePension').value=state.futurePensionPerMonth||0;
+$('qReserve').value=state.reserveAmount||0;
+if($('qTargetMonthly')) $('qTargetMonthly').value=state.targetMonthly||0;
+if($('qLumpTarget')) $('qLumpTarget').value=state.lumpTarget||0;
+if($('qPensionAdj')) $('qPensionAdj').value=state.pensionType||'infl';
+if($('qNotRetired')) $('qNotRetired').style.display=(questAnswers.retired==='yes')?'none':'block';
+if($('qPensionRow')) $('qPensionRow').style.display=(questAnswers.retired==='yes')?'block':'none';
+if($('qFuturePensionRow')) $('qFuturePensionRow').style.display=(questAnswers.retired==='yes')?'none':'block';
+if($('qOccRow')) $('qOccRow').style.display=(questAnswers.retired==='yes')?'none':'block';
+if($('qLumpRow')) $('qLumpRow').style.display=(state.planIntent!=='cashflow')?'block':'none';
+document.querySelectorAll('input[name=gender]').forEach(r=>{ r.checked=(r.value===state.profile.gender); });
 function submitStep0(){
   const sel={};
   document.querySelectorAll('#step0 .opt-grid').forEach(g=>{ const v=g.querySelector('.opt.sel'); if(v) sel[g.dataset.q]=v.dataset.v; });
-  const prevGoal=state.profile.goal;
+  state.profile.goal='retire';
   Object.assign(state.profile, sel);
-  if(prevGoal && state.profile.goal!==prevGoal) state._goalTargetManual=false;
+  state.planIntent = sel.planIntent || 'cashflow';
+  state.retired = (sel.retired==='yes');
+  state.retireAge = Number(sel.retireAge || '60');
+  state.decYears = Math.max(5, Number(sel.decYears || '30') || 30);
+  state.exactAge = num($('qAge') ? $('qAge').value : 0);
+  state.reserveAmount = Math.max(0, num($('qReserve') ? $('qReserve').value : 0) || 0);
+  state.targetMonthly = Math.max(0, num($('qTargetMonthly') ? $('qTargetMonthly').value : 0) || 0);
+  state.profile.occ = state.retired ? 'retire' : (sel.occ || 'salary');
+  if(state.retired){
+    state.pensionPerMonth = Math.max(0, num($('qPension') ? $('qPension').value : 0) || 0);
+    state.futurePensionPerMonth = 0;
+    state.pensionType = (($('qPensionAdj') && $('qPensionAdj').value) || 'infl');
+  } else {
+    state.pensionPerMonth = 0;
+    state.futurePensionPerMonth = Math.max(0, num($('qFuturePension') ? $('qFuturePension').value : 0) || 0);
+    state.pensionType='infl';
+  }
+  state.lumpTarget = (state.planIntent!=='cashflow') ? Math.max(0, num($('qLumpTarget') ? $('qLumpTarget').value : 0) || 0) : 0;
+  const lumpSel = document.querySelector('[data-q="lumpYear"] .opt.sel');
+  state.lumpYear = Math.max(1, Number((lumpSel && lumpSel.dataset.v) || questAnswers.lumpYear || '20') || 20);
+  state.profile.age = state.exactAge>0 ? (state.exactAge+'岁') : '';
   state.profile.name=($('qName').value||'').trim();
   const g=document.querySelector('input[name=gender]:checked'); state.profile.gender=g?g.value:'';
-  if(!state.profile.age||!state.profile.occ||!state.profile.risk||!state.profile.goal){ toast('请先完成问卷四项选择'); return; }
+  if(state.exactAge<=0){ toast('请先填写确切年龄'); return; }
+  // 小校验：未退休但退休年龄已≤当前年龄，自动按"已退休·立即领取"口径
+  if(!state.retired && state.retireAge <= state.exactAge){ state.retired=true; state.profile.occ='retire'; state.pensionPerMonth=state.futurePensionPerMonth||0; state.futurePensionPerMonth=0; toast('您填写的退休年龄已不大于当前年龄，已按"已退休·立即领取"口径测算'); }
+  syncQ1Displays();
+  if(!state.profile.risk){ toast('请先完成问卷选择'); return; }
   deriveParams(); setPlanMode(true); renderSimple(); showStep(1); toast('已按当前资产占比生成测算口径');
+}
+function syncQ1Displays(){
+  if($('qNotRetired')) $('qNotRetired').style.display=state.retired?'none':'block';
+  if($('qPensionRow')) $('qPensionRow').style.display=state.retired?'block':'none';
+  if($('qFuturePensionRow')) $('qFuturePensionRow').style.display=state.retired?'none':'block';
+  if($('qOccRow')) $('qOccRow').style.display=state.retired?'none':'block';
+  if($('qLumpRow')) $('qLumpRow').style.display=(state.planIntent!=='cashflow')?'block':'none';
+  renderPlanCardLabels();
+}
+/* 第二步卡片标题/说明随「是否已退休」切换 */
+function renderPlanCardLabels(){
+  const t=$('planCardTitle'), h=$('planCardHint'); if(!t||!h) return;
+  if(state.retired){
+    t.innerHTML='📥 养老金结余再投入 <span class="tag">让长远测算更真实</span>';
+    h.textContent='每月养老金扣除生活开销后，预计每年结余多少，按以下比例分配到各类资产。没有结余则留空。';
+  } else {
+    t.innerHTML='📈 未来投入规划 <span class="tag">让长远测算更真实</span>';
+    h.textContent='填写您未来每年计划新增的投入，按比例分摊到各账户参与增长。';
+  }
 }
 $('btnQuest').onclick=()=>{ // 重填：回到步骤1并回显已选
   document.querySelectorAll('#step0 .opt').forEach(o=>{ const q=o.parentElement.dataset.q; o.classList.toggle('sel', questAnswers[q]===o.dataset.v); });
-  $('qName').value=state.profile.name||'邮';
+  if($('qLumpRow')) document.querySelectorAll('[data-q="lumpYear"] .opt').forEach(x=>x.classList.toggle('sel', x.dataset.v===String(state.lumpYear)));
+  if($('qReserve')){ const rv=String(state.reserveAmount); document.querySelectorAll('[data-q="reserve"] .opt').forEach(x=>x.classList.toggle('sel', x.dataset.v===rv)); }
+  $('qName').value=state.profile.name||'王';
+  $('qAge').value=state.exactAge||'';
+  $('qPension').value=state.pensionPerMonth||0;
+  if($('qFuturePension')) $('qFuturePension').value=state.futurePensionPerMonth||0;
+  $('qReserve').value=state.reserveAmount||0;
+  if($('qTargetMonthly')) $('qTargetMonthly').value=state.targetMonthly||0;
+  if($('qLumpTarget')) $('qLumpTarget').value=state.lumpTarget||0;
+  if($('qPensionAdj')) $('qPensionAdj').value=state.pensionType||'infl';
+  syncQ1Displays();
   document.querySelectorAll('input[name=gender]').forEach(r=>{ r.checked=(r.value===state.profile.gender); });
   showStep(0);
 };
 
-/* 详细定制：内联展开 */
-$('btnDetail').onclick=()=>{ renderDetailSections(); $('detailInline').classList.add('open'); };
-$('dClose').onclick=()=> $('detailInline').classList.remove('open');
+/* 详细录入（默认展开）/ 快速估算 / 更多设置：折叠切换 */
+function toggleInline(toggleId, inlineId){
+  const t=$(toggleId), s=$(inlineId);
+  if(!t || !s) return;
+  const isOpen=s.classList.toggle('open');
+  t.textContent = isOpen ? t.textContent.replace('▾','▴') : t.textContent.replace('▴','▾');
+}
+$('quickToggle') && ($('quickToggle').onclick=()=> toggleInline('quickToggle','quickInline'));
+$('moreToggle') && ($('moreToggle').onclick=()=> toggleInline('moreToggle','moreSec'));
 
 /* 未来投入规划 */
 if($('planAnnual')) $('planAnnual').oninput=()=>{ state.plan.annual=Math.max(0,num($('planAnnual').value)); renderParamChips(); render(); };
 $('btnPlanStd').onclick=()=>setPlanMode(false);
 $('btnPlanCur').onclick=()=>setPlanMode(true);
 
-/* 高级参数：内联展开 */
-function openAdv(){ $('p_years').value=state.params.years; $('p_infl').value=state.params.inflation; $('p_cash').value=state.params.retCash; $('p_agg').value=state.params.retAgg; $('p_growth').value=state.plan.growth; renderGoalTargetInput(); renderCuts(); $('advInline').classList.add('open'); }
-function renderGoalTargetInput(){
-  const g=state.profile.goal, fd=$('goalTargetField'), lb=$('goalTargetLabel'), inp=$('p_goalTarget');
-  if(!fd||!lb||!inp) return;
-  const hasTarget = g==='edu' || g==='retire';
-  fd.style.display = hasTarget ? 'block' : 'none';
-  if(!hasTarget) return;
-  lb.textContent = (GOAL_LABELS[g] || '财富目标') + '金额(元)';
-  inp.value = state.params.goalTarget || state.params.goalTarget===0 ? state.params.goalTarget : '';
-}
-$('btnAdv').onclick=openAdv;
-$('aClose').onclick=()=>{ state.params.years=parseInt($('p_years').value,10); state.params.inflation=num($('p_infl').value); state.params.retCash=num($('p_cash').value); state.params.retAgg=num($('p_agg').value); state.plan.growth=num($('p_growth').value); const gt=num($('p_goalTarget').value); if($('goalTargetField').style.display!=='none'){ state.params.goalTarget=Math.max(0,gt); state._goalTargetManual=true; } $('advInline').classList.remove('open'); render(); renderSimple(); toast('参数已应用'); };
+/* 高级参数：常驻显示（advInline 默认 open） */
+$('aClose').onclick=()=>{ state.params.inflation=num($('p_infl').value); state.params.retCash=num($('p_cash').value); state.params.retAgg=num($('p_agg').value); state.plan.growth=num($('p_growth').value); render(); renderSimple(); toast('参数已应用'); };
 $('btnAddCut').onclick=()=>{ state.params.rateCuts.push({year:3,depositCut:0.25,wealthCut:0.5}); renderCuts(); };
 $('cutList').addEventListener('input', e=>{ const yi=e.target.dataset.cutYear,di=e.target.dataset.cutDep,wi=e.target.dataset.cutWea;
   if(yi!==undefined){ state.params.rateCuts[+yi].year=Math.max(1,Math.round(num(e.target.value))); }
@@ -1612,29 +2475,67 @@ document.querySelectorAll('#styleGrid .style-card').forEach(c=>{
 });
 
 /* AI */
-$('btnAI').onclick=()=>generateAI(false);
-function switchAIVer(v){ state.aiVersion=v; document.querySelectorAll('.ver-btn').forEach(b=>b.classList.toggle('active',b.dataset.ver===v)); if($('aiBox').querySelector('h3')) generateAI(); }
-$('verElderly').onclick=()=>switchAIVer('elderly'); $('verYoung').onclick=()=>switchAIVer('young');
+function switchAIVer(v){ state.aiVersion=v; document.querySelectorAll('.ver-btn').forEach(b=>b.classList.toggle('active',b.dataset.ver===v)); generateAI(true); }
+/* AI 切换按钮（专业版/通俗版）已随看板改版移除：默认通俗版，经理话术内仍可生成专业版 */
 
 /* 清空 */
-$('btnClear').onclick=()=>{ CLASSES.forEach(c=>state.items[c.key]=[]); state.insurancePolicies=[]; state.pendingPlan=null; state.params.rateCuts=[]; CLASSES.forEach(c=>state.plan.ratios[c]=0); state.plan.annual=0; state.plan.growth=0; if($('planAnnual'))$('planAnnual').value=''; renderCuts(); renderPlanRatios(); renderSimple(); renderDetailSections(); render(); $('aiBox').innerHTML='<p style="color:var(--sub);font-size:12.5px;">点击「生成财富解读」按钮，基于当前演算数据生成双版本话术与优化建议。</p>'; $('coachBody').innerHTML='<p class="coach-hint">点击「生成财富解读」后，这里会给出针对当前演算结果的讲解思路与优化建议。</p>'; showStep(0); toast('已全部清空，内存数据已销毁'); };
+$('btnClear').onclick=()=>{ CLASSES.forEach(c=>state.items[c.key]=[]); state.insurancePolicies=[]; state.pendingPlan=null; state.params.rateCuts=[]; CLASSES.forEach(c=>state.plan.ratios[c]=0); state.plan.annual=0; state.plan.growth=0; if($('planAnnual'))$('planAnnual').value=''; renderCuts(); renderPlanRatios(); renderSimple(); renderDetailSections(); render(); if($('aiBox')) $('aiBox').innerHTML='<p style="color:var(--sub);font-size:12.5px;">点击「生成财富解读」按钮，基于当前演算数据生成双版本话术与优化建议。</p>'; $('coachBody').innerHTML='<p class="coach-hint">点击「生成财富解读」后，这里会给出针对当前演算结果的讲解思路与优化建议。</p>'; state.exactAge=40; state.retired=false; state.retireAge=60; state.decYears=30; state.pensionPerMonth=0; state.futurePensionPerMonth=3500; state.pensionType='infl'; state.reserveAmount=100000; state.targetMonthly=6000; state.planIntent='both'; state.lumpTarget=100000; state.lumpYear=10; state.profile={age:'40岁',occ:'biz',risk:'steady',goal:'retire',name:'李',gender:'m'}; if($('qAge'))$('qAge').value=40; if($('qPension'))$('qPension').value=0; if($('qFuturePension'))$('qFuturePension').value=3500; if($('qReserve'))$('qReserve').value=100000; if($('qTargetMonthly'))$('qTargetMonthly').value=6000; if($('qLumpTarget'))$('qLumpTarget').value=100000; if($('qPensionAdj'))$('qPensionAdj').value='infl'; if($('qTargetPreview'))$('qTargetPreview').style.display='none'; Object.assign(questAnswers,{occ:'biz',risk:'steady',goal:'retire',retired:'no',retireAge:'60',decYears:'30',planIntent:'both',lumpYear:'10'}); document.querySelectorAll('#step0 .opt').forEach(o=>{ const q=o.parentElement.dataset.q; o.classList.toggle('sel', questAnswers[q]===o.dataset.v); }); if($('qReserve')){ const rv=String(state.reserveAmount); document.querySelectorAll('[data-q="reserve"] .opt').forEach(x=>x.classList.toggle('sel', x.dataset.v===rv)); } if($('qLumpRow')) document.querySelectorAll('[data-q="lumpYear"] .opt').forEach(x=>x.classList.toggle('sel', x.dataset.v===String(state.lumpYear))); syncQ1Displays(); showStep(0); toast('已全部清空，内存数据已销毁'); };
 $('btnExportImg').onclick=exportImage; $('btnExportPdf').onclick=exportPDF;
 $('btnSample').onclick=loadSample;
-let _rz; window.addEventListener('resize',()=>{ clearTimeout(_rz); _rz=setTimeout(()=>{ if(_series) renderCharts(_series); },150); });
+let _rz; window.addEventListener('resize',()=>{ clearTimeout(_rz); _rz=setTimeout(()=>{ if(_series && $('retireCanvas')) drawRetireDrawdown(_series); },150); });
+
+/* 客户模板一键载入 */
+function applyTemplate(t){
+  const mk=(name,principal,rate)=>({id:uid(),name,principal,rate,startYear:2026});
+  let items, annual, planIntent='cashflow', lumpTarget=0, lumpYear=20;
+  if(t==='steady'){
+    items={ cash:[mk('活期',100000,0.2)], deposit:[mk('三年定存',400000,1.55),mk('储蓄国债',250000,2.0)], wealth:[mk('稳健理财',150000,2.05)], insurance:[mk('年金/增额寿险',200000,2.5)], aggressive:[] };
+    annual=20000; planIntent='cashflow';
+  } else if(t==='aggr'){
+    items={ cash:[mk('活期',80000,0.2)], deposit:[mk('三年定存',200000,1.55)], wealth:[mk('稳健理财',200000,2.05)], insurance:[mk('年金',100000,2.5)], aggressive:[mk('股票基金',150000,6)] };
+    annual=30000; planIntent='both';
+  } else {
+    items={ cash:[mk('活期',200000,0.2)], deposit:[mk('三年定存',300000,1.55),mk('储蓄国债',200000,2.0)], wealth:[mk('稳健理财',250000,2.05)], insurance:[mk('年金A',300000,2.5),mk('年金B',300000,2.5)], aggressive:[] };
+    annual=50000; planIntent='both'; lumpTarget=500000; lumpYear=20;
+  }
+  // 仅填充第二步（资产 / 规划 / 预留 / 大额）数据，不联动更改第一步客户基础信息
+  state.items=items; state.plan={annual, growth:0};
+  state.reserveAmount=100000; state.lumpTarget=lumpTarget; state.lumpYear=lumpYear;
+  deriveParams();
+  setPlanMode(true); $('planAnnual').value=annual; renderSimple(); renderDetailSections(); render();
+  // 同步第二步相关选项的选中态（预留备用金 / 大额达成时点），不影响第一步
+  if($('qReserve')){ const rv='100000'; document.querySelectorAll('[data-q="reserve"] .opt').forEach(x=>x.classList.toggle('sel', x.dataset.v===rv)); }
+  if($('qLumpRow')) document.querySelectorAll('[data-q="lumpYear"] .opt').forEach(x=>x.classList.toggle('sel', x.dataset.v===String(lumpYear)));
+  syncQ1Displays();
+  showStep(1); toast('已载入'+(t==='steady'?'稳健退休型':t==='aggr'?'进取退休型':'多保单高净值')+'模板：资产与规划已填好，客户基础信息保持原样');
+}
+document.querySelectorAll('.tpl-btn').forEach(b=> b.onclick=()=> applyTemplate(b.dataset.tpl));
 
 /* 示例 */
-function loadSample(){ state.profile={age:'30-45',occ:'salary',risk:'steady',goal:'grow',name:'李',gender:'f'}; Object.assign(questAnswers,state.profile);
-  state.items={ cash:[{id:uid(),name:'活期+货基',principal:80000,rate:0.2,startYear:2026}],
-    aggressive:[{id:uid(),name:'股票基金',principal:120000,rate:6,startYear:2026}],
-    insurance:[{id:uid(),name:'中邮鑫享一生',principal:100000,rate:2.5,startYear:2026}],
-    deposit:[{id:uid(),name:'三年定存',principal:200000,rate:1.55,startYear:2026},{id:uid(),name:'一年定存',principal:100000,rate:1.15,startYear:2026}],
-    wealth:[{id:uid(),name:'三年理财',principal:150000,rate:2.05,startYear:2026}] };
-  state.plan={ annual:60000, growth:0 };
-  deriveParams(); setPlanMode(true); $('planAnnual').value=60000; renderSimple(); render();
+function loadSample(){ state.profile={age:'40岁',occ:'biz',risk:'steady',goal:'retire',name:'李',gender:'m'}; Object.assign(questAnswers,state.profile); Object.assign(questAnswers,{retired:'no',retireAge:'60',decYears:'30',planIntent:'both',lumpYear:'10'});
+  state.items={ cash:[{id:uid(),name:'活期+货基',principal:150000,rate:0.2,startYear:2026}],
+    aggressive:[{id:uid(),name:'股票基金',principal:60000,rate:6,startYear:2026}],
+    insurance:[{id:uid(),name:'年金/增额寿险',principal:300000,rate:2.5,startYear:2026}],
+    deposit:[{id:uid(),name:'三年定存',principal:320000,rate:1.55,startYear:2026},{id:uid(),name:'储蓄国债',principal:200000,rate:2.0,startYear:2026}],
+    wealth:[{id:uid(),name:'三年理财',principal:180000,rate:2.05,startYear:2026}] };
+  state.plan={ annual:36000, growth:0 };
+  state.retired=false; state.retireAge=60; state.exactAge=40; state.decYears=30; state.pensionPerMonth=0; state.futurePensionPerMonth=3500; state.pensionType='infl'; state.reserveAmount=100000; state.targetMonthly=8000; state.planIntent='both'; state.lumpTarget=100000; state.lumpYear=10;
+  deriveParams();
+  setPlanMode(true); $('planAnnual').value=36000; renderSimple(); render();
   document.querySelectorAll('#step0 .opt').forEach(o=>{ const q=o.parentElement.dataset.q; o.classList.toggle('sel', questAnswers[q]===o.dataset.v); });
-  $('qName').value=state.profile.name||'邮';
+  if($('qLumpRow')) document.querySelectorAll('[data-q="lumpYear"] .opt').forEach(x=>x.classList.toggle('sel', x.dataset.v===String(state.lumpYear)));
+  if($('qReserve')){ const rv=String(state.reserveAmount); document.querySelectorAll('[data-q="reserve"] .opt').forEach(x=>x.classList.toggle('sel', x.dataset.v===rv)); }
+  $('qName').value=state.profile.name||'王';
+  $('qAge').value=state.exactAge;
+  $('qPension').value=state.pensionPerMonth;
+  if($('qFuturePension')) $('qFuturePension').value=state.futurePensionPerMonth;
+  $('qReserve').value=state.reserveAmount;
+  if($('qTargetMonthly')) $('qTargetMonthly').value=state.targetMonthly;
+  if($('qLumpTarget')) $('qLumpTarget').value=state.lumpTarget;
+  if($('qPensionAdj')) $('qPensionAdj').value=state.pensionType;
+  syncQ1Displays();
   document.querySelectorAll('input[name=gender]').forEach(r=>{ r.checked=(r.value===state.profile.gender); });
-  showStep(1); toast('已载入示例数据'); }
+  showStep(1); toast('已载入银发示例数据'); }
 
 /* ============ 专属演示（多页弹框） ============ */
 let _presIdx=0;
@@ -1678,11 +2579,18 @@ function buildPresentation(){
   if(!_series){ toast('请先录入或载入示例数据'); return; }
   const s=_series, N=s.N;
   const profLabel={salary:'工薪上班族',biz:'个体/商贸',owner:'企业主',retire:'退休'}[state.profile.occ]||'—';
-  const goalLabel={edu:'子女教育',retire:'养老',grow:'资产增值',liquid:'保留流动性'}[state.profile.goal]||'—';
   const _yr=new Date().getFullYear();
   const _title=fmtSalutation();
   const greetLine=_title!=='尊敬的客户'?(_title+'，'+_yr+' 您的财富稳健前行'):(_yr+' 您的财富稳健前行');
   const std=presStd4(), act=presAct4();
+  const _dec=computeDecumulation(s);
+  const _retirePhase=retirePhaseText();
+  const _lf=largeFundAt(s, state.lumpYear);
+  const _legacyNote = state.planIntent!=='cashflow'
+    ? (state.lumpTarget>0
+        ? `　另设"未来大额资金规划"目标 <b>${fmt(state.lumpTarget)}</b>（约 ${state.lumpYear} 年后），覆盖自身月度生活后预计可留存约 <b>${fmt(_lf)}</b>${_lf>=state.lumpTarget?'，已可覆盖目标。':'，尚有约 <b>'+fmt(state.lumpTarget-_lf)+'</b> 缺口，可提升稳健资产占比或延长规划期。'}`
+        : `　覆盖自身月度生活后，长期预计可留存约 <b>${fmt(_lf)}</b> 用于未来大额规划（传承 / 支持子女 / 大额支出）。`)
+    : '';
   const layers=['活钱','进攻','稳健','保障'];
   const pyr=layers.map(L=>{
     const stdV=std[L], actV=act[L], d=actV-stdV;
@@ -1699,72 +2607,93 @@ function buildPresentation(){
   if(act['活钱']>std['活钱']+10) tips.push(`活钱占比偏高（实际 ${act['活钱'].toFixed(0)}% vs 标准 ${std['活钱'].toFixed(0)}%），长期闲置会被通胀侵蚀。建议保留 6–12 个月应急资金后，将约 ${_money(act['活钱']-std['活钱'])} 转投稳健增值产品（大额存单、国债、低风险理财）或长期保障资产，提升整体效率。`);
   if(act['稳健']<std['稳健']-10) tips.push(`稳健层偏薄（实际 ${act['稳健'].toFixed(0)}% vs 标准 ${std['稳健'].toFixed(0)}%），组合缺少"压舱石"。建议增配约 ${_money(std['稳健']-act['稳健'])} 大额存单、国债、低风险理财或债券基金，降低组合波动；若担心利率下行，可优先通过长期定存、国债或年金保险锁定长期利率。`);
   if(!tips.length) tips.push('您的资产结构整体均衡，进攻、稳健、保障、活钱四层配比合理。后续可坚持每年投入，并随着年龄增长逐步提升稳健与保障比例，让财富穿越利率周期。');
-  const _others=CLASSES.filter(c=>c.key!=='aggressive').reduce((a,c)=>a+plannedClassValue(c.key),0);
   const _aggP=plannedClassValue('aggressive');
   const _aggMax=_aggP*2, _aggMin=_aggP*0.5;
-  const _totMax=_others+_aggMax, _totMin=_others+_aggMin;
-  const _aggPct = s.A[N] ? _aggP/s.A[N]*100 : 0;
-  const nowSegs=CLASSES.map(c=>({value:currentClassValue(c.key), color:c.color, label:c.name}));
-  const futSegs=CLASSES.map(c=>({value:s.perClass[c.key][s.N], color:c.color, label:c.name}));
+  const _wealthP=plannedClassValue('wealth');
+  const _wealthMax=_wealthP*1.20, _wealthMin=_wealthP*0.90;
+  const riskCard=(accent, title, upLabel, upVal, downLabel, downVal, sharePct, note)=>`
+    <div class="pcard risk-card" style="border-top:4px solid ${accent}">
+      <div class="rk">${title}<span class="rshare">占组合 ${sharePct.toFixed(0)}%</span></div>
+      <div class="risk-body">
+        <div class="risk-half up">
+          <div class="rlabel">${upLabel}</div>
+          <div class="rnum">${fmtW(upVal)}</div>
+        </div>
+        <div class="risk-half down">
+          <div class="rlabel">${downLabel}</div>
+          <div class="rnum">${fmtW(downVal)}</div>
+        </div>
+      </div>
+      <div class="risk-foot">
+        <span class="rline">该类波动幅度</span>
+        <span class="rnum big">${fmtW(Math.abs(upVal-downVal))}</span>
+      </div>
+      <div class="rnote">${note}</div>
+    </div>`;
+  const _aggShare = s.A[N] ? _aggP/s.A[N]*100 : 0;
+  const _wealthShare = s.A[N] ? _wealthP/s.A[N]*100 : 0;
+  const riskCards=[
+    riskCard('#e0a45e','进取投资', '乐观 · 收益达预期 +100%', _aggMax, '悲观 · 出现亏损 −50%', _aggMin, _aggShare, '股票/基金波动最大，是组合弹性的来源，也放大回撤。'),
+    riskCard('#3f9c83','稳健理财', '乐观 · 净值上行 +20%', _wealthMax, '悲观 · 极端回撤 −10%', _wealthMin, _wealthShare, '理财收益随市场波动，以实际净值为准；低风险产品回撤有限。')
+  ];
+  const _hasAgg = currentClassValue('aggressive') > 0;
+  const _hasWealth = currentClassValue('wealth') > 0;
+  const _hasRisk = _hasAgg || _hasWealth;
+  /* 资产构成概览（横排圆点 + 金额 + 占比） */
+  const _totNow = s.baseInvested || 1;
+  const _overview = CLASSES.map(c=>{ const v=s.perClass[c.key][0]||0; const p=_totNow? v/_totNow*100:0; return `<span class="ov-i"><span class="dot" style="background:${c.color}"></span>${c.name} <b>${fmtW(v)}</b> ${p.toFixed(0)}%</span>`; }).join('');
+  const _readBtn = ('speechSynthesis' in window) ? `<button class="read-btn" onclick="readSlide(this)">🔊 朗读本页</button>` : '';
+  const riskSlide = _hasRisk ? `     <h2 class="t">资产风险演算</h2>
+     <div class="sub">以下几类为浮动收益，看它们在乐观与悲观情景下的区间</div>
+     <div class="cards-row risk-row" style="max-width:1180px;margin:16px auto 0;">
+       ${riskCards.join('')}
+     </div>
+     <div class="demo-warn">仅为情景演示，非收益承诺；理财收益以实际净值为准</div>${_readBtn}` : '';
+  /* 第二页：到客户预设退休年龄时的资产画像（仅未退休展示） */
+  const R = state.retired ? 0 : Math.max(1, Math.min((state.retireAge||60)-(state.exactAge||0), N));
+  const _retireAssetSlide = !state.retired ? `     <h2 class="t">到 ${state.retireAge} 岁退休时的资产画像</h2>
+     <div class="sub">按当前规划，退休那年（约第 ${R} 年）的名义总值 vs 通胀后实际购买力</div>
+     <div class="cards-row">
+       <div class="pcard"><div class="k">退休时名义总值</div><div class="v">${fmtW(s.A[R])}</div></div>
+       <div class="pcard"><div class="k">实际购买力</div><div class="v">${fmtW(s.B[R])}</div></div>
+       <div class="pcard"><div class="k">通胀侵蚀差额</div><div class="v">${fmtW(s.diff[R])}</div></div>
+       <div class="pcard"><div class="k">累计投入本金</div><div class="v">${fmtW(s.invested)}</div></div>
+     </div>
+     <div class="goal-note">🎯 退休那年：受通胀与降息影响，您的资产实际购买力预计约 <b>${fmt(s.B[R])}</b>，低于累计投入的 <b>${fmt(s.invested)}</b>。被悄悄拿走了约 <b>${fmt(s.diff[R])}</b> 购买力，${purchasePowerAnalogy(s.diff[R], state.profile.age)}——数字变大了，能换来的退休生活却变少了。</div>
+     <div class="demo-note" style="margin-top:10px;">结构变化：进取 / 理财类随时间增长更快、占比往往上升，活钱占比下降——这正是需要主动再平衡、用金字塔做搭配的原因。</div>${_readBtn}` : '';
   const slides=[
-    `     <h2 class="t">您的专属财富年度总结</h2>
+    `     <h2 class="t">您的专属养老财富规划书</h2>
      <div class="motto">${greetLine}</div>
-     <div class="sub">${profLabel} · 关注${goalLabel} · 测算周期 ${N} 年</div>
+     <div class="sub">${profLabel} · 测算周期 ${N} 年</div>
      <div class="cards-row">
        <div class="pcard"><div class="k">现有资产</div><div class="v" id="cvBase">${fmtW(s.baseInvested)}</div></div>
        <div class="pcard"><div class="k">未来投入(累计)</div><div class="v" id="cvContrib">${fmtW(s.contributed)}</div></div>
        <div class="pcard"><div class="k">规划期末总值</div><div class="v" id="cvEnd">${fmtW(s.A[N])}</div></div>
-     </div>`,
-    `     <h2 class="t">现状 vs ${N} 年后 · 资产构成演变</h2>
-     <div class="sub">同样是您的钱，按当前规划放 ${N} 年，结构会怎么变？</div>
-     <div class="pies">
-       ${pieBlock('现状资产构成', nowSegs)}
-       ${pieBlock(N+' 年后资产构成', futSegs)}
      </div>
-     <div class="demo-note">进取 / 理财类随时间增长更快，占比往往上升；活钱占比下降。这正是需要主动再平衡、用金字塔做搭配的原因。</div>`,
-    `     <h2 class="t">${N} 年后的资产画像</h2>
-     <div class="sub">名义总值 vs 通胀后实际购买力</div>
-     <div class="cards-row">
-       <div class="pcard"><div class="k">期末名义总值</div><div class="v">${fmtW(s.A[N])}</div></div>
-       <div class="pcard"><div class="k">实际购买力</div><div class="v">${fmtW(s.B[N])}</div></div>
-       <div class="pcard"><div class="k">通胀侵蚀差额</div><div class="v">${fmtW(s.diff[N])}</div></div>
-       <div class="pcard"><div class="k">累计投入本金</div><div class="v">${fmtW(s.invested)}</div></div>
+     <div class="ov-row">${_overview}</div>${_readBtn}`,
+    riskSlide,
+    _retireAssetSlide,
+    `     <h2 class="t">退休领取测算</h2>
+     <div class="sub">把"积累的数字"换算成"每月到手的钱"</div>
+     <div class="cards-row retire-hero" style="max-width:980px;margin:16px auto 0;">
+       <div class="pcard retire-hl"><div class="k">每月可补充养老金</div><div class="v">${fmt(_dec.monthly)}</div></div>
      </div>
-     <div class="goal-note">🎯 目标达成预览：到第 <b>${N}</b> 年，受通胀与降息影响，您的资产实际购买力预计为 <b>${fmt(s.B[N])}</b>，低于累计投入的 <b>${fmt(s.invested)}</b>。被悄悄拿走了约 <b>${fmt(s.diff[N])}</b> 购买力，${purchasePowerAnalogy(s.diff[N], state.profile.age)}——数字变大了，能换来的生活却变少了。</div>`,
-    `     <h2 class="t">资产风险演算 · 两种极端情景</h2>
-     <div class="sub">进取投资的收益，从「达到预期 +100%」到「亏损 −50%」——它如何撼动您的整体财富？</div>
-     <div class="cards-row risk-row" style="max-width:1120px;margin:20px auto 0;">
-       <div class="pcard risk-card up">
-         <div class="rk">情景一 · 达到预期</div>
-         <div class="rv">进取收益<br>+100%</div>
-         <div class="rshare">占您组合 ${_aggPct.toFixed(0)}%</div>
-         <div class="rline">进取投资期末</div>
-         <div class="rnum">${fmtW(_aggMax)}</div>
-         <div class="rline">总资产（期末）</div>
-         <div class="rnum big">${fmtW(_totMax)}</div>
-       </div>
-       <div class="pcard risk-card down">
-         <div class="rk">情景二 · 出现亏损</div>
-         <div class="rv">进取收益<br>−50%</div>
-         <div class="rshare">占您组合 ${_aggPct.toFixed(0)}%</div>
-         <div class="rline">进取投资期末</div>
-         <div class="rnum">${fmtW(_aggMin)}</div>
-         <div class="rline">总资产（期末）</div>
-         <div class="rnum big">${fmtW(_totMin)}</div>
-       </div>
+     <div class="cards-row retire-four" style="max-width:980px;margin:0 auto;">
+       <div class="pcard"><div class="k">可用于领取的资产</div><div class="v">${fmtW(_dec.realPot)}</div></div>
+       <div class="pcard"><div class="k">合计每月现金流</div><div class="v">${fmt(_dec.totalMonthly)}</div></div>
+       <div class="pcard"><div class="k">加权实际年化</div><div class="v">${(_dec.realRate*100).toFixed(2)}%</div></div>
+       ${(state.planIntent!=='cashflow')?`<div class="pcard"><div class="k">未来可规划大额资金</div><div class="v">${fmtW(_lf)}</div></div>`:''}
      </div>
-     <div class="demo-ref">两种情景下的总资产差距：<b>${fmtW(_totMax-_totMin)}</b>　（进取占比越低，冲击越小）</div>
-     <div class="demo-note">即使进取投资亏损 50%，因为它只占您组合的一部分，总资产波动其实有限——这正是「资产金字塔」要分散搭配的原因。点「下一步」看您的结构。</div>
-     <div class="demo-warn">仅为情景演示，非收益承诺</div>`,
-    `     <h2 class="t">资产金字塔 · 标准 vs 您的实际</h2>
-     <div class="sub">上层进攻、下层压舱，结构越稳越抗风险（黄=偏离10%　红=偏离20%）</div>
+     <div class="demo-note">${_retirePhase}　未来 <b>${_dec.decYears}</b> 年，${(_dec.reserve>0)?'先扣除预留备用金 <b>'+fmt(_dec.reserve)+'</b>，':''}相当于每月多一笔约 <b>${fmt(_dec.monthly)}</b> 的确定现金流；${(_dec.pension>0)?'叠加现有养老金 <b>'+fmt(_dec.pension)+'</b>/月，':''}合计每月现金流约 <b>${fmt(_dec.totalMonthly)}</b>。${_dec.target>0?(_dec.gapSurplus?('对比期望每月 <b>'+fmt(_dec.target)+'</b> 开销，每月还有约 <b>'+fmt(Math.abs(_dec.gap))+'</b> 盈余。'):('对比期望每月 <b>'+fmt(_dec.target)+'</b> 开销，每月仍有约 <b>'+fmt(_dec.gap)+'</b> 缺口，建议补足。')):''}仅为情景演示，非收益承诺。${_legacyNote}</div>${_readBtn}`,
+    `     <h2 class="t">资产金字塔</h2>
+     <div class="sub">金色是您的实际配置，浅色是建议比例，差得越多颜色越红。</div>
      ${pyr}
-     <div class="demo-note" style="margin-top:10px;">浅色条＝标准建议比例，金色条＝您当前实际比例。</div>`,
+     <div class="demo-note" style="margin-top:10px;">标准建议比例已按您的年龄与风险偏好生成；偏差越大越需注意再平衡。</div>${_readBtn}`,
     `     <h2 class="t">给您的资产搭配建议</h2>
      <div class="sub">基于上面结构偏差，给出可落地的调整方向</div>
      <div style="max-width:560px;text-align:left;font-size:14px;line-height:1.9;">${tips.map(t=>'• '+t).join('<br>')}</div>
      <div class="advice-pyr">${advicePyrSVG(act,std)}
-     <div class="demo-note" style="margin-top:8px;">绿色＝贴合建议　黄色＝偏离≥10%　红色＝偏离≥20%，据此调整各层厚度。</div></div>`,
+     <div class="demo-note" style="margin-top:8px;">绿色＝贴合建议　黄色＝偏离≥10%　红色＝偏离≥20%，据此调整各层厚度。</div></div>${_readBtn}`,
     `     <h2 class="t">下一步，我们一起规划</h2>
      <div class="sub">把"锁息"与"增值"搭配好，让财富穿越利率周期</div>
      <div class="demo-note" style="margin-top:14px;font-weight:600;">请选择讲解风格，进入「看板主页面」：</div>
@@ -1772,10 +2701,11 @@ function buildPresentation(){
        <button class="pcard" id="enterPlain" style="cursor:pointer;">📗 通俗版看板</button>
        <button class="pcard" id="enterPro" style="cursor:pointer;">📊 专业版看板</button>
      </div>
-     <div class="demo-note" style="margin-top:18px;">本演示仅为情景假设，不构成收益承诺；保险现金价值、年金以合同为准，理财收益存在波动风险。所有数据仅用于当前页面演算，关闭或刷新后清除。</div>`
+     <div class="demo-note" style="margin-top:18px;">本演示仅为情景假设，不构成收益承诺；保险现金价值、年金以合同为准，理财收益存在波动风险。所有数据仅用于当前页面演算，关闭或刷新后清除。</div>${_readBtn}`
   ];
   const stage=$('presStage');
-  stage.innerHTML=slides.map((h,i)=>`<div class="slide${i===0?' active':''}" data-i="${i}">${h}</div>`).join('');
+  const _sh=slides.filter(h=>h&&h.trim());
+  stage.innerHTML=_sh.map((h,i)=>`<div class="slide${i===0?' active':''}" data-i="${i}">${h}</div>`).join('');
   _presIdx=0; renderPresNav(); showMask('presMask');
   const _anim=(id,target)=>{ const el=$(id); if(!el) return; const dur=900,t0=performance.now(); const step=(t)=>{ const k=Math.min(1,(t-t0)/dur); const e=1-Math.pow(1-k,3); el.textContent=fmtW(target*e); if(k<1) requestAnimationFrame(step); }; requestAnimationFrame(step); };
   _anim('cvBase',s.baseInvested); _anim('cvContrib',s.contributed); _anim('cvEnd',s.A[N]);
@@ -1791,6 +2721,20 @@ function enterReportView(style){
   hideMask('presMask');
   document.body.classList.add('report-mode');
   render(); generateAI(true); window.scrollTo(0,0);
+}
+function readSlide(btn){
+  const slide=btn.closest('.slide'); if(!slide) return;
+  if(!('speechSynthesis' in window)) return;
+  const parts=[];
+  const t=slide.querySelector('h2.t'); if(t) parts.push(t.textContent.trim());
+  const sub=slide.querySelector('.sub'); if(sub) parts.push(sub.textContent.trim());
+  slide.querySelectorAll('.pcard').forEach(p=>{ const k=p.querySelector('.k'), v=p.querySelector('.v'); if(k&&v) parts.push(k.textContent.trim()+' '+v.textContent.trim()); });
+  slide.querySelectorAll('.demo-note,.goal-note,.motto').forEach(n=>{ const tx=n.textContent.trim(); if(tx) parts.push(tx); });
+  const u=new SpeechSynthesisUtterance(parts.filter(Boolean).join('。')); u.lang='zh-CN'; u.rate=0.95;
+  window.speechSynthesis.cancel();
+  slide.classList.add('speaking');
+  u.onend=()=>slide.classList.remove('speaking');
+  window.speechSynthesis.speak(u);
 }
 function pieSVG(segs,size){
   const total=segs.reduce((a,x)=>a+x.value,0);
@@ -1863,7 +2807,7 @@ async function genCoachByLLM(){
   if(!('gpu' in navigator)){ _llmError='浏览器不支持 WebGPU'; generateAI(true); toast('当前浏览器不支持 WebGPU，本地模型无法启动（请用 Chrome 113+）'); return; }
   const s=_series, N=s.N;
   const data = {
-    客户画像:{年龄档:state.profile.age, 职业:state.profile.occ, 风险偏好:state.profile.risk, 目标:state.profile.goal, 姓名:state.profile.name||''},
+    客户画像:{年龄:state.exactAge?state.exactAge+'岁':'未填', 职业:state.profile.occ, 风险偏好:state.profile.risk, 目标:state.profile.goal, 姓名:state.profile.name||''},
     测算年限:N, 年度通胀率:state.params.inflation, 降息轮数:state.params.rateCuts.length,
     期末名义总值:Math.round(s.A[N]), 期末实际价值:Math.round(s.B[N]), 差额:Math.round(s.diff[N]),
     已投入本金:Math.round(s.invested), 未来年新增投入:(state.plan.annual||0),
@@ -1959,7 +2903,7 @@ function answerFromData(q){
   if(/名义|总|全部资产|资产总额|期末总/.test(t)) return `根据当前演算结果，客户第${yearStr}资产名义总值约为 ${fmt(s.A[N])}。`;
   if(/本金|投入|已投|累计投入/.test(t)) return `根据当前演算结果，客户累计投入本金约为 ${fmt(s.invested)}。`;
   if(/每年|年新增|每年投|每年追加/.test(t)) return `根据当前演算结果，客户未来每年新增投入约为 ${fmt(pl.annual||0)}。`;
-  if(/年龄/.test(t)) return `当前客户年龄档为 ${p.age}。`;
+  if(/年龄/.test(t)) return `当前客户年龄为 ${state.exactAge>0?state.exactAge+'岁':p.age}。`;
   if(/职业/.test(t)) return `当前客户职业为 ${p.occ}。`;
   if(/风险/.test(t)) return `当前客户风险偏好为 ${p.risk}。`;
   if(/目标/.test(t)) return `当前客户理财目标为 ${p.goal}。`;
@@ -2019,7 +2963,7 @@ $('detailSections').addEventListener('click', e => {
   const id = e.target.getAttribute('data-del-ins');
   if(id){ state.insurancePolicies = state.insurancePolicies.filter(p=>p.id!==id); state.pendingPlan=null; render(); renderSimple(); renderDetailSections(); }
 });
-renderSimple(); renderPlanRatios(); renderParamChips(); renderStyleSelect(); render(); showStep(0);
+renderSimple(); renderPlanRatios(); renderParamChips(); renderStyleSelect(); render(); renderDetailSections(); syncQ1Displays(); showStep(0);
 
 /* 开屏封面：点击进入 */
 (function(){
