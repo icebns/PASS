@@ -2806,17 +2806,21 @@ async function genCoachByLLM(){
   if(_llmError){ generateAI(true); return; }
   if(!('gpu' in navigator)){ _llmError='浏览器不支持 WebGPU'; generateAI(true); toast('当前浏览器不支持 WebGPU，本地模型无法启动（请用 Chrome 113+）'); return; }
   const s=_series, N=s.N;
+  const _dec = computeDecumulation(s);
+  const _std = presStd4(), _act = presAct4();
   const data = {
-    客户画像:{年龄:state.exactAge?state.exactAge+'岁':'未填', 职业:state.profile.occ, 风险偏好:state.profile.risk, 目标:state.profile.goal, 姓名:state.profile.name||''},
+    客户画像:{年龄:state.exactAge?state.exactAge+'岁':'未填', 职业:state.profile.occ, 风险偏好:state.profile.risk, 目标:state.profile.goal, 姓名:state.profile.name||'', 退休状态: state.retired?'已退休':('未退休（预计'+state.retireAge+'岁退休）')},
     测算年限:N, 年度通胀率:state.params.inflation, 降息轮数:state.params.rateCuts.length,
-    期末名义总值:Math.round(s.A[N]), 期末实际价值:Math.round(s.B[N]), 差额:Math.round(s.diff[N]),
+    期末名义总值:Math.round(s.A[N]), 期末实际价值:Math.round(s.B[N]), 通胀与长寿侵蚀差额:Math.round(s.diff[N]),
     已投入本金:Math.round(s.invested), 未来年新增投入:(state.plan.annual||0),
     五类资产期末值:{ 活钱:Math.round(s.perClass.cash[N]), 进攻:Math.round(s.perClass.aggressive[N]),
-      稳健存款:Math.round(s.perClass.deposit[N]), 稳健理财:Math.round(s.perClass.wealth[N]), 保障:Math.round(s.perClass.insurance[N]) }
+      稳健存款:Math.round(s.perClass.deposit[N]), 稳健理财:Math.round(s.perClass.wealth[N]), 保障:Math.round(s.perClass.insurance[N]) },
+    退休领取测算:{ 可用于领取资产:Math.round(_dec.realPot), 每月可补充养老金:Math.round(_dec.monthly), 合计每月现金流:Math.round(_dec.totalMonthly), 预计领取年限:_dec.decYears, 加权实际年化:+( _dec.realRate*100).toFixed(2) },
+    养老配置结构:{ 实际占比:{进攻:_act['进攻'],稳健:_act['稳健'],保障:_act['保障'],活钱:_act['活钱']}, 标准建议占比:{进攻:_std['进攻'],稳健:_std['稳健'],保障:_std['保障'],活钱:_std['活钱']} }
   };
   const dataStr = JSON.stringify(data, null, 2);
-  const sys = '你是银行理财顾问的辅助助手。基于给定客户演算数据，生成4-6条【面谈话术与异议应对要点】。要求：1)用中文、分条、简洁专业；2)聚焦真实面谈场景——"账面价值≠真实购买力""降息与通胀沟通""活期盘活""保险安全垫""合规底线"；3)直接给可说的话术要点；4)不要编造具体产品收益率数字。';
-  const user = '以下是客户财富演算结果（JSON）：\n'+dataStr+'\n\n请据此生成面谈话术要点，每条以【场景】开头。';
+  const sys = '你是邮储银行的养老财富规划顾问助手，服务于客户经理面访客户的场景。请基于给定的客户演算数据，生成 4-6 条【养老规划方向的解读与面谈建议】，严格围绕“养老规划”主线，不要泛泛谈理财。\n要求：\n1) 用中文、分条、简洁专业，每条以【养老规划·场景】开头；\n2) 必须聚焦以下养老主题，并给出可落地的方向性建议：\n   - 退休后现金流规划（引用“每月可补充养老金/合计每月现金流”，谈养老金替代率与安稳现金流）；\n   - 锁定长期利率（降息周期下，用长期定存、国债、年金险、增额终身寿等锁定利率，对抗利率下行）；\n   - 保障安全垫（引用“保障类资产占比”，谈长寿风险、医养储备、保险安全垫）；\n   - 结构再平衡（引用“实际占比 vs 标准建议占比”，谈向稳健/保障层再平衡）；\n   - 通胀与长寿双重侵蚀（引用“名义总值 vs 实际价值/侵蚀差额”，谈“数字变多、能换的养老生活变少”）；\n3) 所有数字必须引用数据中给出的具体数值，不要编造任何产品收益率或具体产品名称；\n4) 末尾附一句合规提示：以上为情景演示、非收益承诺，具体方案以银行正式产品与风险评估为准。';
+  const user = '以下是客户养老财富演算结果（JSON）：\n'+dataStr+'\n\n请站在“养老规划顾问”角度，给出偏向养老规划方向的解读与面谈建议（每条约 2-3 句，包含可面谈的话术要点）。';
 
   body.innerHTML='<p class="coach-loading">⏳ 正在准备本地模型…<br>首次加载需下载约 265MB 权重，浏览器会自动缓存，之后再次打开即可秒开，请保持网络畅通。</p>';
   try{
@@ -2928,7 +2932,7 @@ async function askLLM(q){
   }
   try{
     const completion=await _llmEngine.chat.completions.create({
-      messages:[...coachHistory.slice(0,-1), {role:'user', content:question+'\n\n请仅依据最初给出的客户数据中的具体数字回答，不要编造。'}],
+      messages:[...coachHistory.slice(0,-1), {role:'user', content:question+'\n\n请从养老规划角度、仅依据最初给出的客户数据中的具体数字回答，不要编造具体产品收益率或产品名称。'}],
       temperature:0.7, max_tokens:600, stream:false
     });
     const text=(completion.choices&&completion.choices[0]&&completion.choices[0].message.content||'').trim();
