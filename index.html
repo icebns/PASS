@@ -669,7 +669,7 @@
             </tbody>
           </table></div>
           <div style="margin-top:10px;font-size:12.8px;line-height:2;">
-            <span class="chip chip-red">🔴 该去电话了</span> 超过他平时的交粮间隔，且 <b>历史累计粮款 ≥ 1 万元</b> → 老客户很久没来，<b>值得打个电话</b>问问情况、今年还卖不卖。<br>
+            <span class="chip chip-red">🔴 该联系了</span> 超过他平时的交粮间隔，且 <b>历史累计粮款 ≥ 1 万元</b> → 老客户很久没来，<b>值得打个电话</b>问问情况、今年还卖不卖。<br>
             <span class="chip chip-gold">🟡 顺路看看</span> 超过交粮间隔，但历史累计粮款 <b>&lt; 1 万元</b> → 路过或发个微信问候一下，说说当前粮价。<br>
             <span class="chip chip-green">🟢 淡季正常</span> 没超过交粮间隔，且当前不在其品类收粮季 → 淡季没来属正常，下个收粮季自然回来。<br>
             <span class="chip chip-blue">🔵 交粮正常</span> 没超过间隔，且正处于其品类收粮季内 → 正常往来。
@@ -3832,7 +3832,7 @@ function buildReview(skipMask){
       +(agg.saleMissing
         ? '收购侧资金安排与农户往来清单已整理完成，可在「🏦 银行端」查看营销名单。'
         : (agg.BW<0
-          ? '本季收粮投入大于卖粮回款（<b>压库备货</b>），资金更多沉淀为库存与在途粮款；下一季收购周转资金可结合「粮商贷」提前安排。'
+          ? '本季收粮投入大于卖粮回款（<b>压库备货</b>），资金更多沉淀为库存与在途粮款；下一季收购周转资金可结合「融资E」提前安排。'
           : '搭配资产规划后，每年可净留存约 <b>'+fmt(agg.BW,1)+'</b> 万元，约等于 <b>'+fmt(Math.round(agg.grainKg),0)+' 公斤</b>的粮食。'));
   } else {
     cc.className='cust-card muted';
@@ -4216,10 +4216,10 @@ function resetWinRates(){
 
 /* ===================== 四、多情景宏观测算 ===================== */
 const ASSETS=[
-  {key:'deposit',name:'定期存款',rate:1.15,weight:25},
+  {key:'deposit',name:'定期存款',rate:1.15,weight:30},
   {key:'bond',name:'国债',rate:1.63,weight:25},
   {key:'wealth',name:'稳健理财',rate:1.8,weight:25},
-  {key:'ins',name:'分红型保险',rate:2.0,weight:25}
+  {key:'ins',name:'分红型保险',rate:2.0,weight:20}
 ];
 const SCEN=[
   {name:'中性情景',inf:1.5,note:'长期通胀 1.5%（历史物价合理中枢）'},
@@ -4393,7 +4393,7 @@ function buildReport(){
     const tailTxt=STATE.saleMissing
       ?'销售侧回款可按「库存出库量 × 品类均价」估算，详见经营画像页。'
       :(STATE.BW<0
-        ?'本季收粮投入大于卖粮回款（压库备货），资金更多沉淀为库存与在途粮款，旺季周转资金可结合「粮商贷」提前安排。'
+        ?'本季收粮投入大于卖粮回款（压库备货），资金更多沉淀为库存与在途粮款，旺季周转资金可结合「融资E」提前安排。'
         :`搭配资产规划后，每年可净留存约 <b>${fmt(STATE.BW,1)}</b> 万元，约等于 <b>${grainTxt}</b> 的粮食。`);
     custHtml=`<div class="rp-cust">这个丰收季，您共过磅了 <b>${fmt(Math.round(STATE.weighKg),0)}</b> 公斤的 <b>${noun}</b>，`
       +`来自 <b>${STATE.farmerCount}</b> 个农户，总结算款 <b>${fmt(STATE.outflowW,1)}</b> 万元。${tailTxt}</div>`;
@@ -4416,22 +4416,31 @@ function buildReport(){
 <div id="rpScn"></div>`
     : `<h2>3、多宏观情景模拟结果</h2>
 <div class="rp-warn">⚠️ 尚未确认「参考年均结余」，本节暂不输出情景测算。请与粮商当面确认下一季预期年均结余后重新生成报告。</div>`;
+  const adviceHtml = STATE.BW<0
+    ? `<h2>💡 给您的两点建议</h2>
+<ul style="line-height:1.9;">
+  <li><b>收粮前</b>：${fmt(reserve,0)} 万元周转金提前备好，必要时可申请「融资E」额度备用，不影响收粮节奏；</li>
+  <li><b>收粮后</b>：回笼资金到账后，按短期灵活 / 中期增值 / 长期锁定的比例安排，别让闲钱长期趴在活期上。</li>
+</ul>`
+    : `<h2>💡 给您的两点建议</h2>
+<ul style="line-height:1.9;">
+  <li><b>旺季</b>：守住结算账户，资金随进随出，保持流动性；</li>
+  <li><b>空窗期</b>：按短期灵活 / 中期增值 / 长期锁定的比例安排沉淀资金，让闲钱多挣一份收益。</li>
+</ul>`;
   const html=
 `<h1>丰收智链 · 粮商经营资金规划报告</h1>
-<p style="text-align:center;color:#5d6b63;">【演示原型】本报告为面谈辅助测算输出，未对接丰收云生产业务接口。</p>
+<p style="text-align:center;color:#5d6b63;margin-top:2px;">${STATE.start||''} 至 ${STATE.end||''} 经营季回顾与下季资金安排建议</p>
 ${custHtml}
 
-<h2>1、经营基线来源说明</h2>
-<p>参考经营基线来源于丰收云导出的历史交易数据（统计周期：${STATE.start||'—'} ‑ ${STATE.end||'—'}）。</p>
-<div class="rp-warn">⚠️ 历史经营数据仅作为规划基线参考，<b>历史经营结果不代表未来收益，粮商实际结余会受粮价、收成、市场行情发生变化</b>。</div>
+<h2>1、本季经营回顾</h2>
+<p>数据来源于丰收云导出的历史交易记录，统计周期：${STATE.start||'—'} 至 ${STATE.end||'—'}。历史数据仅作规划参考，实际结余会受粮价、收成、市场行情影响。</p>
 
-<h2>2、关键经营参数</h2>
+<h2>2、下季资金安排</h2>
 <ul>
   ${baseLi}
-  <li>下一季收购周转备用金：${fmt(reserve,1)} 万元（经营红线，优先预留，不参与资产配置）</li>
-  <li>当前手头可动用现金：${fmt(STATE.cash||0,1)} 万元，可用于资产规划的资金：${fmt(init,1)} 万元</li>
+  <li>下一季收购周转备用金：<b>${fmt(reserve,1)} 万元</b>（红线，优先预留，不参与配置）</li>
+  <li>当前可动用现金：<b>${fmt(STATE.cash||0,1)} 万元</b>，可用于规划的资金：<b>${fmt(init,1)} 万元</b></li>
   ${fixedLi}
-  <li>测算模式：【${modeTxt}】</li>
   ${allocLi}
   ${loanLi}
 </ul>
@@ -4439,26 +4448,77 @@ ${volTxt}
 
 ${scnSec}
 
-<h2>📜 免责声明</h2>
-<ul>
-  <li>1、本报告仅为经营资金数学模拟推演，所有参数由历史流水或者用户手动输入生成；</li>
-  <li>2、不构成任何经营决策、投资理财产品的建议；</li>
-  <li>3、粮食贸易经营风险、市场价格风险请客户自行承担；</li>
-  <li>4、正式业务落地以中国邮政丰收云正式版本系统为准；</li>
-  <li>5、本测算未计入年度固定经营杂费（仓储 / 人工 / 运输），如需精确测算请补充录入。</li>
-</ul>`;
+${adviceHtml}
+
+<p style="margin-top:18px;font-size:11.5px;color:#8a9389;line-height:1.7;">本报告由丰收智链基于您导出的丰收云数据自动生成，仅供经营参考，不构成投资建议；正式产品以邮储柜台办理为准。</p>`;
   $('report-content').innerHTML=html;
   // 把宏观情景卡嵌入报告
   const rp=$('rpScn'); if(rp && $('scnBox')) rp.outerHTML='<div class="scn">'+$('scnBox').innerHTML+'</div>';
 }
 function exportPDF(){
-  if(typeof html2pdf==='undefined'){
+  if(!(typeof html2canvas!=='undefined'&&window.jspdf&&window.jspdf.jsPDF)){
     loadCdnLibs('pdf',true);
     toast('PDF 组件未加载，正在尝试备用源加载，完成后请重新点击导出'); return;
   }
-  const el=$('report-content');
-  html2pdf().set({margin:12,filename:'丰收云粮商经营资金规划报告.pdf',image:{type:'jpeg',quality:0.95},html2canvas:{scale:2},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(el).save();
-  toast('正在导出 PDF…');
+  const src=$('report-content');
+  if(!src||!src.innerHTML.trim()){ toast('请先生成报告内容'); return; }
+  /* 逐块自动装箱成 A4 页（与简报同一套逐页截图管线）：
+     先在屏下按 794px 版心测量每个顶层块的实际高度，贪心装进 1150px 页（内容限高 1102px），
+     翻页只发生在块与块之间——不再用 html2pdf 长图等分切片（切刀不认内容边界，
+     会把警示框/表格拦腰截断，且页面下半整片空白）。单块超页时由画布切片兜底。 */
+  const PART=24, PAGE=1150, LIMIT=PAGE-PART*2;
+  const flow=document.createElement('div');
+  flow.className='rp-doc';
+  flow.style.cssText='position:absolute;left:-9999px;top:0;width:794px;';
+  flow.innerHTML=src.innerHTML;
+  document.body.appendChild(flow);
+  const kids=Array.prototype.slice.call(flow.children);
+  const pages=[]; let cur=[], yStart=null;
+  kids.forEach(function(k){
+    const mb=parseFloat(getComputedStyle(k).marginBottom)||0;
+    const top=k.offsetTop, bottom=top+k.offsetHeight+mb;
+    if(yStart===null){ yStart=top; }
+    if(cur.length && (bottom-yStart)>LIMIT){   // 当前页放不下 → 翻页，新页从本块顶部起（丢弃页首块上边距）
+      pages.push(cur); yStart=top; cur=[k];
+    }else{ cur.push(k); }
+  });
+  if(cur.length) pages.push(cur);
+  const bodyHtml=pages.map(function(ks){
+    return '<div class="sheet"><div class="rp-doc" style="padding:'+PART+'px 26px;">'+ks.map(function(k){ return k.outerHTML; }).join('')+'</div></div>';
+  }).join('');
+  document.body.removeChild(flow);
+  const host=$('bankRptContent');
+  if(!host){ toast('导出容器未就绪'); return; }
+  host.innerHTML=bodyHtml;
+  const JsPDF=window.jspdf.jsPDF;
+  const sheets=Array.prototype.slice.call(host.querySelectorAll('.sheet'));
+  const pdf=new JsPDF({unit:'mm',format:'a4',orientation:'portrait'});
+  const PW=194,PH=281,MX=8,MY=8;
+  let first=true;
+  const put=function(dataUrl,w,h){ if(!first) pdf.addPage(); pdf.addImage(dataUrl,'JPEG',MX,MY,w,h); first=false; };
+  toast('正在生成丰收智链 · 粮商经营资金规划报告 PDF（逐页渲染，约需 10–20 秒）…');
+  (async function(){
+    for(let i=0;i<sheets.length;i++){
+      const canvas=await html2canvas(sheets[i],{scale:2,useCORS:true,backgroundColor:'#ffffff'});
+      const dh=PW*canvas.height/canvas.width;
+      if(dh<=PH+0.5){
+        put(canvas.toDataURL('image/jpeg',0.92),PW,dh);
+      }else{
+        const slicePx=Math.floor(canvas.width*PH/PW);
+        for(let y=0;y<canvas.height;y+=slicePx){
+          const h=Math.min(slicePx,canvas.height-y);
+          const c=document.createElement('canvas');
+          c.width=canvas.width; c.height=h;
+          const cx=c.getContext('2d');
+          cx.fillStyle='#ffffff'; cx.fillRect(0,0,c.width,c.height);
+          cx.drawImage(canvas,0,y,canvas.width,h,0,0,canvas.width,h);
+          put(c.toDataURL('image/jpeg',0.92),PW,PW*h/canvas.width);
+        }
+      }
+    }
+    pdf.save('丰收智链_粮商经营资金规划报告_'+dateStr(REF_DATE)+'.pdf');
+    toast('PDF 已生成，开始下载');
+  })().catch(function(e){ toast('PDF 生成失败：'+((e&&e.message)||e)); });
 }
 
 /* ===================== 银行端：面谈物料包（分册 PDF + PPT 展板） ===================== */
@@ -4601,7 +4661,7 @@ function buildBankRptHtml(mode){
       +'<div>✅ <b>粮源稳定</b>：前 5 大农户占交易额 '+fmt(top5Share*100,1)+'%，客户分散，不依赖单一大户，经营风险低</div>'
       +'<div>✅ <b>周转健康</b>：周转天数约 '+fmt(td,0)+' 天，符合行业正常水平（参考区间 60-120 天）</div>'
       +'</div>'
-      +((M.saleMissing||M.netW<0)?'<div class="rp-tip">💡 <b>收粮季特别提醒：</b>当前正值收粮旺季，收粮支出大于销售回款是正常现象，资金转化为库存和应付粮款，<b>不代表经营亏损</b>。建议关注出库回款节奏，保持资金灵活；如需临时周转，可咨询邮储粮商贷（随借随还，不用不计息）。</div>':'')
+      +((M.saleMissing||M.netW<0)?'<div class="rp-tip">💡 <b>收粮季特别提醒：</b>当前正值收粮旺季，收粮支出大于销售回款是正常现象，资金转化为库存和应付粮款，<b>不代表经营亏损</b>。建议关注出库回款节奏，保持资金灵活；如需临时周转，可咨询邮储融资E（随借随还，不用不计息）。</div>':'')
       +'<div class="rp-lbl" style="font-size:16.5px;">▌报告导览</div>'
       +'<div class="rp-guide"><div class="gt">这份报告，接下来帮你看懂什么</div>'
       +'<div class="ggrid">'
@@ -4713,7 +4773,7 @@ function buildBankRptHtml(mode){
     if(best&&best.v>0){
       const needCash=best.v*(M.avgPricePerKg||0)/10000;
       const bi2=whl.indexOf(best.w);
-      p4+='<div class="rp-tip" style="border-color:#e2cf9a;background:#fdf9ef;">📢 <b>收粮高峰预警：</b><b>'+whName(best.w,bi2<0?0:bi2)+'</b> 预计在 <b>'+(best.mi+1)+' 月</b>迎来收粮高峰。测算依据：历史同月收粮约 <b>'+fmt(best.v/1000,0)+' 吨</b> × 当前收购均价约 '+(M.avgPricePerKg||0).toFixed(2)+' 元/公斤 ≈ 建议提前备好约 <b>'+fmt(needCash,1)+' 万元</b> 周转现金。若自有周转资金暂时不足，可了解邮储「粮商贷」，随借随还、按日计息、不用不计息，可作为临时周转补充。</div>';
+      p4+='<div class="rp-tip" style="border-color:#e2cf9a;background:#fdf9ef;">📢 <b>收粮高峰预警：</b><b>'+whName(best.w,bi2<0?0:bi2)+'</b> 预计在 <b>'+(best.mi+1)+' 月</b>迎来收粮高峰。测算依据：历史同月收粮约 <b>'+fmt(best.v/1000,0)+' 吨</b> × 当前收购均价约 '+(M.avgPricePerKg||0).toFixed(2)+' 元/公斤 ≈ 建议提前备好约 <b>'+fmt(needCash,1)+' 万元</b> 周转现金。若自有周转资金暂时不足，可了解邮储「融资E」，随借随还、按日计息、不用不计息，可作为临时周转补充。</div>';
     } else {
       p4+='<div class="rp-warn">（暂无收粮数据，导入过磅记录后自动生成）</div>';
     }
@@ -4739,6 +4799,21 @@ function buildBankRptHtml(mode){
     /* P6 农家夜活动策划（一）：定位 + 三个好处 + 分工（立场反转：以粮商为核心，银行为全程承办的服务方） */
     const n180=bankPlaybookStats().n180;
     let p6='<h2>5、农家夜活动策划（为您的粮站办一场老农户答谢会）</h2>'
+      +(function(){
+        const K6=bankDeckCounts();
+        const card=(bg,bd,lb,vc,v,sub)=>'<div style="flex:1;min-width:0;background:'+bg+';border:1px solid '+bd+';border-radius:10px;padding:8px 4px;text-align:center;">'
+          +'<div style="font-size:12px;color:#5d6b63;white-space:nowrap;">'+lb+'</div>'
+          +'<div style="font-size:20px;font-weight:800;color:'+vc+';line-height:1.4;">'+v+'<span style="font-size:12px;font-weight:600;"> 户</span></div>'
+          +(sub?'<div style="font-size:11px;color:#b04848;white-space:nowrap;">'+sub+'</div>':'')+'</div>';
+        return '<div style="font-size:13px;color:#5d6b63;margin:6px 0 6px;">📋 本次答谢会可触达的客户底数（按过磅记录自动统计）：</div>'
+          +'<div style="display:flex;gap:8px;align-items:stretch;margin:0 0 12px;">'
+          +card('#f2faf4','#cfe8d8','覆盖农户','#0a6b3b',K6.all,'')
+          +card('#fdf1f1','#f0c9c9','🔴 该联系了','#b03a3a',K6.hi,'涉及粮款 '+fmt(K6.hiAmt/10000,1)+' 万')
+          +card('#fdf9ec','#ecd9a0','🟡 顺路看看','#9a6b00',K6.mid,'')
+          +card('#eef7f0','#cfe3d7','🟢 淡季正常','#2e7d4f',K6.dorm,'')
+          +card('#eef3fb','#c9d8ef','🔵 交粮正常','#2b5faf',K6.act,'')
+          +'</div>';
+      })()
       +'<div class="rp-tip">🎪 <b>活动定位：</b>为您的粮站策划一场<b>「老农户答谢会」</b>——以粮站感谢客户、分享粮价行情为主题，邮储银行全程负责邀约、物料和现场执行，您不操心、不花钱。</div>'
       +'<h4 style="margin:10px 0 4px;font-size:14.5px;color:#0a6b3b;">✨ 这个活动对粮站的三个好处</h4>'
       +'<div class="rp-card"><h4>好处 1 · 唤醒老客户粮源</h4><pre>系统筛查出 <b>'+n180+'</b> 户超过半年未售粮的老农户，由银行逐一邀约回访，帮您把这些老客户请回来。您无需额外打电话、跑人力，挽回的都是曾经信任您的熟客。</pre></div>'
@@ -5305,7 +5380,7 @@ function renderCalendarView(){
   if(best&&best.v>0){
     const kg=best.v, tons=kg/1000, needCash=kg*STATE.avgPricePerKg/10000;
     $('whAlert').className='cust-card';
-    $('whAlert').innerHTML='📢 <b>收粮高峰预警</b>：<b>'+best.w+'</b> 预计在 <b>'+(best.mi+1)+'月</b> 迎来收粮高峰，历史同月收粮约 <b>'+fmt(tons,0)+' 吨</b>，按均价测算需备约 <b>'+fmt(needCash,1)+' 万元</b> 周转现金。建议客户经理提前 1 个月上门推介邮储「粮商贷」，锁定旺季资金需求。';
+    $('whAlert').innerHTML='📢 <b>收粮高峰预警</b>：<b>'+best.w+'</b> 预计在 <b>'+(best.mi+1)+'月</b> 迎来收粮高峰，历史同月收粮约 <b>'+fmt(tons,0)+' 吨</b>，按均价测算需备约 <b>'+fmt(needCash,1)+' 万元</b> 周转现金。建议客户经理提前 1 个月上门推介邮储「融资E」，锁定旺季资金需求。';
   } else { $('whAlert').className='cust-card muted'; $('whAlert').innerHTML='（暂无收粮数据）'; }
   const pk=$('whPicker'); if(pk){ pk.innerHTML=whl.map(w=>`<option value="${w}">${w}</option>`).join(''); renderWhChart(); }
   const stkT=STATE.currentStockKg/1000, dSaleT=STATE.dailySaleKg/1000;
@@ -5462,7 +5537,7 @@ const ST_MAP={'高危沉默':'chip-red','一般沉默':'chip-gold','季节性休
 const ST_ICO={'高危沉默':'🔴','一般沉默':'🟡','季节性休眠':'🟢','活跃':'🔵'};
 const ST_ACT={'高危沉默':'优先上门拜访，了解流失原因','一般沉默':'批量微信/短信，推送粮价行情','季节性休眠':'不打扰，等下个收粮季自动激活','活跃':'维护关系，适时推荐加配'};
 /* 双视角显示层（仅文案，判定键不动）：粮商视角用生意语言，不用银行内部术语 */
-const ST_LABEL_MER={'高危沉默':'该去电话了','一般沉默':'顺路看看','季节性休眠':'淡季正常','活跃':'交粮正常'};
+const ST_LABEL_MER={'高危沉默':'该联系了','一般沉默':'顺路看看','季节性休眠':'淡季正常','活跃':'交粮正常'};
 const ST_ACT_MER={'高危沉默':'打个电话问问情况，问问今年还卖不卖','一般沉默':'微信里问候一下，说说当前粮价','季节性休眠':'正常，等收粮季再联系','活跃':'老主顾，结算时多走动'};
 function stLabel(s){ return (typeof BK!=='undefined'&&BK.view==='merchant')?(ST_LABEL_MER[s]||s):s; }
 function stAct(s){ return (typeof BK!=='undefined'&&BK.view==='merchant')?(ST_ACT_MER[s]||''):(ST_ACT[s]||''); }
@@ -5670,7 +5745,7 @@ function renderBanker(){
     /* 粮商视角：生意口径——应收未结优先，状态用经营语言 */
     '<div class="bk"><div class="l">覆盖农户</div><div class="v">'+all.length+' <small>户</small></div></div>'+
     '<div class="bk red"><div class="l">💰 应收未结粮款</div><div class="v">'+fmt(unpaidSum/10000,1)+' <small>万</small></div><div class="l">涉及 '+unpaidRows.length+' 户未结</div></div>'+
-    '<div class="bk gold"><div class="l">🔴 该去电话了</div><div class="v">'+c('高危沉默')+' <small>户</small></div><div class="l">累计贡献 '+fmt(hiAmt/10000,1)+' 万</div></div>'+
+    '<div class="bk gold"><div class="l">🔴 该联系了</div><div class="v">'+c('高危沉默')+' <small>户</small></div><div class="l">累计贡献 '+fmt(hiAmt/10000,1)+' 万</div></div>'+
     '<div class="bk"><div class="l">🟡 顺路看看</div><div class="v">'+c('一般沉默')+' <small>户</small></div></div>'+
     '<div class="bk green"><div class="l">🟢 淡季正常</div><div class="v">'+c('季节性休眠')+' <small>户</small></div></div>'
   );
@@ -5789,10 +5864,10 @@ function aiCtx(){
   return {
     网点:stationShort(), 参照日期:dateStr(REF_DATE),
     总览:{覆盖农户户:K.all, 累计粮款万元:Math.round(K.totalAmt/10000*10)/10, 在途未付万元:Math.round(K.unpaid/10000*10)/10},
-    状态分布: mer?{该去电话了:K.hi,顺路看看:K.mid,淡季正常:K.dorm,交粮正常:K.act}:{高危沉默:K.hi,一般沉默:K.mid,季节性休眠:K.dorm,活跃:K.act},
+    状态分布: mer?{该联系了:K.hi,顺路看看:K.mid,淡季正常:K.dorm,交粮正常:K.act}:{高危沉默:K.hi,一般沉默:K.mid,季节性休眠:K.dorm,活跃:K.act},
     [mer?'很久没来涉及粮款万元':'高危沉默涉及粮款万元']:Math.round(K.hiAmt/10000*10)/10,
     判定规则: mer
-      ?'按主品类取交粮间隔（小麦240天／玉米180天／大豆180天／未知180天）。超过间隔且累计粮款≥1万元标「该去电话了」，不足1万元标「顺路看看」；未超间隔时，处于其品类收粮季（小麦6-7月、玉米9-10月、大豆9-10月）内为「交粮正常」，否则为「淡季正常」。回答用生意语言，不用银行内部术语。'
+      ?'按主品类取交粮间隔（小麦240天／玉米180天／大豆180天／未知180天）。超过间隔且累计粮款≥1万元标「该联系了」，不足1万元标「顺路看看」；未超间隔时，处于其品类收粮季（小麦6-7月、玉米9-10月、大豆9-10月）内为「交粮正常」，否则为「淡季正常」。回答用生意语言，不用银行内部术语。'
       :'距上次交粮 ＞ 品类阈值（小麦240天／玉米180天／大豆180天／未知180天）计入沉默；沉默中累计粮款 ≥1万元 为高危沉默（优先上门），＜1万元 为一般沉默（批量触达）；未超阈值时，处于其品类收粮季（小麦6-7月、玉米9-10月、大豆9-10月）内为活跃，否则为季节性休眠（正常淡季，不打扰）。',
     粮商资金窗口期: st?{状态:st.label, 说明:(st.summary||'').replace(/<[^>]+>/g,''), 近30天有收购:st.recentActive,
       最近收购日:st.lastDateStr, 库存可支撑月数:Math.round(st.stockMonths*10)/10}:null,
@@ -6245,7 +6320,7 @@ function aiAnsMerchant(q,all,K){
     return s;
   }
   /* ③ 回访很久没来的老客户 */
-  if(/该去电话|去电话|回访|很久没来|多久没来|先跑|先看|哪些户|哪几户|高危|沉默/.test(t)){
+  if(/该联系|该去电话|去电话|回访|很久没来|多久没来|先跑|先看|哪些户|哪几户|高危|沉默/.test(t)){
     const rows=all.filter(f=>f.state==='高危沉默'||f.state==='一般沉默').sort(function(a,b){return b.amt-a.amt;}).slice(0,5);
     if(!rows.length) return '目前没有很久没来的老客户，大家都来得挺勤。';
     let s='很久没来的老客户共 '+(K.hi+K.mid)+' 户，最值得先联系的：\n';
@@ -6255,7 +6330,7 @@ function aiAnsMerchant(q,all,K){
   }
   /* ④ 规则口径（经营语言） */
   if(/阈值|规则|怎么判|判定|区别|不同|口径|为什么算/.test(t))
-    return '判定口径：按主品类取交粮间隔（小麦 240 天 / 玉米 180 天 / 大豆 180 天 / 未知 180 天）。超过间隔且累计粮款 ≥ 1 万元的，标「🔴 该去电话了」；超过间隔但不足 1 万元的，标「🟡 顺路看看」；没超间隔的，在收粮季（小麦 6-7 月、玉米 9-10 月、大豆 9-10 月）内是「🔵 交粮正常」，否则是「🟢 淡季正常」。';
+    return '判定口径：按主品类取交粮间隔（小麦 240 天 / 玉米 180 天 / 大豆 180 天 / 未知 180 天）。超过间隔且累计粮款 ≥ 1 万元的，标「🔴 该联系了」；超过间隔但不足 1 万元的，标「🟡 顺路看看」；没超间隔的，在收粮季（小麦 6-7 月、玉米 9-10 月、大豆 9-10 月）内是「🔵 交粮正常」，否则是「🟢 淡季正常」。';
   if(/淡季|休眠/.test(t)) return '🟢 淡季正常 '+K.dorm+' 户：没超交粮间隔、也不在收粮季，属正常淡季，不用专门联系，下个收粮季自然回来。';
   if(/顺路看看/.test(t)) return '🟡 顺路看看 '+K.mid+' 户：很久没来但累计贡献不大，路过或发微信问候一下即可。';
   if(/活跃|交粮正常/.test(t)) return '🔵 交粮正常 '+K.act+' 户：来得勤，往来正常，结算时多走动维护就行。';
@@ -6504,3 +6579,4 @@ goto('upload');
 </script>
 </body>
 </html>
+<!-- （注：内容由AI生成） -->
