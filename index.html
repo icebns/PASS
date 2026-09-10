@@ -3,7 +3,7 @@
 <head data-page-node-id="K2NYE6k472DPfaJty4IKwM">
 <meta charset="UTF-8" data-page-node-id="3JSYO72H9fS0UBEqtFmcfB">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="1MqKpY3ueCkDBLbGh6LTPU">
-<title>丰收云粮商经营资金规划工具（融合版）</title>
+<title>丰收智链 · 粮商经营画像与农户精准营销平台</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
 <!-- bundle 内部的 html2canvas/jsPDF 打包在 webpack 闭包里不暴露全局，逐页截图方案需要独立全局，故显式引入 -->
@@ -335,7 +335,7 @@
 <body data-page-node-id="XfpECUQWKh2G32wVa1EJ8f">
 
 <div class="topbar" data-page-node-id="3N1DbZMglFy2OcAFDzA2aL">
-  <h1 data-page-node-id="0pwfSpkHvk2cOP4BvB24xC">🌾 丰收云粮商经营资金规划工具</h1>
+  <h1 data-page-node-id="0pwfSpkHvk2cOP4BvB24xC">🌾 丰收智链 · 粮商经营画像与农户精准营销平台</h1>
   <button class="top-btn" onclick="resetForNext()" title="清空当前粮商数据，开始下一位测算">🧹 清空 · 测算下一位</button>
 </div>
 
@@ -481,8 +481,6 @@
         <input class="inp" id="p_baseline" type="number" placeholder="单位：万元 / 年" oninput="recalcParams()" data-page-node-id="WXjPFtJuUv2HNioFc4WAwT">
         <div class="tip" id="baseTip" data-page-node-id="M3cXkhryu2gBudwImhcC8T">💡 历史数据仅作参考，可根据下一季预期调整。</div>
       </div>
-
-      <button class="btn lg" onclick="goto('banker')" data-page-node-id="Ahmy7UNcyzJaNmxsouqjDz">🏦 下一步：查看农户营销名单 →</button>
     </div>
 
     <!-- ===== 资金窗口期建议（粮商短期周转活钱，面谈主打） ===== -->
@@ -507,6 +505,8 @@
         <button class="btn" onclick="goto('macro')">进入多情景宏观测算 →</button>
       </div>
     </details>
+
+    <button class="btn lg" style="margin-top:14px;" onclick="goto('banker')" data-page-node-id="Ahmy7UNcyzJaNmxsouqjDz">🏦 下一步：查看农户营销名单 →</button>
 
     <!-- 既有测算逻辑依赖的字段：精简 UI 后保留在 DOM 中（隐藏，不展示） -->
     <div style="display:none;" aria-hidden="true">
@@ -663,7 +663,7 @@
       <!-- 面访物料包（内部资料，粮商视角自动隐藏） -->
       <div id="matBlock">
         <h3 style="font-size:14px;color:var(--green-d);margin:20px 0 8px;">📦 面访物料下载（两份材料，分工不同）</h3>
-        <div class="hint" style="margin-bottom:10px;">① <b>粮商经营健康简报（给粮商看，PDF）</b>：年度总览与库存概览 / 粮价行情与资金窗口期 / 资金流向与收购构成 / 仓库产能日历与收粮高峰预警 / 分仓购销对冲与库存健康度——全是帮粮商做生意的内容，<b>正向表述，不含沉默名单与内部术语</b>，封面署名「丰收云系统自动生成」；② <b>内部材料即下方「📊 生成 PPT 作战手册」</b>（客户经理专用，四态分布 / 产区分布 / 四步打法 / 重点名单 / 农家夜预案 / 批量话术 / 执行清单 / 跟进 SOP），<b>请勿提供给粮商</b>。完整农户名单请用上方「⬇ 导出筛选明细 CSV」下载。</div>
+        <div class="hint" style="margin-bottom:10px;">① <b>丰收智链 · 粮商经营简报（给粮商看，PDF）</b>：年度总览与库存概览 / 粮价行情与资金窗口期 / 资金流向与收购构成 / 仓库产能日历与收粮高峰预警 / 分仓购销对冲与库存健康度——全是帮粮商做生意的内容，<b>正向表述，不含沉默名单与内部术语</b>，封面署名「丰收智链自动生成」；② <b>内部材料即下方「📊 生成 PPT 作战手册」</b>（客户经理专用，四态分布 / 产区分布 / 四步打法 / 重点名单 / 农家夜预案 / 批量话术 / 执行清单 / 跟进 SOP），<b>请勿提供给粮商</b>。完整农户名单请用上方「⬇ 导出筛选明细 CSV」下载。</div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;" id="matBtns">
           <button class="btn" onclick="exportBankRptPDF('farmer')">📄 生成粮商经营简报（给粮商看）</button>
           <button class="btn ghost" onclick="exportBankPPTX()">📊 生成 PPT 作战手册 (.pptx)</button>
@@ -735,8 +735,8 @@
     <div class="script-head">
       <span class="who" id="talkName"></span>
       <div class="script-tabs">
-        <button class="stab active" id="stabPro" onclick="switchTalk('pro')">专业版 · 面访提纲</button>
-        <button class="stab" id="stabFolk" onclick="switchTalk('folk')">通俗版 · 转农户</button>
+        <button class="stab active" id="stabPro" onclick="switchTalk('pro')">面访版 · 面访提纲</button>
+        <button class="stab" id="stabFolk" onclick="switchTalk('folk')">微信版 · 转农户</button>
       </div>
     </div>
     <div class="script-box" id="talkBox"></div>
@@ -774,6 +774,7 @@
     <div style="display:flex;gap:8px;margin-top:10px;">
       <input type="text" id="aiAskInp" class="ai-inp" placeholder="例：张某某为什么算高危沉默？上门先说什么？" onkeydown="if(event.key==='Enter')aiSend()">
       <button class="btn" onclick="aiSend()">发送</button>
+      <button class="btn ghost" onclick="aiQuickInterview()" title="按当前/最高危农户生成四段式面谈策略">🎯 面谈策略</button>
       <button class="btn ghost" onclick="aiBoot(true)">▶ 启动模型</button>
     </div>
     <div style="margin-top:8px;font-size:11.8px;color:var(--sub);">
@@ -4155,10 +4156,10 @@ function resetWinRates(){
 
 /* ===================== 四、多情景宏观测算 ===================== */
 const ASSETS=[
-  {key:'deposit',name:'定期存款',rate:1.8,weight:25},
-  {key:'bond',name:'国债',rate:2.6,weight:25},
-  {key:'wealth',name:'稳健理财',rate:3.5,weight:25},
-  {key:'ins',name:'分红型保险',rate:2.5,weight:25}
+  {key:'deposit',name:'定期存款',rate:1.15,weight:25},
+  {key:'bond',name:'国债',rate:1.63,weight:25},
+  {key:'wealth',name:'稳健理财',rate:1.8,weight:25},
+  {key:'ins',name:'分红型保险',rate:2.0,weight:25}
 ];
 const SCEN=[
   {name:'中性情景',inf:1.5,note:'长期通胀 1.5%（历史物价合理中枢）'},
@@ -4352,7 +4353,7 @@ function buildReport(){
     : `<h2>3、多宏观情景模拟结果</h2>
 <div class="rp-warn">⚠️ 尚未确认「参考年均结余」，本节暂不输出情景测算。请与粮商当面确认下一季预期年均结余后重新生成报告。</div>`;
   const html=
-`<h1>丰收云配套 · 粮商经营资金规划报告</h1>
+`<h1>丰收智链 · 粮商经营资金规划报告</h1>
 <p style="text-align:center;color:#5d6b63;">【演示原型】本报告为面谈辅助测算输出，未对接丰收云生产业务接口。</p>
 ${custHtml}
 
@@ -4451,11 +4452,11 @@ function buildBankRptHtml(mode){
   const st=fundWindowStatus();
   const hi=rows.filter(f=>f.state==='高危沉默');
   const f0=hi[0]||rows[0]||null;
-  const station=stationName();
-  const PH='<div class="ph">'+(internal?'丰收云 · 农户激活行动手册（内部）':'丰收云 · 粮商经营健康简报')+'</div>';
+  const station=stationShort();   /* 简报封面/页眉/农家夜模板：用站点简称，不显示行政区划与仓号 */
+  const PH='<div class="ph">'+(internal?'丰收智链 · 农户激活行动手册（内部）':'丰收智链 · 粮商经营简报')+'</div>';
   const pfTxt=internal
     ?'内部资料 · 客户经理专用，请勿提供给粮商 ｜ 数据来源于丰收云系统导出'
-    :'本报告由丰收云系统自动生成，数据来源于丰收云系统导出';
+    :'本报告由丰收智链自动生成，数据来源于丰收云系统导出';
   let pageNo=0;
   const page=(h,nohd)=>{ pageNo++; return '<div class="sheet">'+(nohd?'':PH)+'<div class="sbody">'+h+'</div><div class="pf">'+pfTxt+' ｜ 第 '+pageNo+' 页</div></div>'; };
   const refM=(REF_DATE?new Date(REF_DATE):new Date());
@@ -4501,15 +4502,16 @@ function buildBankRptHtml(mode){
     const jd=st?(jdMap[st.code]||'建议关注出库回笼节奏与资金安排'):'';
     let out='';
     out+='<div class="sheet"><div class="cvr">'
-      +'<div class="cvr-brand">丰 收 云</div>'
+      +'<div class="cvr-brand">丰 收 智 链</div>'
       +'<div class="cvr-icon">🌾</div>'
-      +'<div class="cvr-title">粮商经营健康简报</div>'
+      +'<div class="cvr-title">粮商经营简报</div>'
       +'<div class="cvr-sub">'+refM.getFullYear()+' 年度 · '+season+'季刊</div>'
+      +'<div style="font-size:13px;color:#5d6b63;letter-spacing:2px;margin:-12px 0 18px;">数据驱动粮商经营 · AI 智链农户金融</div>'
       +'<div class="cvr-div"></div>'
       +'<div class="cvr-station">'+escHtml(station)+'</div>'
       +'<div class="cvr-date">报告生成日期：'+dateStr(REF_DATE)+'</div>'
       +'<div class="cvr-note">数据来源于丰收云系统导出 · 浏览器本地解析 · 原始文件不上传服务器</div>'
-      +'<div class="cvr-corner">丰收云 · 经营参考</div></div></div>';
+      +'<div class="cvr-corner">丰收智链 · 经营参考</div></div></div>';
     /* P1 经营体检单首页：身份 → 综合诊断 → 核心数据 → 年度规模 → 健康判定 → 收粮季提醒 → 内容导览 */
     const gd=(M.noSale||td<=180)?{ic:'🟢',txt:'健康',c:'#0a6b3b',bg:'#f0faf3',bd:'#bfe3cc'}
             :(td<=365?{ic:'🟡',txt:'需关注',c:'#8a6100',bg:'#fff9ec',bd:'#e2cf9a'}
@@ -4517,7 +4519,7 @@ function buildBankRptHtml(mode){
     const turnTxt=M.noSale?'处于集中收粮阶段，暂未形成出库周转':(td<=180?'处于行业合理区间':'周转偏慢，建议加快出库回款');
     const srcTxt=(top5Share<=0.5?'粮源分散稳定，不依赖单一大户':'粮源集中度较高，建议维护好核心大户');
     const bigN=(n,d)=>fmt(n,d);
-    let p1='<div class="rep-hd"><div class="rh-t">丰收云 · 粮商经营健康简报</div>'
+    let p1='<div class="rep-hd"><div class="rh-t">丰收智链 · 粮商经营简报</div>'
       +'<div class="rh-s">'+escHtml(station)+' ｜ '+refM.getFullYear()+' 年度 · '+season+'季刊 ｜ 统计周期：'+escHtml(M.start||'—')+' ~ '+escHtml(M.end||'—')+'（'+(M.spanMonths||12)+' 个月）　主要品种：'+escHtml(top3)+'</div></div>'
       +'<div class="rp-judge" style="background:'+gd.bg+';border-color:'+gd.bd+';">'
       +'<div class="jv" style="color:'+gd.c+';">'+gd.ic+' 综合经营诊断：'+gd.txt+'</div>'
@@ -4713,10 +4715,11 @@ function buildBankRptHtml(mode){
   /* ================= 农户激活行动手册（内部 · 客户经理专用） ================= */
   let out='';
   out+='<div class="sheet"><div class="cvr">'
-    +'<div class="cvr-brand">丰 收 云</div>'
+    +'<div class="cvr-brand">丰 收 智 链</div>'
     +'<div class="cvr-icon">🛡</div>'
     +'<div class="cvr-title">农户激活行动手册</div>'
     +'<div class="cvr-sub">内部资料 · 客户经理专用</div>'
+    +'<div style="font-size:13px;color:#5d6b63;letter-spacing:2px;margin:-12px 0 18px;">数据驱动粮商经营 · AI 智链农户金融</div>'
     +'<div class="cvr-div"></div>'
     +'<div class="cvr-station">'+escHtml(station)+'</div>'
     +'<div class="cvr-date">报告生成日期：'+dateStr(REF_DATE)+(useFilter?'（当前筛选口径）':'')+'</div>'
@@ -4762,8 +4765,8 @@ function buildBankRptHtml(mode){
   const talkName=f0?f0.name:'＿＿';
   let i5='<h2>5、「农家夜」活动邀约预案</h2>'
     +'<p style="font-size:13.5px;color:#5d6b63;">活动定位：粮商 + 邮储银行联合举办的<b>农户答谢暨粮价交流会</b>。目标：召回沉默农户，同时为银行创造 C 端获客机会（开户 → 存款 → 贷款 / 保险）。</p>'
-    +'<div class="rp-card"><h4>【通俗版 · 粮商口吻，示例：'+escHtml(talkName)+'】</h4><pre>“'+escHtml(talkName)+'，好久不见！今年新粮快下来了，＿＿月＿＿日（星期＿）晚上我们在村里办个「农家夜」活动，聊聊今年的粮价行情，还有邮储银行的惠农政策。来了就有礼品，也看看咱们还能不能再合作。您一定来啊！”</pre></div>'
-    +'<div class="rp-card"><h4>【专业版 · 客户经理面谈用'+(f0?('，示例：'+escHtml(talkName)+'，沉默 '+f0.gap+' 天'):'')+'】</h4><pre>“'+escHtml(talkName)+'您好，我是邮储银行的客户经理＿＿＿。'+escHtml(station)+'的老板统计到您已有 '+(f0?f0.gap:'＿＿')+' 天没来卖粮了。这次我们联合粮站老板在村里办「农家夜」，主要是想请您回来坐坐，聊聊今年粮价趋势，也看看我们银行能给咱农户提供哪些支持。您看方便参加吗？”</pre></div>'
+    +'<div class="rp-card"><h4>【微信版 · 粮商转发农户，示例：'+escHtml(talkName)+'】</h4><pre>“'+escHtml(talkName)+'，好久不见！今年新粮快下来了，＿＿月＿＿日（星期＿）晚上我们在村里办个「农家夜」活动，聊聊今年的粮价行情，还有邮储银行的惠农政策。来了就有礼品，也看看咱们还能不能再合作。您一定来啊！”</pre></div>'
+    +'<div class="rp-card"><h4>【面访版 · 客户经理面谈用'+(f0?('，示例：'+escHtml(talkName)+'，沉默 '+f0.gap+' 天'):'')+'】</h4><pre>“'+escHtml(talkName)+'您好，我是邮储银行的客户经理＿＿＿。'+escHtml(station)+'的老板统计到您已有 '+(f0?f0.gap:'＿＿')+' 天没来卖粮了。这次我们联合粮站老板在村里办「农家夜」，主要是想请您回来坐坐，聊聊今年粮价趋势，也看看我们银行能给咱农户提供哪些支持。您看方便参加吗？”</pre></div>'
     +'<table class="rp-tbl"><tbody>'
     +'<tr><td style="width:90px;">18:30</td><td>农户签到（扫码签到，同步记录到场信息）</td></tr>'
     +'<tr><td>19:00</td><td>粮商致辞 + 介绍今年收粮计划</td></tr>'
@@ -4803,7 +4806,7 @@ function buildBankRptHtml(mode){
     +'<tr><td><b>第 2 步 · 3 天内</b></td><td>跟进已开卡农户 → 确认资金是否到账，引导存款（粮款归行）；跟进新增贷款申请 → 收集资料，推进审批。</td></tr>'
     +'<tr><td><b>第 3 步 · 7 天内</b></td><td>汇总活动效果：邀约人数 vs 实际到场 vs 开卡数；将结果录入丰收云工具 → 更新农户状态。</td></tr>'
     +'</tbody></table>'
-    +'<div class="rp-tip">✅ 至此完成「导出数据 → 简报打动粮商 → 农家夜邀约 → 农户到场 → 银行获客」的 C 端闭环。配套材料：<b>粮商经营健康简报</b>（给粮商看）与本手册、行动 PPT（内部用）。</div>'
+    +'<div class="rp-tip">✅ 至此完成「导出数据 → 简报打动粮商 → 农家夜邀约 → 农户到场 → 银行获客」的 C 端闭环。配套材料：<b>丰收智链 · 粮商经营简报</b>（给粮商看）与本手册、行动 PPT（内部用）。</div>'
     +'<h4 style="margin:10px 0 4px;font-size:14.5px;color:#0a6b3b;">📋 邀约话术（电话用，日期现场填写）</h4>'
     +'<div class="stalk">“'+escHtml(talkName)+'，我是邮储银行＿＿＿。'+escHtml(station)+'的老板组织农家夜，＿＿月＿＿日晚上在村里，想请您来聊聊今年的粮食行情，您方便参加吗？”</div>';
   out+=page(i8);
@@ -4892,7 +4895,7 @@ function exportBankRptPDF(mode){
   const PW=194,PH=281,MX=8,MY=8;   /* margin 8mm → 可打印区 194×281mm，与 .sheet 高 1150px 严格等比 */
   let first=true;
   const put=function(dataUrl,w,h){ if(!first) pdf.addPage(); pdf.addImage(dataUrl,'JPEG',MX,MY,w,h); first=false; };
-  toast(internal?'正在生成内部行动手册 PDF（逐页渲染，约需 20–40 秒）…':'正在生成粮商经营健康简报 PDF（逐页渲染，约需 20–40 秒）…');
+  toast(internal?'正在生成丰收智链 · 农户激活行动手册 PDF（逐页渲染，约需 20–40 秒）…':'正在生成丰收智链 · 粮商经营简报 PDF（逐页渲染，约需 20–40 秒）…');
   (async function(){
     for(let i=0;i<sheets.length;i++){
       const canvas=await html2canvas(sheets[i],{scale:2,useCORS:true,backgroundColor:'#ffffff'});
@@ -4912,7 +4915,7 @@ function exportBankRptPDF(mode){
         }
       }
     }
-    pdf.save((internal?'丰收云_农户激活行动手册_':'丰收云_粮商经营健康简报_')+dateStr(REF_DATE)+'.pdf');
+    pdf.save((internal?'丰收智链_农户激活行动手册_':'丰收智链_粮商经营简报_')+dateStr(REF_DATE)+'.pdf');
     toast('PDF 已生成，开始下载');
   })().catch(function(e){ toast('PDF 生成失败：'+((e&&e.message)||e)); });
 }
@@ -4929,7 +4932,7 @@ function bankDeckData(){
   const useFilter=!!(BK.filtered&&BK.filtered.length&&BK.filtered.length<all.length);
   const t0=rows[0]||null;
   return {
-    station:stationName(), date:dateStr(REF_DATE), counts:K, filter:useFilter,
+    station:stationShort(), date:dateStr(REF_DATE), counts:K, filter:useFilter,
     pb:{n180:PB.n180, n5w:PB.n5w, outflowW:fmt(((STATE&&STATE.outflow)||0)/10000,0)},
     win: st?({code:st.code,label:st.label,summary:(st.summary||'').replace(/<[^>]+>/g,''),
       recentActive:st.recentActive, stockMonths:st.stockMonths, stockHigh:st.stockHigh}):null,
@@ -4946,11 +4949,11 @@ function buildBankDeck(d){
   const K=d.counts, S=[];
   const cn='一二三四五六七八九';
   let ni=0; const nx=()=>cn[ni++];
-  S.push({title:'丰收云 · 农户激活行动手册（客户经理专用）',blocks:[
+  S.push({title:'丰收智链 · 农户激活行动手册（客户经理专用）',blocks:[
     {type:'kv',items:[['网点',d.station],['参照日期',d.date],['覆盖农户',K.all+' 户'],
       ['累计粮款',fmt(K.totalAmt/10000,1)+' 万元'],['在途未付粮款',fmt(K.unpaid/10000,1)+' 万元'],
       ['高危沉默',K.hi+' 户 / 涉及 '+fmt(K.hiAmt/10000,1)+' 万元']]},
-    {type:'text',text:'客户经理内部作战手册：名单、话术、执行清单均可直接使用。农户交售数据来自丰收云原始导出、浏览器本地解析，原始文件不上传服务器；行内资产 / VIP 为演示样例，正式落地需对接行内客户资产视图。配套材料：粮商经营健康简报（给粮商看，正向表述）。'}
+    {type:'text',text:'客户经理内部作战手册：名单、话术、执行清单均可直接使用。农户交售数据来自丰收云原始导出、浏览器本地解析，原始文件不上传服务器；行内资产 / VIP 为演示样例，正式落地需对接行内客户资产视图。配套材料：丰收智链 · 粮商经营简报（给粮商看，正向表述）。'}
   ]});
   S.push({title:nx()+'、看板汇总（四态分布）',blocks:[
     {type:'table',colW:[2.2,1.3,1.9,3.6],head:['状态','户数','涉及粮款','建议动作'],rows:[
@@ -5036,8 +5039,8 @@ function exportBankPPTX(){
         }
       });
     });
-    pptx.writeFile({fileName:'丰收云_农户激活行动手册_'+d.date+'.pptx'});
-    toast('正在生成农户激活行动手册 PPT（9 页 16:9）…');
+    pptx.writeFile({fileName:'丰收智链_农户激活行动手册_'+d.date+'.pptx'});
+    toast('正在生成丰收智链 · 农户激活行动手册 PPT（9 页 16:9）…');
   }catch(e){
     console.warn('PPT 生成失败', e);
     toast('PPT 生成失败：'+((e&&e.message)||e));
@@ -5399,6 +5402,14 @@ function maskPhone(p){ const s=(p||'').trim(); return s.length>=7?(s.slice(0,3)+
 function gradeOf(a){ return a>=12000?'A':(a>=2000?'B':'C'); }
 function gradeTxt(g){ const m={A:'核心粮源',B:'稳定粮源',C:'零散散户'}; return (g||'?')+' 级·'+(m[g]||''); }
 function stationName(){ return (STATE&&STATE.whList&&STATE.whList.length)?STATE.whList[0]:'本粮站'; }
+/* 站点简称（话术与展示统一用这个）：粮商有多个仓、来电来访的都是本村人，
+   去掉行政区划前缀与仓号——例：「藁城贾市庄粮安三号仓」→「贾市庄粮安粮仓」 */
+function stationShort(){
+  const s=String(stationName()||'');
+  let t=s.replace(/^石家庄市?/,'').replace(/^藁城区?/,'').replace(/^(正定|栾城|鹿泉|井陉)县?/,'');
+  t=t.replace(/[一二三四五六七八九十1-9]\s*号\s*仓/g,'粮仓');
+  return t||s||'本粮站';
+}
 
 /* 行内资产演示数据：按农户姓名做确定性哈希生成，同一农户每次结果一致（正式需对接行内资产视图） */
 function hashName(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))>>>0; } return h; }
@@ -5420,8 +5431,8 @@ function mockAsset(name,amt){
 function recommend(A){
   if(!A||!A.has) return {
     diags:['尚未在本网点开立结算账户，粮款资金无法归行', '缺少行内资产视图，无法做现有持仓诊断'],
-    sugs:['开立惠农结算账户并绑定丰收宝收款码，先把粮款资金流引入行内','配一张免年费的惠农卡，粮款直接打卡，减少现金往返'],
-    goal:'开户 + 绑定丰收宝收款，实现资金归行', isNew:true };
+    sugs:['开立惠农结算账户并绑定丰收云收款码，先把粮款资金流引入行内','配一张免年费的惠农卡，粮款直接打卡，减少现金往返'],
+    goal:'开户 + 绑定丰收云收款码，实现资金归行', isNew:true };
   const d=[],s=[]; const curR=A.total>0?A.cur/A.total:0;
   if(curR>0.6&&A.cur>5){ d.push('活期占比 '+Math.round(curR*100)+'%，资金以活期沉淀，收益几乎为零'); s.push('阶梯定期 / 储蓄国债：保留约 30% 作收粮头寸，其余转 3 个月—1 年期'); }
   else if(curR>0.4){ d.push('活期占比 '+Math.round(curR*100)+'%，流动性偏重'); s.push('7 天通知存款或日盈类稳健产品，兼顾旺季随时支取'); }
@@ -5446,7 +5457,7 @@ function proTalk(f){
   return [
     '【面访提纲 · '+f.name+'】（内部使用，勿直接转发客户）',
     '━━ 一、客户画像 ━━',
-    '· 身份：'+stationName()+' '+gradeTxt(gradeOf(f.amt))+'，主交售品种「'+f.mainCrop+'」',
+    '· 身份：'+stationShort()+' '+gradeTxt(gradeOf(f.amt))+'，主交售品种「'+f.mainCrop+'」',
     '· 结算：累计 '+f.cnt+' 笔 / '+fmt(f.kg,0)+' 公斤，累计粮款 '+fmt(f.amt,0)+' 元，占本粮站 '+fmt(f.share*100,1)+'%',
     '· 最近交粮：'+(f.last?dateStr(f.last):'—')+'，距今 '+dayGap(f.last)+' 天（该品类阈值 '+thrOf(f.mainCrop)+' 天）',
     '· 行内资产：'+(A.has?('合计 '+fmt(A.total,1)+' 万元（'+A.vip+'客户）— 活期 '+fmt(A.cur,1)+' / 定期 '+fmt(A.dep,1)+' / 理财 '+fmt(A.wealth,1)+' / 保险 '+fmt(A.ins,1)):('暂未开立本行账户（演示样例）')),
@@ -5460,7 +5471,7 @@ function proTalk(f){
     '━━ 四、配置建议（风险偏好：稳健型）━━',
     R.sugs.map(x=>'· '+x).join('\n'),
     '━━ 五、面访切入话术 ━━',
-    '· 「'+f.name+'大哥/大姐，今年您在'+stationName()+'一共交了 '+f.cnt+' 回粮，'+fmt(f.kg,0)+' 公斤，粮款 '+fmt(f.amt,0)+' 元，是我们这儿的'+gradeOf(f.amt)+' 级粮源。我这次来是想给您做个资金安排，让这笔卖粮钱在等下一季的时候也能有点收益，又不耽误您旺季用钱。」',
+    '· 「'+f.name+'大哥/大姐，今年您在'+stationShort()+'一共交了 '+f.cnt+' 回粮，'+fmt(f.kg,0)+' 公斤，粮款 '+fmt(f.amt,0)+' 元，是我们这儿的'+gradeOf(f.amt)+' 级粮源。我这次来是想给您做个资金安排，让这笔卖粮钱在等下一季的时候也能有点收益，又不耽误您旺季用钱。」',
     '━━ 六、下一步动作 ━━',
     '· 动作：'+R.goal+'　时限：'+((ss==='高危沉默')?'48 小时内电话预约上门':(ss==='一般沉默'?'本周内完成批量触达':'本季度内跟进'))+'　跟进人：________'
   ].join('\n');
@@ -5482,13 +5493,13 @@ function folkTalk(f){
     body+='\n再有就是，打完上一季您就没再来过了，地里要是还有余粮，趁现在行情还行赶紧送来，我这边给您留个好价位。';
   }
   return [
-    f.name+'哥/嫂子（'+f.name+'您好），我是'+stationName()+'的。',
+    f.name+'哥/嫂子（'+f.name+'您好），我是'+stationShort()+'的。',
     '',
     '跟您说个事儿：今年您一共来卖了 '+f.cnt+' 回粮，拢共 '+fmt(f.kg,0)+' 公斤，到手 '+fmt(f.amt,0)+' 元，在我们这儿排得上号。',
     '',
     body,
     '',
-    '您要是觉得有意思，回头我让邮储的客户经理给您打个电话细说说。不买没关系，听听不吃亏。'
+    '您要是觉得有意思，回头我给您打个电话细说说。不买没关系，听听不吃亏。'
   ].join('\n');
 }
 
@@ -5584,7 +5595,8 @@ function renderBanker(){
       '<td>'+stateChip(f.state)+'</td>'+
       (mgr?('<td>'+(A.has?('<b>'+fmt(A.total,1)+' 万</b><br><span style="font-size:11px;color:var(--sub);">'+A.vip+'</span>'):'<span class="chip chip-grey">新客</span>')+'</td>'):'')+
       '<td class="num">'+(f.unpaid>0?'<b style="color:var(--red);">'+fmt(f.unpaid,0)+'</b>':'0')+'</td>'+
-      '<td><button class="btn-mini" onclick="openTalk(\''+f.name.replace(/'/g,"")+'\',\'pro\')">话术</button></td>'+
+      '<td><button class="btn-mini" onclick="openTalk(\''+f.name.replace(/'/g,"")+'\',\'pro\')">话术</button>'
+      +'<button class="btn-mini" style="margin-top:4px;" onclick="openInterview(\''+f.name.replace(/'/g,"")+'\')" title="AI 面谈策略：先说什么/后说什么/推什么/怎么说">🎯</button></td>'+
       '</tr>';
   });
   h+='</tbody>';
@@ -5665,7 +5677,7 @@ function aiCtx(){
       未结粮款元:Math.round(f.unpaid||0)};
   });
   return {
-    网点:stationName(), 参照日期:dateStr(REF_DATE),
+    网点:stationShort(), 参照日期:dateStr(REF_DATE),
     总览:{覆盖农户户:K.all, 累计粮款万元:Math.round(K.totalAmt/10000*10)/10, 在途未付万元:Math.round(K.unpaid/10000*10)/10},
     状态分布:{高危沉默:K.hi,一般沉默:K.mid,季节性休眠:K.dorm,活跃:K.act},
     高危沉默涉及粮款万元:Math.round(K.hiAmt/10000*10)/10,
@@ -5676,6 +5688,425 @@ function aiCtx(){
       .map(function(p){ return p.name+' 参考年化'+p.rate.toFixed(2)+'%'+(p.rec?'（当前状态推荐）':''); }),
     重点农户Top8:top
   };
+}
+/* ===================== 面谈智能体（领域任务型） =====================
+   架构：Thought(意图路由) → Action(工具调用：查画像/话术库/资产诊断/产品库)
+        → Observation(结构化结果) → Answer(四段式策略)，支持多轮按段细化。
+   说明：四段骨架与全部数字由规则生成（确定性、可复现、绝不编造）；
+        本地模型只做「口语化改写」这一层，且输出需通过格式与数字白名单校验，
+        校验不通过即丢弃、回退规则版——保证模型不可用时功能 100% 可用。      */
+const AI_LAST={f:null,sec:null};      /* 多轮槽位：记住当前正在谈的农户 */
+function matchFarmerInQ(q){
+  const all=currentFarmers(); if(!all.length) return {f:null,cands:[]};
+  const s=String(q||'');
+  let best=null;
+  all.forEach(function(f){
+    if(!f.name) return;
+    if(s.indexOf(f.name)>=0&&(!best||f.name.length>best.name.length)) best=f;
+  });
+  if(best) return {f:best,cands:[]};
+  /* 只说了姓氏或前两字：给出候选让客户经理确认，避免猜错人 */
+  const cands=all.filter(function(f){ return f.name&&f.name.length>=2&&s.indexOf(f.name.slice(0,2))>=0; })
+                 .sort(function(a,b){ return b.amt-a.amt; }).slice(0,5);
+  return {f:null,cands:cands};
+}
+function farmerBrief(f){
+  const A=f.A||mockAsset(f.name,f.amt);
+  return '姓名 '+f.name+'｜'+gradeTxt(f.grade)+'｜主品类 '+f.mainCrop
+    +'｜累计 '+f.cnt+' 笔 / '+fmt(f.kg,0)+' 公斤 / '+fmt(f.amt,0)+' 元，占本网点 '+fmt(f.share*100,1)+'%'
+    +'｜最近交粮 '+(f.last?dateStr(f.last):'—')+'，距今 '+f.gap+' 天（阈值 '+f.thr+' 天）'
+    +'｜状态 '+f.state+'｜在途未结 '+fmt(f.unpaid||0,0)+' 元'
+    +'｜行内资产 '+(A.has?(fmt(A.total,1)+' 万元（'+A.vip+'，活期 '+fmt(A.cur,1)+' 万）'):'暂无本行账户');
+}
+/* 四段式面谈策略（纯规则生成，模型不可用时的兜底版本，也是演示主力） */
+function interviewPlan(f){
+  const A=f.A||mockAsset(f.name,f.amt);
+  const R=recommend(A);
+  const ss=f.state, act=ST_ACT[ss]||'';
+  const call=(f.gap>=f.thr?'已 '+f.gap+' 天没来交粮（超品类阈值 '+f.thr+' 天）':'距今 '+f.gap+' 天，未超阈值 '+f.thr+' 天');
+  let s2='';
+  if(ss==='高危沉默') s2='先问原因、再谈产品——是不是改卖给别家了、价格不合适、还是家里有变动；'
+    +'听完之后再用「今年的收购标准和行情」把话题接回来，切忌一进门就推产品。';
+  else if(ss==='一般沉默') s2='价值验证后不占上门资源，以低成本触达为主：告知今年收购标准与粮价行情，'
+    +'邀请参加「农家夜」活动，留一个下季再合作的口子。';
+  else if(ss==='季节性休眠') s2='属正常淡季，原则是不打扰：只做下个收粮季的预告，确认联系方式与明年种植意向即可。';
+  else s2='往来正常，重点是加配与转介绍：问清今年种植面积、资金安排，顺带请他介绍同村种粮户。';
+  const s1='自报家门后用他自己的数据开场（比寒暄更容易建立信任）——'
+    +'「'+f.name+'大哥/大姐，我是邮储'+stationShort()+'的客户经理。您在我们粮站累计交了 '+f.cnt+' 回粮、'
+    +fmt(f.kg,0)+' 公斤，粮款 '+fmt(f.amt,0)+' 元，是我们的 '+gradeTxt(f.grade)+'。今天顺道跟您对对账、聊聊今年的行情。」';
+  const s3='推荐目标：'+R.goal+'。建议顺序 '+R.sugs.map(function(x,i){ return (i+1)+'）'+x; }).join('；')
+    +(f.unpaid>0?('；可结合在途未结粮款 '+fmt(f.unpaid,0)+' 元，先谈结算与粮款归行，再谈配置。'):'')
+    +'具体产品与收益以银行正式产品说明书与风险评估为准。';
+  /* 双版本按「使用场景」而非「专业度」区分：面访版=上门当面说；微信版=可直接转发给农户 */
+  const s4='【面访版 · 上门当面说】「'+f.name+'，您这笔卖粮钱在等下一季的时候，放活期几乎没收益；'
+    +'我们给您配个不耽误旺季用钱的法子，比活期强不少，需要时提前说一声就能取。」\n'
+    +'【微信版 · 可直接转发】'+folkTalk(f);
+  return {f:f,state:ss,act:act,brief:farmerBrief(f),
+    secs:['① 先说什么（破冰 30 秒）：'+s1,'② 后说什么（切入痛点）：'+call+'。'+s2,
+          '③ 推什么产品：'+s3,'④ 用什么话术：\n'+s4]};
+}
+function interviewText(f,sec,bodyOverride){
+  const P=interviewPlan(f);
+  const body=(bodyOverride!=null)?bodyOverride:((sec&&P.secs[sec-1])?P.secs[sec-1]:P.secs.join('\n\n'));
+  return '🎯 【'+f.name+'】面谈策略（'+ST_ICO[P.state]+' '+P.state+' ｜ '+P.act+'）\n'
+    +'—— '+P.brief+'\n\n'+body
+    +'\n\n（以上按本地名单精确计算，数字均可核对；产品以正式说明书为准）';
+}
+/* 模型润色层：只做口语化改写，须通过「保留原有段落标记 + 数字白名单」双重校验。
+   注意：单段细说（如「再细说说第③段」）的提纲只有一个标记，
+   校验必须按提纲里实际存在的标记动态检查——写死四段会让单段请求 100% 误报回退 */
+var AI_POLISH_FAIL='', AI_POLISH_NOTE='', AI_POLISH_DEBUG='', AI_POLISH_OK=0, AI_POLISH_TOT=0;
+/* 段落标记保留校验（纯函数，便于测试）：返回提纲中有、但输出里丢了的标记 */
+function polishCheck(src,out){
+  const varnts=[
+    [/①/,/【?①|第一段|第1段|^\s*1[.、]/m],
+    [/②/,/【?②|第二段|第2段|^\s*2[.、]/m],
+    [/③/,/【?③|第三段|第3段|^\s*3[.、]/m],
+    [/④/,/【?④|第四段|第4段|^\s*4[.、]/m]];
+  const names=['①','②','③','④'], miss=[];
+  varnts.forEach(function(v,i){ if(v[0].test(src)&&!v[1].test(out)) miss.push(names[i]); });
+  return miss;
+}
+/* 指令回声/复述检测（纯函数，便于测试）：0.5B 小模型常把提纲原样复述、
+   或把任务指令本身带进输出（如「请将上述内容整理成…」），这类输出一律判不通过 */
+function polishEchoCheck(txt,out){
+  /* 提示词特征句：0.5B 会把系统提示词整段当输出抄回来（实测「② 请把下面这一段…硬性要求：…⑤ 2-3 句」
+     骗过了全部校验被判成功），这些词组正常改写正文里不可能出现 */
+  if(/请将上述|请改写|请把下面|按照要求|硬性要求|只输出这一段|只输出改写后|改写得更好讲|改写成更口语|面谈教练|段落标记|整理成|以下是改写|好的[，,]下面|不要复述/.test(out)) return '输出含指令回声（模型复述了任务指令）';
+  /* 复述的本质是内容照抄而非长度——输出比原文长很可能是写了更详细的版本（用户定调：字数多≠复述）。
+     判据改为：原文（去段首标记）连续 50 字出现在输出中才算复述；长度只做超 2.5 倍的极端兜底 */
+  const core=String(txt||'').replace(/^\s*【?[①②③④][^\n]{0,24}?[：:]/gm,'').replace(/\s+/g,'');
+  const o=String(out||'').replace(/\s+/g,'');
+  if(core.length>=50){
+    for(let i=0;i+50<=core.length;i+=10){
+      if(o.indexOf(core.slice(i,i+50))>=0) return '输出疑似整段复述原文（含原文连续大段文字）';
+    }
+  }
+  if(txt.length>120&&out.length>txt.length*2.5) return '输出疑似整段复述原文（'+out.length+' 字 ≥ 原文 '+txt.length+' 字）';
+  return '';
+}
+/* 指令回声清理（纯函数）：0.5B 常在结尾多吐一句「请将上述内容整理成…」，
+   整行删掉即可保住可用正文——直接判废会让润色永远回退，等于白跑一次模型 */
+function polishSanitize(out){
+  /* 注意：提示词里的模板词（「这一段：」「任务：」「提纲：」）也会被小模型抄进正文，一并清理 */
+  const ECHO=/请将上述|请改写|请把下面|按照要求|硬性要求|只输出这一段|只输出改写后|改写得更好讲|改写成更口语|面谈教练|段落标记|不要复述|整理成|以下是改写|好的[，,]下面|^改写[：:]?$|^这一段[：:]?$|^任务[：:]|^提纲[：:]?$|^农户画像[：:]|^面谈提纲[：:]?$/;
+  /* 先救后废：模型会把指令句写进正文（实测「① 先说什么：请简述您今天来面谈的原因：「我是邮储…」」），
+     直接删行会连引号里的正经内容一起丢——先剥掉指令语与引号，保住被引号包住的可用句子 */
+  const s=String(out||'')
+    .replace(/请(?:简述|说明|回答|介绍|补充|写出|列出|描述|给出|提供|根据|概括)[^：:\n]{0,24}[：:]?\s*/g,'')
+    .replace(/[「」『』]/g,'');
+  return s.split(/\n/).filter(function(l){ return l.trim()&&!ECHO.test(l); }).join('\n').trim();
+}
+/* 段落标题恢复（纯函数）：模型删掉段首标记时，把原提纲的段首标题补回去。
+   注意标题长度要给足——「① 先说什么（破冰 30 秒）：」这类带括号的标题超过 12 字，
+   早期正则限死 12 字导致第①段每次都补不回来、必然判废 */
+function polishSecHead(secTxt,miss){
+  const hm=String(secTxt||'').match(/^\s*(【?[①②③④][^\n]{0,24}?[：:])/);
+  return hm?hm[1]:(((miss&&miss[0])||'')+' ');
+}
+/* 标签集合提取（纯函数）：取文本中所有【…】标签的正文 */
+function polishTags(s){
+  return (String(s||'').match(/【[^】\n]{1,20}】/g)||[]).map(function(t){ return t.replace(/[【】]/g,'').trim(); });
+}
+/* 已知标签判定（纯函数）：前 3 字相同即视为同一标签，容忍【专业版】vs【专业版 · 面访用】这类简写 */
+function polishTagKnown(src,tag){
+  const a=String(tag||'').trim().slice(0,3);
+  if(!a) return true;
+  const ys=polishTags(src);
+  for(let i=0;i<ys.length;i++){
+    const y=ys[i];
+    if(y.slice(0,3)===a||String(tag).indexOf(y)===0||y.indexOf(a)===0) return true;
+  }
+  return false;
+}
+/* 删除提纲里不存在的标签块（纯函数，先救后废）：0.5B 常幻觉出【面谈】等标签并循环复读，
+   删掉这些块后若原标签仍在，输出依旧可用，不必整段报废 */
+function polishStripUnknown(src,out){
+  const lines=String(out||'').split(/\n/), res=[], drop=[];
+  let skipping=false;
+  lines.forEach(function(l){
+    const m=l.match(/^\s*【([^】\n]{1,20})】/);
+    if(m){
+      if(polishTagKnown(src,m[1])){ skipping=false; res.push(l); }
+      else { skipping=true; if(drop.indexOf(m[1])<0) drop.push(m[1]); }
+      return;
+    }
+    if(skipping){ if(!l.trim()) skipping=false; return; }
+    res.push(l);
+  });
+  return {txt:res.join('\n').replace(/\n{3,}/g,'\n\n').trim(), drop:drop};
+}
+/* 复读内容清理（纯函数，先救后废）：同一句出现 3 次及以上时只保留前 2 次。
+   保留 2 次是为了不误伤「面访版 / 微信版」两版话术本就相近的情况 */
+function polishDedup(out){
+  const cnt={}, res=[]; let removed=0;
+  String(out||'').split(/\n/).forEach(function(l){
+    const k=l.trim();
+    if(k.length>8){
+      cnt[k]=(cnt[k]||0)+1;
+      if(cnt[k]>2){ removed++; return; }
+    }
+    res.push(l);
+  });
+  return {txt:res.join('\n'), removed:removed};
+}
+/* 双版本雷同检测（纯函数，兜底保留）：面访版应从「粮款闲置」痛点切入、微信版是转发短句。
+   0.5B 偷懒时会把两版写成同一句话（实测两版只差一个「的」字还被判成功），必须拦下回退规则版 */
+function polishDualCheck(secTxt,out){
+  const s=String(secTxt||''), o=String(out||'');
+  if(s.indexOf('面访版')<0||s.indexOf('微信版')<0) return '';
+  /* 容忍「【面访版】」与「面访版：」两种写法；两种都取不到说明双版本结构已被改写，无法校验 → 判废 */
+  const pm=o.match(/【?\s*面访版[^】\n]{0,12}】?\s*[：:]?([\s\S]*?)(?=【?\s*微信版|$)/)
+        ||o.match(/【?\s*面访版[^】\n]{0,12}】?\s*[：:]?([\s\S]*)$/);
+  const fm=o.match(/【?\s*微信版[^】\n]{0,12}】?\s*[：:]?([\s\S]*)$/);
+  if(!pm||!fm) return '双版本结构不可校验（模型改写或删掉了面访版/微信版标记）';
+  const norm=function(t){ return String(t||'').replace(/[\s，。；：、！？「」『』【】（）,.:;!?'"()\-—…·]/g,''); };
+  const a=norm(pm[1]), b=norm(fm[1]);
+  if(!a||!b) return '';
+  if(a===b) return '双版本话术雷同（面访版与微信版内容相同）';
+  const lo=a.length<=b.length?a:b, hi=a.length<=b.length?b:a;
+  /* 差异用字符计数衡量（「的」字常插在句中间，子串匹配抓不住）：
+     字数差 ≤6 且长度比 >0.8 视为同一句话——实测模型把「陈俊杰，您好！」写成
+     「陈俊杰哥/嫂子（陈俊杰您好）」这类称呼差异也有 5-6 字，必须拦下 */
+  const cnt={};
+  for(let i=0;i<lo.length;i++) cnt[lo.charAt(i)]=(cnt[lo.charAt(i)]||0)+1;
+  for(let i=0;i<hi.length;i++) cnt[hi.charAt(i)]=(cnt[hi.charAt(i)]||0)-1;
+  let diff=0; for(const k in cnt) diff+=Math.abs(cnt[k]);
+  if(lo.length/hi.length>0.8&&diff<=6) return '双版本话术雷同（面访版与微信版仅差个别字）';
+  return '';
+}
+/* 单段润色：0.5B 吃不下四段长提纲（实测会漏掉③④或整段复述），
+   改为一次一段、短输入短输出，再由 aiPolishPlan 拼回完整策略 */
+async function aiPolishSec(f,secTxt,retry){
+  AI_POLISH_FAIL='';
+  if(!LLM_ENG) return null;
+  let note='';
+  const R=!!retry;                 /* 重试轮：更短的指令、更短的输出、温度略高，跳出复读 */
+  const marks=['①','②','③','④'].filter(function(mk){ return secTxt.indexOf(mk)>=0; });
+  const sys='你是邮储客户经理的面谈教练。任务：把下面这段面谈提纲改写得更好讲、更口语。'
+    +'硬性要求：① 只输出这一段改写后的正文，段首的段落标记'+(marks.length?('（'+marks.join('')+'）'):'')+'必须保留；'
+    +'② 不得新增任何金额、天数、比例、收益率、产品名称，只能用提纲里已有的数字；'
+    +'③ 不要复述提纲原文，不要输出解释或指令性文字；'
+    +'④ 不得新增提纲里没有的标签，也不要把写过的内容再写一遍；'
+    +(secTxt.indexOf('面访版')>=0?'⑤ 「面访版」是上门当面从粮款闲置痛点切入的话术，「微信版」是可直接转发的短句，两版内容必须保持明显差异，不许写成同一句话；':'')
+    +(R?'⑥ 只写 1 句、30 字以内':'⑤ 2-3 句')+'，中文。';
+  try{
+    /* 提示词顺序：说明在前、段落放最后——模型接着段落续写，减少指令回声 */
+    const cp=await LLM_ENG.chat.completions.create({messages:[
+      {role:'system',content:sys},
+      {role:'user',content:'农户画像：'+farmerBrief(f)+'\n\n任务：改写下面这一段面谈提纲。\n\n这一段：\n'+secTxt}],
+      temperature:R?0.35:0.15,max_tokens:R?200:320,stream:false});
+    let out=((cp.choices&&cp.choices[0]&&cp.choices[0].message.content)||'').trim();
+    if(!out){ AI_POLISH_FAIL='模型无输出'; return null; }
+    const cleaned=polishSanitize(out);
+    if(cleaned&&cleaned!==out){ out=cleaned; note='已自动清理模型输出中的指令回声'; }
+    /* 删掉提纲里不存在的标签块（模型幻觉的【面谈】之类），能救回来就继续用 */
+    const st=polishStripUnknown(secTxt,out);
+    if(st.drop.length){ out=st.txt; note=note||('已删除提纲外的段落块（'+st.drop.slice(0,3).join('、')+'）'); }
+    /* 循环复读：同一句出现 3 次以上只保留前 2 次 */
+    const dd=polishDedup(out);
+    if(dd.removed){ out=dd.txt; note=note||('已合并 '+dd.removed+' 处复读内容'); }
+    if(!out){ AI_POLISH_FAIL='输出仅含指令回声'; return null; }
+    /* 标记被丢但正文可用：把原段标题补回去（先救后废） */
+    const miss=polishCheck(secTxt,out);
+    if(miss.length){
+      const head=polishSecHead(secTxt,miss);
+      if(out.length>10&&head){
+        out=head+out.replace(/^\s*【?[①②③④][^\n]{0,24}?[：:]?\s*/,'');
+        note=note||'已补回被模型删掉的段落标记';
+      } else { AI_POLISH_FAIL='格式（段落标记丢失：'+miss.join('')+'）'; return null; }
+    }
+    /* 第④段含「面访版 + 微信版」双版本，只留一个视为缺失 */
+    if(secTxt.indexOf('微信版')>=0&&out.indexOf('微信版')<0&&out.indexOf('微信')<0){
+      AI_POLISH_FAIL='格式（微信版话术缺失）'; return null;
+    }
+    /* 两版写成同一句话（模型偷懒同质化）→ 该段回退规则版（规则版两版实质不同） */
+    const dual=polishDualCheck(secTxt,out);
+    if(dual){ AI_POLISH_FAIL=dual; return null; }
+    const echo=polishEchoCheck(secTxt,out);
+    if(echo){ AI_POLISH_FAIL=echo; return null; }
+    const allow={}; (secTxt.match(/\d+(?:\.\d+)?/g)||[]).forEach(function(n){ allow[n]=1; });
+    const bad=(out.match(/\d+(?:\.\d+)?/g)||[]).filter(function(n){ return !allow[n]&&n.replace(/\D/g,'').length>1; });
+    if(bad.length){ AI_POLISH_FAIL='数字校验（模型编造了提纲外的数字：'+bad.slice(0,3).join('、')+'）'; return null; }
+    return {txt:out,note:note};
+  }catch(e){ AI_POLISH_FAIL='模型调用异常（'+String((e&&e.message)||e).slice(0,120)+'）'; return null; }
+}
+/* 润色编排：逐段调用，全部失败才整体回退；部分失败则该段用规则版，其余用润色版。
+   注：第④段（面访版 + 微信版话术）**任何情况下都不润色**——0.5B 改写话术必然同质化、
+   复读、截断，规则版本就是标准话术；模型改去干它擅长的事：出「开口要点」见 aiTalkTips */
+async function aiPolishPlan(f,txt,secNo,onProg){
+  AI_POLISH_FAIL=''; AI_POLISH_NOTE=''; AI_POLISH_DEBUG=''; AI_POLISH_OK=0; AI_POLISH_TOT=0;
+  if(!LLM_ENG) return null;
+  if(secNo===4){ AI_POLISH_FAIL='第④段为标准话术，不做模型改写'; return null; }
+  const P=interviewPlan(f);
+  const list=secNo?[secNo]:[1,2,3];
+  const got={}, why=[];
+  for(let i=0;i<list.length;i++){
+    const n=list[i];
+    if(onProg) onProg(i+1,list.length);
+    /* 首轮失败就用更短的指令再试一次，仍失败才该段用规则版 */
+    let r=await aiPolishSec(f,P.secs[n-1],false);
+    if(!r) r=await aiPolishSec(f,P.secs[n-1],true);
+    if(r&&r.txt){ got[n]=r.txt; if(r.note) AI_POLISH_DEBUG=(AI_POLISH_DEBUG?AI_POLISH_DEBUG+'；':'')+'第'+n+'段 '+r.note; }
+    else why.push('第'+n+'段 '+(AI_POLISH_FAIL||'未通过'));
+  }
+  const okN=Object.keys(got).length;
+  AI_POLISH_OK=okN; AI_POLISH_TOT=list.length;
+  if(AI_POLISH_DEBUG) { try{ console.log('[面谈润色] '+AI_POLISH_DEBUG); }catch(e){} }
+  if(!okN){ AI_POLISH_FAIL=why.join('；'); return null; }
+  /* 回退原因只进内部日志：演示时把「第2段 复述原文」这类故障腔摆上屏幕会被误读成产品缺陷 */
+  if(why.length){ AI_POLISH_DEBUG=(AI_POLISH_DEBUG?AI_POLISH_DEBUG+'；':'')+why.join('；');
+    try{ console.log('[面谈润色回退] '+why.join('；')); }catch(e){} }
+  /* 单段细说只输出该段；整份策略按 1–4 段全量拼装，未润色的段（默认含第④段）取规则版原文 */
+  const body=secNo?(got[secNo]||P.secs[secNo-1])
+    :[1,2,3,4].map(function(n){ return got[n]||P.secs[n-1]; }).join('\n\n');
+  return interviewText(f,secNo||null,body);
+}
+/* 开口要点（模型真正能胜任的任务）：0.5B 改写话术必同质化，所以话术本体不润色；
+   改让它只输出 3 条「上门开口要点」——短、结构化、无数字，失败则整块不显示，绝不污染话术 */
+var AI_TIPS_FAIL='';
+/* 开口要点解析（纯函数）：0.5B 常把 3 条要点写成一整段而不分行——
+   只按换行切会判「不足 2 条」把可用内容白白丢掉，故同时按句号/分号切句，并去掉序号与项目符号 */
+function tipsParse(out){
+  const raw=polishSanitize(String(out||''));
+  const parts=raw.split(/[\n。；;！？]/).map(function(l){
+    return l.replace(/^[\s\-—*·•]+/,'')
+      .replace(/^[（(【]?\d+[）)】]?[.、．]?\s*/,'')
+      .trim();
+  }).filter(function(l){ return l.length>=5&&l.length<=30; });
+  const seen={}, res=[];
+  parts.forEach(function(l){ if(!seen[l]){ seen[l]=1; res.push(l); } });
+  /* 要点里出现 3 位以上数字直接判废（防模型编造金额/天数） */
+  if(/\d{3,}/.test(res.join(''))) return [];
+  return res.slice(0,3);
+}
+async function aiTalkTips(f){
+  AI_TIPS_FAIL='';
+  if(!LLM_ENG) return null;
+  const sys='你是邮储客户经理的面谈教练。只输出 3 条上门开口要点，每条不超过 20 个字，用「- 」开头分行列出。'
+    +'硬性要求：不得出现任何金额、天数、比例等数字；不要复述话术；不要写开场白、解释或多余文字。';
+  const pick=async function(t,tail,tok){
+    const cp=await LLM_ENG.chat.completions.create({messages:[
+      {role:'system',content:sys},
+      {role:'user',content:'农户画像：'+farmerBrief(f)+'\n\n'+tail}],
+      temperature:t,max_tokens:tok,stream:false});
+    return ((cp.choices&&cp.choices[0]&&cp.choices[0].message.content)||'').trim();
+  };
+  try{
+    let tips=tipsParse(await pick(0.3,'要点：',180));
+    /* 首轮不足 2 条（0.5B 常见：写成一整段或只给一条）→ 换更直白的问法再试一次 */
+    if(tips.length<2){
+      const t2=tipsParse(await pick(0.6,'直接写 3 条短句，每写完一条就打句号。\n\n要点：',150));
+      if(t2.length>tips.length) tips=t2;
+    }
+    if(tips.length<2){ AI_TIPS_FAIL='要点不足 2 条'; return null; }
+    return tips.map(function(l){ return '· '+l; }).join('\n');
+  }catch(e){ AI_TIPS_FAIL='模型调用异常（'+String((e&&e.message)||e).slice(0,80)+'）'; return null; }
+}
+/* 意图路由：识别「这户怎么谈 / 上门先说什么 / 再细说说贷款」 */
+function aiInterviewIntent(q){
+  const all=currentFarmers(); if(!all.length) return null;
+  const s=String(q||'');
+  const m=matchFarmerInQ(q);
+  const askPlan=/怎么谈|面谈|走访|上门|策略|怎么搞|怎么聊|谈什么|先说什么|开口|怎么沟通|怎么开口/.test(s);
+  const follow=/再细|详细|展开|多说|具体点|再说|第[三四3④]段/.test(s);
+  let sec=null;
+  if(/产品|贷款|推什么|理财|存款|保险|第[三3]段/.test(s)) sec=3;
+  else if(/话术|怎么说|开场|第[四4]段/.test(s)) sec=4;
+  else if(/为什么|沉默|原因|判定|第[二2]段/.test(s)) sec=2;
+  const stat=/多少户|几户|分布|统计|规则|阈值|判定|区别|口径|在途|未结|占比/.test(s);
+  /* 名单/路线类（先跑哪几户/优先级/排序）：问的是「一批户」，优先级最高，
+     必须在多轮槽位续谈之前拦截，否则上一户的面谈策略会抢答集合问题 */
+  const list=/哪几户|哪些户|哪几家|哪几个|哪几位|先跑哪|先去哪|先走访|走访名单|优先级|排序|排个序|排名/.test(s);
+  const crop=(s.match(/小麦|玉米|大豆/)||[null])[0];
+  if(!m.f&&list) return {type:'visits',crop:crop};
+  if(m.f&&(askPlan||follow)) return {type:'plan',f:m.f,sec:sec};
+  if(!m.f&&!AI_LAST.f&&stat) return null;      /* 统计/口径类交回精确问答，避免抢答 */
+  if(!m.f&&AI_LAST.f&&(askPlan||follow)) return {type:'plan',f:AI_LAST.f,sec:sec};
+  if(!m.f&&askPlan&&m.cands.length===1) return {type:'plan',f:m.cands[0],sec:sec};
+  if(!m.f&&askPlan) return {type:'needname',cands:m.cands};
+  return null;
+}
+/* 名单/路线类：按「在途未结粮款 + 累计贡献」排出优先上门清单（规则精确计算，不经模型） */
+function visitListText(crop){
+  const all=currentFarmers();
+  const K=bankDeckCounts();
+  const pool=all.filter(function(f){ return f.state==='高危沉默'; });
+  const cropPool=crop?pool.filter(function(f){ return f.mainCrop===crop; }):[];
+  const use=(crop&&cropPool.length)?cropPool:pool;
+  const rank=use.slice().sort(function(a,b){ return (b.unpaid||0)-(a.unpaid||0)||b.amt-a.amt; }).slice(0,5);
+  if(!rank.length) return '当前名单里没有'+(crop?('主品类为 '+crop+' 的'):'')+'🔴 高危沉默农户，无需优先上门；🟡 一般沉默 '+K.mid+' 户走批量短信即可。';
+  const lines=rank.map(function(f,i){
+    return (i+1)+'. '+f.name+'｜'+ST_ICO[f.state]+f.state+'｜主品类 '+f.mainCrop+'｜距今 '+f.gap+' 天｜在途未结 '+fmt(f.unpaid||0,0)+' 元｜累计 '+fmt(f.amt,0)+' 元\n'
+      +'    → 上门先对账（在途粮款是天然切入口），再谈粮款归行与下季收购安排。';
+  });
+  return '📋 优先上门清单'+(crop&&cropPool.length?('（'+crop+'）'):'')+'——按「在途未结粮款 + 累计贡献」排序，建议从上往下跑：\n'
+    +lines.join('\n')+'\n'
+    +'名单口径：当前 🔴 高危沉默共 '+K.hi+' 户、涉及粮款 '+fmt(K.hiAmt/10000,1)+' 万元'
+    +(crop?('，其中主品类为 '+crop+' 的 '+cropPool.length+' 户'):'')
+    +'；🟡 一般沉默 '+K.mid+' 户不必占用上门资源，批量短信触达即可。\n'
+    +'（按本地名单精确计算；完整清单可在名单页导出 CSV 作当日走访表。）';
+}
+async function aiDoInterview(q,it){
+  if(it.type==='visits'){ aiPush('a',visitListText(it.crop)); return; }
+  if(it.type==='needname'){
+    const tip=it.cands.length?('你是说这几位中的哪一位？'+it.cands.map(function(f){return f.name;}).join('、')):'请告诉我农户姓名（例：张某某这户怎么谈）';
+    aiPush('a',tip+'——或者直接点名单右侧的「🎯」按钮，我直接按那户出策略。');
+    return;
+  }
+  const f=it.f; AI_LAST.f=f; AI_LAST.sec=it.sec||null;
+  const rule=interviewText(f,it.sec);
+  /* 第④段是标准话术（面访版/微信版），不送模型改写；模型改做「上门开口要点」附在话术后 */
+  if(it.sec===4&&LLM_ENG){
+    const ap4=aiPush('a',rule+'\n\n⏳ 正在让本地模型提炼上门开口要点…');
+    const tips=await aiTalkTips(f);
+    if(!tips){ try{ console.log('[开口要点未采用] '+AI_TIPS_FAIL); }catch(e){} }
+    ap4.textContent=rule+(tips?('\n\n💡 上门开口要点（本地模型生成）：\n'+tips):'')
+      +'\n\n✅ 话术为标准模板（面访版 / 微信版），未做改写，确保口径与数字准确';
+    const box4=$('aiChat'); if(box4) box4.scrollTop=box4.scrollHeight;
+    return;
+  }
+  const ap=aiPush('a',rule+'\n\n⏳ 正在用本地模型逐段做口语化润色…（0.5B 模型一次改一段，稍候）');
+  let out=null;
+  if(LLM_ENG){ out=await aiPolishPlan(f,rule,it.sec,function(d,t){
+    ap.textContent=rule+'\n\n⏳ 正在用本地模型逐段做口语化润色…（'+d+'/'+t+' 段，0.5B 模型一次改一段，稍候）';
+  }); }
+  /* 策略正文始终以规则版为底（数字与口径准），模型改写成功才替换该段、失败则静默用规则版 */
+  const body=out||rule;
+  if(LLM_ENG&&!out){
+    ap.textContent=body+'\n\n⏳ 正在让本地模型提炼上门开口要点…';
+    const tips=await aiTalkTips(f);
+    if(!tips){ try{ console.log('[开口要点未采用] '+AI_TIPS_FAIL); }catch(e){} }
+    ap.textContent=body+(tips?('\n\n💡 上门开口要点（本地模型生成）：\n'+tips):'')
+      +'\n\n✅ 标准面谈策略 · 数字均来自名单，可核对';
+  }
+  else if(out){
+    ap.textContent=body+'\n\n⏳ 正在让本地模型提炼上门开口要点…';
+    const tips=await aiTalkTips(f);
+    if(!tips){ try{ console.log('[开口要点未采用] '+AI_TIPS_FAIL); }catch(e){} }
+    ap.textContent=body+(tips?('\n\n💡 上门开口要点（本地模型生成）：\n'+tips):'')
+      +'\n\n✅ 本地模型已改写 '+AI_POLISH_OK+'/'+AI_POLISH_TOT+' 段 · 数字均来自名单，未新增';
+    aiSetState('本地模型已就绪');
+  }
+  else {
+    ap.textContent=body+'\n\n（点「▶ 启动模型」后可让本地模型把这套策略改写得更好讲，并生成上门开口要点）';
+  }
+  const box=$('aiChat'); if(box) box.scrollTop=box.scrollHeight;
+}
+/* 名单行 / 快捷入口：直接出该户面谈策略 */
+function openInterview(name){
+  const f=findFarmer(name)||(matchFarmerInQ(name).f);
+  if(!f){ toast('未找到该农户'); return; }
+  AI_LAST.f=f;
+  openAiAsk();
+  aiPush('q','【'+f.name+'】这户怎么谈？');
+  aiDoInterview('', {type:'plan',f:f,sec:null});
+}
+function aiQuickInterview(){
+  const all=currentFarmers();
+  if(!all.length){ aiPush('err','还没有农户数据，请先上传过磅记录并开始分析。'); return; }
+  const f=AI_LAST.f||all.filter(function(x){return x.state==='高危沉默';}).sort(function(a,b){return b.amt-a.amt;})[0]||all[0];
+  openInterview(f.name);
 }
 /* 精确回答：涉及名单数字/规则的问题一律本地计算，不交给小模型编造 */
 function aiAnsFromData(q){
@@ -5725,7 +6156,7 @@ function aiAnsFromData(q){
       +'④ 农户到场后银行跟进：开户、存款（粮款归行）、惠农贷款 / 保险，完成 C 端闭环。'
       +'内部名单 / 打法见「🛡 生成内部行动手册（客户经理用）」。';
   if(/话术|怎么说|开场|开口/.test(t))
-    return '开场可直接用话术卡里的通俗版：先报「今年您来卖了 X 回、共 X 公斤、到手 X 元」，再讲资金安排，最后留一个低门槛动作（办惠农卡 / 留个电话）。名单每行右侧「话术」按钮可看该户的双版本全文。';
+    return '开场可直接用话术卡里的微信版：先报「今年您来卖了 X 回、共 X 公斤、到手 X 元」，再讲资金安排，最后留一个低门槛动作（办惠农卡 / 留个电话）。名单每行右侧「话术」按钮可看该户的面访版/微信版全文。';
   return null;
 }
 async function aiEnsureEngine(){
@@ -5758,6 +6189,22 @@ async function aiBoot(manual){
     const m='当前浏览器不支持 WebGPU，无法启动本地模型（建议 Chrome / Edge 113+）。涉及名单数字的问题我仍可精确回答。';
     aiPush('err',m); if(manual) toast('当前浏览器不支持 WebGPU'); return;
   }
+  /* 前置 GPU 探测：navigator.gpu 存在≠能拿到设备（硬件加速关闭/远程桌面/驱动黑名单都会失败），
+     先试拿 adapter，失败就秒报对症提示，避免白下载 265MB 权重 */
+  try{
+    const adp=(navigator.gpu&&navigator.gpu.requestAdapter)?await navigator.gpu.requestAdapter():null;
+    if(!adp){
+      LLM_ERR='浏览器拿不到 GPU 设备（WebGPU 不可用）';
+      aiSetState('GPU 不可用');
+      aiPush('err','⚠️ 浏览器拿不到 GPU 设备，本地模型无法启动。对症检查（按概率排序）：\n'
+        +'① 浏览器设置→系统→打开「硬件加速」后重启浏览器；\n'
+        +'② 换最新版 Chrome 或 Edge（113+）双击打开本页面，不要在内置预览/WebView 里开；\n'
+        +'③ 若正在远程桌面，请回到本机操作（远程会屏蔽 GPU）。\n'
+        +'不影响使用——涉及金额、天数、名单的问题我仍可按本地数据精确回答。');
+      if(manual) toast('GPU 不可用：请开启硬件加速或换 Edge/Chrome');
+      return;
+    }
+  }catch(eGpu){ /* 探测本身异常则放行，让 WebLLM 给出原始报错 */ }
   LLM_LOADING=true; LLM_ERR=null;
   aiSetState('正在加载模型组件…');
   if(manual) aiPush('sys','⏳ 正在准备本地模型，首次约需下载 265MB 权重，浏览器会自动缓存，之后秒开。');
@@ -5797,6 +6244,9 @@ async function aiSend(){
   if(!q){ return; }
   inp.value='';
   aiPush('q',q);
+  /* 面谈智能体优先：命中「某户怎么谈 / 上门先说什么 / 再细说说产品」即走策略链路 */
+  const it=aiInterviewIntent(q);
+  if(it){ await aiDoInterview(q,it); return; }
   const precise=aiAnsFromData(q);
   if(precise){ aiPush('a',precise+'\n（按本地名单精确计算）'); return; }
   if(!currentFarmers().length){ aiPush('err','还没有农户数据，请先上传过磅记录并开始分析。'); return; }
