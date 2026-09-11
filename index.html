@@ -598,6 +598,14 @@
         <button class="btn ghost" onclick="exportBankPPTX()">📊 生成 PPT 作战手册 (.pptx)</button>
       </div>
     </div>
+
+    <!-- 涉农知识助手：客户经理现场速查 -->
+    <div class="card" id="agriKnowledgeBlock">
+      <h2 style="margin-bottom:10px;">📚 涉农知识助手</h2>
+      <div class="hint" style="margin-bottom:10px;">面向客户经理现场交流使用：既可以快速查粮食品类周期、农户经营特点和粮商沟通切入点，也可以直接在弹窗中调用本地 AI 自然语言提问。</div>
+      <button class="btn" onclick="openAgriKnowledge()">📚 打开涉农知识 + 本地 AI</button>
+    </div>
+
     <div class="card" data-page-node-id="576hcdEZTrIogHld1Lz7BK">
       <h2 data-page-node-id="0SGbbkfIWrBtsCEVYx9Ydm">📋 丰收云流水 · 经营画像</h2>
       <div class="cust-card muted" id="custCard" data-page-node-id="RlBYHVTGQU85G4nA7kDAjn">（导入报表后自动生成对客展示文案）</div>
@@ -982,6 +990,54 @@
     <div class="acts">
       <button class="btn ghost" onclick="closeMask('talkMask')">关闭</button>
       <button class="btn" onclick="copyTalk()">📋 复制话术</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- 涉农知识助手弹窗：内置知识速查 + 本地 AI 问答 -->
+<div class="mask" id="agriKnowledgeMask">
+  <div class="modal" style="max-width:780px;text-align:left;max-height:92vh;overflow:auto;">
+    <div class="script-head">
+      <span class="who">📚 涉农知识助手
+        <span id="agriAiState" style="display:block;font-size:11.5px;color:var(--sub);font-weight:400;margin-top:2px;"></span>
+      </span>
+      <button class="btn-mini" onclick="closeMask('agriKnowledgeMask')">✕ 关闭</button>
+    </div>
+    <p style="font-size:12.8px;color:var(--sub);margin:4px 0 10px;">先看内置知识速查；需要现场展开解释时，可直接让本地 AI 按知识库内容回答。模型在浏览器内推理，不把客户数据发送到云端。</p>
+
+    <div class="script-box" style="text-align:left;max-height:245px;overflow:auto;line-height:1.65;">
+      <b>🌾 一、主要粮食品类周期</b><br>
+      小麦：主要收购期集中在 6—7 月，沟通重点关注收购安排、品质和价格变化。<br>
+      玉米：主要收购期集中在 9—10 月，重点关注库存、仓容和资金周转节奏。<br>
+      大豆：主要收购期集中在 9—10 月，关注品质、行情和销售渠道。<br><br>
+      <b>📅 二、粮商经营常见节奏</b><br>
+      收粮期：资金快速投入，重点关注周转资金和仓储能力。<br>
+      储粮期：库存占用增加，关注出库价格和销售窗口。<br>
+      回款期：关注资金回笼和下一阶段经营安排。<br><br>
+      <b>🚜 三、农户经营特点</b><br>
+      农户交粮具有明显季节性。“一段时间没有交易”不一定代表流失，需要结合品类、历史交易和当地农时综合判断。<br><br>
+      <b>💬 四、客户沟通切入点</b><br>
+      不只询问“有没有资金需求”，更关注：今年收粮规模有没有变化？旺季资金是否提前准备？粮款回笼后有什么安排？<br>
+    </div>
+
+    <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px;">
+      <div style="font-weight:800;color:var(--green-d);margin-bottom:6px;">🤖 本地 AI 涉农问答</div>
+      <div id="agriAiChat" class="ai-chat" style="height:190px;"></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0;">
+        <button class="btn ghost" style="padding:7px 9px;font-size:12px;" onclick="agriQuickAsk('小麦一般什么时候集中收购？现场可以怎么跟粮商解释？')">🌾 小麦收购期</button>
+        <button class="btn ghost" style="padding:7px 9px;font-size:12px;" onclick="agriQuickAsk('玉米收粮旺季，粮商最需要提前关注哪些资金和仓储问题？')">🌽 玉米旺季</button>
+        <button class="btn ghost" style="padding:7px 9px;font-size:12px;" onclick="agriQuickAsk('为什么农户半年没有交粮，不能直接判断为流失？')">🚜 农户季节性</button>
+        <button class="btn ghost" style="padding:7px 9px;font-size:12px;" onclick="agriQuickAsk('客户经理跟粮商聊经营资金，可以从哪些问题切入？')">💬 沟通切入</button>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="text" id="agriAiInp" class="ai-inp" placeholder="例：玉米收粮旺季为什么容易出现资金压力？" onkeydown="if(event.key==='Enter')agriAiSend()">
+        <button class="btn" onclick="agriAiSend()">发送</button>
+        <button class="btn ghost" onclick="agriAiBoot(true)">▶ 启动模型</button>
+      </div>
+      <div style="margin-top:7px;font-size:11.5px;color:var(--sub);line-height:1.6;">
+        本地模型与「AI 面谈助手」共用 Qwen2-0.5B-Instruct。首次启动需要联网下载模型权重并缓存；之后在支持 WebGPU 的浏览器中本地推理。当前知识库只覆盖粮食收购经营基础知识，不替代专业农技、政策或价格信息。
+      </div>
     </div>
   </div>
 </div>
@@ -6004,6 +6060,18 @@ function renderStockOverview(){
     else $('stockTurn').innerHTML=fmt(td,0)+' <small>天</small>';
   }
 }
+
+function openAgriKnowledge(){
+  const m=$('agriKnowledgeMask'); if(!m) return;
+  m.classList.add('show');
+  const box=$('agriAiChat');
+  if(box&&!box.dataset.init){
+    box.dataset.init='1';
+    agriAiPush('sys','内置涉农知识已加载。可以点下方快捷问题，也可以自己输入问题。启动本地模型后，我会只围绕当前内置知识库做简短解释；超出知识范围会明确提示。');
+  }
+  agriAiSetState(LLM_ENG?'本地模型已就绪':'模型未启动（可直接点「▶ 启动模型」）');
+  setTimeout(function(){ const i=$('agriAiInp'); if(i) i.focus(); },80);
+}
 function openBizParams(){
   let html='';
   for(const [c,p] of Object.entries(mp())){
@@ -6392,6 +6460,99 @@ function exportFarmerCSV(scope){
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   toast('已导出 '+rows.length+' 户名单 CSV'+(all?'（全部）':'（当前筛选）'));
 }
+/* ===================== 涉农知识助手 · 本地 AI 问答 ===================== */
+const AGRI_KNOWLEDGE=[
+  '小麦：主要收购期集中在6—7月。沟通重点关注收购安排、品质和价格变化。',
+  '玉米：主要收购期集中在9—10月。沟通重点关注库存、仓容和资金周转节奏。',
+  '大豆：主要收购期集中在9—10月。沟通重点关注品质、行情和销售渠道。',
+  '粮商经营常见节奏：收粮期资金快速投入，关注周转资金与仓储；储粮期库存占用增加，关注出库价格与销售窗口；回款期关注资金回笼与下一阶段经营安排。',
+  '农户交粮具有明显季节性，一段时间没有交易不等于流失，需要结合粮食品类、历史交易与当地农时综合判断。',
+  '客户经理沟通不只问有没有资金需求，更可从今年收粮规模变化、旺季资金是否提前准备、仓容是否充足、粮款回笼后如何安排等经营问题切入。',
+  '丰收智链当前内部判定参考：小麦交粮间隔240天，玉米180天，大豆180天；该口径用于本项目客户经营辅助，不代表通用农业行业标准。',
+  '农家夜可围绕粮价交流、收粮安排、交粮时间与粮款结算展开；活动邀约、通知、现场物料与流程可由客户经理协助粮商准备。'
+].join('\n');
+const AGRI_LLM_SYS='你是中国邮政储蓄银行县域客户经理的涉农知识助手。你只能依据我提供的【内置涉农知识库】回答。'
+  +'回答用中文，2—5句，先给结论，再给客户经理可直接复述的一句话。'
+  +'禁止编造农业政策、补贴标准、农药剂量、实时粮价、收益率、贷款利率或未提供的行业统计。'
+  +'如果问题超出知识库范围，明确回答“当前内置知识未覆盖，建议向当地农业主管部门或专业人员核实”。';
+let AGRI_LLM_HIST=[];
+function agriAiSetState(t){ const e=$('agriAiState'); if(e) e.textContent=t||''; }
+function agriAiPush(cls,txt){
+  const box=$('agriAiChat'); if(!box) return null;
+  const d=document.createElement('div'); d.className=cls; d.textContent=txt;
+  box.appendChild(d); box.scrollTop=box.scrollHeight; return d;
+}
+function agriKnowledgeFallback(q){
+  const t=String(q||'').replace(/[，。？！、\s]+/g,'');
+  if(/小麦/.test(t)) return '小麦主要收购期集中在 6—7 月。现场交流可重点问粮商今年收购安排、品质要求和价格变化。可以直接说：“小麦上市比较集中，咱们提前把收粮时间、标准和资金准备理顺，旺季会更从容。”';
+  if(/玉米/.test(t)) return '玉米主要收购期集中在 9—10 月。旺季通常同时考验仓容和周转资金，建议提前看库存、仓库高峰和付款节奏。可以直接说：“玉米一上量，仓和钱往往一起吃紧，咱们提前算一下高峰月需要准备多少。”';
+  if(/大豆/.test(t)) return '大豆主要收购期集中在 9—10 月。沟通时可重点关注品质、行情和后续销售渠道。可以直接说：“大豆不只看收多少，还要把品质和后面的销售节奏一起考虑。”';
+  if(/半年|流失|季节|没来|没有交粮/.test(t)) return '农户交粮有明显季节性，一段时间没有交易不能直接等同于流失。应结合主粮品类、历史交粮记录和当地农时一起判断。可以直接说：“先看他种什么、往年什么时候来，再决定要不要联系，不能只看多久没交易。”';
+  if(/资金|仓储|仓容|收粮旺季|周转/.test(t)) return '收粮期资金投入快、库存增加快，通常需要同时关注周转资金和仓储能力；储粮期再看出库和销售窗口，回款后再安排下一阶段资金。可以直接从“今年预计收多少、哪个月最忙、钱和仓够不够”三个问题切入。';
+  if(/怎么聊|切入|沟通|客户经理/.test(t)) return '建议从经营问题而不是金融产品切入：今年收粮规模有没有变化、旺季资金准备够不够、仓容是否紧张、粮款回笼后怎么安排。先帮客户把生意看清楚，再谈银行能提供什么支持。';
+  if(/农家夜|活动/.test(t)) return '农家夜可以围绕粮价交流、收粮安排、交粮时间和粮款结算来组织。粮商负责和大家聊生意、聊合作，客户经理协助邀约、通知、现场物料和流程准备。';
+  return null;
+}
+async function agriAiBoot(manual){
+  if(LLM_ENG){ agriAiSetState('本地模型已就绪'); if(manual) toast('本地模型已就绪，可以直接提问'); return true; }
+  if(LLM_LOADING){ agriAiSetState('模型正在加载中，请稍候…'); if(manual) toast('模型正在加载中，请稍候'); return false; }
+  if(!llmSupported()){
+    agriAiSetState('当前浏览器不支持 WebGPU');
+    agriAiPush('err','当前浏览器不支持 WebGPU，暂时无法启动本地模型。下方内置知识速查仍可正常使用；建议用最新版 Chrome / Edge 并开启硬件加速。');
+    return false;
+  }
+  try{
+    const adp=(navigator.gpu&&navigator.gpu.requestAdapter)?await navigator.gpu.requestAdapter():null;
+    if(!adp){ agriAiSetState('GPU 不可用'); agriAiPush('err','浏览器暂时拿不到 GPU 设备。请开启硬件加速后重启 Chrome / Edge；静态涉农知识不受影响。'); return false; }
+  }catch(eGpu){}
+  LLM_LOADING=true; LLM_ERR=null;
+  agriAiSetState('正在加载本地模型…');
+  if(manual) agriAiPush('sys','⏳ 正在准备本地模型。首次需要下载约 265MB 权重并缓存，之后再次打开会更快。');
+  try{
+    await aiEnsureEngine();
+    LLM_LOADING=false; agriAiSetState('本地模型已就绪');
+    agriAiPush('sys','✅ 本地模型已就绪，可以直接问涉农经营问题。');
+    if(manual) toast('涉农知识本地模型已就绪');
+    return true;
+  }catch(e){
+    LLM_LOADING=false; LLM_ERR=(e&&e.message)||String(e);
+    agriAiSetState('模型未就绪');
+    agriAiPush('err','本地模型启动失败：'+LLM_ERR+'。已自动保留内置知识速查与规则回答。');
+    return false;
+  }
+}
+function agriQuickAsk(q){ const i=$('agriAiInp'); if(i) i.value=q; agriAiSend(); }
+async function agriAiSend(){
+  const inp=$('agriAiInp'); const q=(inp&&inp.value||'').trim(); if(!q) return;
+  inp.value=''; agriAiPush('q',q);
+  const fallback=agriKnowledgeFallback(q);
+  if(!llmSupported()){
+    agriAiPush('a',(fallback||'当前内置知识未覆盖，建议向当地农业主管部门或专业人员核实。')+'\n（内置涉农知识库）');
+    return;
+  }
+  const ap=agriAiPush('a','⏳ 正在用本地模型整理回答…');
+  try{
+    const ok=await agriAiBoot(false);
+    if(!ok||!LLM_ENG) throw new Error(LLM_ERR||'模型未就绪');
+    if(!AGRI_LLM_HIST.length){
+      AGRI_LLM_HIST.push({role:'system',content:AGRI_LLM_SYS});
+      AGRI_LLM_HIST.push({role:'user',content:'【内置涉农知识库】\n'+AGRI_KNOWLEDGE+'\n\n请确认只依据这份知识库回答。'});
+      AGRI_LLM_HIST.push({role:'assistant',content:'已了解。我只依据内置涉农知识库回答，超出范围会明确说明。'});
+    }
+    AGRI_LLM_HIST.push({role:'user',content:q});
+    const cp=await LLM_ENG.chat.completions.create({messages:AGRI_LLM_HIST.slice(-12),temperature:0.35,max_tokens:320,stream:false});
+    const txt=((cp.choices&&cp.choices[0]&&cp.choices[0].message.content)||'').trim();
+    AGRI_LLM_HIST.push({role:'assistant',content:txt});
+    ap.textContent=txt||(fallback||'当前内置知识未覆盖，建议向当地农业主管部门或专业人员核实。');
+    agriAiSetState('本地模型已就绪');
+  }catch(e){
+    ap.className='a';
+    ap.textContent=(fallback||'当前内置知识未覆盖，建议向当地农业主管部门或专业人员核实。')+'\n（本地模型暂不可用，已回退到内置知识库）';
+    agriAiSetState('模型未就绪 · 已使用知识库回答');
+  }
+  const box=$('agriAiChat'); if(box) box.scrollTop=box.scrollHeight;
+}
+
 /* ===================== 本地 AI 面谈问答（千问 0.5B · WebGPU 浏览器内推理） ===================== */
 /* 模型与权重均在用户本机浏览器内运行/缓存，客户名单不出本机；不依赖任何外部 API */
 const LLM_MODEL_ID='Qwen2-0.5B-Instruct-q4f16_1-MLC';
@@ -6977,7 +7138,11 @@ async function aiEnsureEngine(){
   }]};
   LLM_ENG=await llmTimeout(webllm.CreateMLCEngine(LLM_MODEL_ID,{
     appConfig:appConfig,
-    initProgressCallback:function(r){ aiSetState('正在下载并初始化本地模型 '+Math.round((r.progress||0)*100)+'%…（首次约 265MB，之后秒开）'); }
+    initProgressCallback:function(r){
+      const msg='正在下载并初始化本地模型 '+Math.round((r.progress||0)*100)+'%…（首次约 265MB，之后秒开）';
+      aiSetState(msg);
+      if(typeof agriAiSetState==='function') agriAiSetState(msg);
+    }
   }),300000);
   return LLM_ENG;
 }
