@@ -483,6 +483,13 @@
   .lt-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
   .lt-field label{display:block;font-size:12px;font-weight:700;color:#355348;margin-bottom:6px;}
   .lt-field .inp,.lt-field select{width:100%;box-sizing:border-box;}
+  /* 长期规划表单：下拉框与文本框保持完全一致的输入框视觉 */
+  .lt-field select.inp{
+    width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:9px;
+    font-size:14px;line-height:1.6;font-family:inherit;color:var(--ink);background:#fff;
+    min-height:43px;cursor:pointer;
+  }
+  .lt-field select.inp:focus{outline:none;border-color:var(--teal);}
   .lt-choice-title{font-size:12px;font-weight:800;color:#355348;margin:15px 0 7px;}
   .lt-choice-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
   .lt-choice{border:1px solid #dce8e2;background:#fff;border-radius:12px;padding:10px 9px;text-align:center;cursor:pointer;font-size:12px;color:#466057;font-weight:700;}
@@ -940,10 +947,69 @@
       <div style="display:flex;gap:10px;flex-wrap:wrap;" id="aiBtns">
         <button class="btn" onclick="openAiAsk()">💬 打开本地 AI 问答</button>
       </div>
+
+      <!-- 客户维护方案 -->
+      <div class="card" style="margin-top:18px;">
+        <h2 style="margin-bottom:10px;">🤝 客户维护方案（两套打法，按客群选用）</h2>
+        <div class="hint" style="margin-bottom:12px;">面向客户经理内部使用：从农户画像名单里挑出重点客户，用下面两套方案做持续维护——关系稳了，收粮季的通知、交粮与结算衔接也会更顺。</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div style="border:1px solid var(--border);border-radius:12px;padding:12px 14px;background:#fbfdfc;">
+            <div style="font-weight:800;color:var(--green-d);font-size:14px;margin-bottom:6px;">① 节令回访 + 行情主动触达</div>
+            <div style="font-size:12.8px;line-height:1.9;color:#38483f;">
+              <div>· 按「累计粮款降序 + 距今天数」清单，收粮季前/后电话或微信回访</div>
+              <div>· 结合当日粮价行情主动报行情，提醒交粮与结算时间</div>
+              <div>· 累计粮款高、近期没来过的客户优先安排上门</div>
+            </div>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:12px;padding:12px 14px;background:#fbfdfc;">
+            <div style="font-weight:800;color:var(--green-d);font-size:14px;margin-bottom:6px;">② 农家夜 + 村级站点协同</div>
+            <div style="font-size:12.8px;line-height:1.9;color:#38483f;">
+              <div>· 联动村级站点（邮掌柜）把合作农户聚到一起</div>
+              <div>· 当面答谢 + 粮价交流 + 下一季收粮安排，做关系维护</div>
+              <div>· 现场物料、邀约与签到由我们协助张罗，按实际需要提供活动支持</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:14px;padding-top:14px;border-top:1px dashed var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <div><div style="font-weight:800;color:var(--green-d);">需要把「农家夜」落到具体执行？</div><div style="font-size:12.5px;color:var(--sub);margin-top:2px;">可按邀约人数、活动时间、场地、物料和现场支持内容进行定制，并生成服务介绍 PDF。</div></div>
+          <button class="btn" onclick="openFarmerServiceCustomizer()">⚙ 选择与定制服务</button>
+        </div>
+      </div>
     </div>
   </section>
 
 </div>
+
+<!-- 农户维护定制服务弹窗 -->
+<div class="mask" id="farmerSvcMask" style="z-index:10020;">
+  <div class="modal" style="max-width:680px;text-align:left;max-height:90vh;overflow:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+      <div><h3 style="margin:0;color:var(--green-d);">🤝 农家夜 · 定制服务</h3><p style="margin:4px 0 0;">按实际活动需求选择，生成一页式服务介绍 PDF。</p></div>
+      <button class="btn ghost" style="padding:6px 10px;" onclick="closeFarmerServiceCustomizer()">✕</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;">
+      <div class="field"><label>预计邀约人数</label><input class="inp" id="svcInviteN" type="number" min="1" value="30"></div>
+      <div class="field"><label>预计到场人数</label><input class="inp" id="svcAttendN" type="number" min="1" value="20"></div>
+      <div class="field"><label>活动日期</label><input class="inp" id="svcDate" type="date"></div>
+      <div class="field"><label>活动时段</label><select class="inp" id="svcTime" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:9px;"><option>18:30—20:00</option><option>18:00—19:30</option><option>19:00—20:30</option><option>自定义时段</option></select></div>
+      <div class="field" style="grid-column:1/3;"><label>活动地点</label><input class="inp" id="svcPlace" placeholder="如：村委大院 / 村级站点 / 粮站院内"></div>
+    </div>
+    <div style="font-weight:700;color:var(--green-d);margin:2px 0 8px;">服务内容（可多选）</div>
+    <div id="svcChecks" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;">
+      <label><input type="checkbox" value="重点农户邀约名单整理" checked> 重点农户邀约名单整理</label>
+      <label><input type="checkbox" value="电话 / 微信邀约协助" checked> 电话 / 微信邀约协助</label>
+      <label><input type="checkbox" value="村级站点（邮掌柜）协同" checked> 村级站点（邮掌柜）协同</label>
+      <label><input type="checkbox" value="签到表与到场登记" checked> 签到表与到场登记</label>
+      <label><input type="checkbox" value="横幅 / 海报 / 桌牌等现场物料" checked> 横幅 / 海报 / 桌牌等现场物料</label>
+      <label><input type="checkbox" value="粮价交流与收粮安排议程设计" checked> 粮价交流与收粮安排议程设计</label>
+      <label><input type="checkbox" value="伴手礼数量与发放安排"> 伴手礼数量与发放安排</label>
+      <label><input type="checkbox" value="活动后未到场农户二次回访"> 活动后未到场农户二次回访</label>
+    </div>
+    <div class="field" style="margin-top:14px;"><label>其他定制要求</label><textarea id="svcNote" style="width:100%;min-height:76px;padding:10px 12px;border:1px solid var(--border);border-radius:9px;font:inherit;resize:vertical;" placeholder="如：重点邀请某村农户、需要投影设备、希望控制活动在60分钟内等"></textarea></div>
+    <div class="acts" style="justify-content:flex-end;margin-top:14px;"><button class="btn ghost" onclick="closeFarmerServiceCustomizer()">取消</button><button class="btn" onclick="exportFarmerServicePDF()">📄 生成定制服务介绍 PDF</button></div>
+  </div>
+</div>
+<div id="farmerSvcPdfHost" style="position:fixed;left:-9999px;top:0;width:794px;background:#fff;z-index:-1;" aria-hidden="true"></div>
 
 <!-- 面访物料 PDF 离屏渲染容器（html2canvas 需元素真实可渲染，故移出视口而非 display:none） -->
 <div id="bankRptHost" style="position:fixed;left:-9999px;top:0;width:794px;background:#fff;z-index:-1;" aria-hidden="true">
@@ -1001,6 +1067,10 @@
     <div class="dl-item">
       <div><div class="t">资金规划经营简报 PDF *</div><div class="s">按当前资金规划参数生成，含测算结论与依据</div></div>
       <button class="btn soft" onclick="downloadPlanBrief()">⬇ 生成并下载（需后续填数定制）</button>
+    </div>
+    <div class="dl-item">
+      <div><div class="t">农家夜 · 定制服务介绍 PDF</div><div class="s">可定制邀约人数、到场人数、日期时段、活动地点、物料及现场支持内容</div></div>
+      <button class="btn soft" onclick="closeMask('dlMask');openFarmerServiceCustomizer()">⚙ 选择并生成</button>
     </div>
 
     <div class="dl-group">🏦 内部材料（客户经理专用，请勿提供给粮商）</div>
@@ -5277,11 +5347,11 @@ function buildBankRptHtml(mode){
       +'<div class="rh-s">农户答谢 × 粮价交流 × 收粮安排 × 合作维护　｜　一场更轻松、更有人情味的农户交流活动</div></div>'
       +'<div style="background:linear-gradient(135deg,#eef9f2,#fff9e9);border:1px solid #d8e8dd;border-radius:14px;padding:15px 17px;margin:10px 0 13px;">'
       +'<div style="font-size:18px;font-weight:800;color:#0a6b3b;margin-bottom:5px;">把合作农户请到一起，把今年的粮价、收粮和结算安排提前说清楚</div>'
-      +'<div style="font-size:13.5px;line-height:1.9;color:#38483f;">把合作农户请到一起，既聊一聊今年的粮价和收粮安排，也把粮款结算、交粮时间这些大家最关心的事情提前说清楚。活动邀约、通知、现场物料和流程安排都可以由我们协助准备，您负责和大家聊生意、聊合作，其他事情我们来帮您张罗。</div></div>'
+      +'<div style="font-size:13.5px;line-height:1.9;color:#38483f;">把合作农户请到一起，既聊一聊今年的粮价和收粮安排，也把粮款结算、交粮时间这些大家最关心的事情提前说清楚。活动邀约、通知、现场物料和流程安排都可以由我们协助准备，并联动村级站点（邮掌柜）共同组织，您负责和大家聊生意、聊合作，其他事情我们来帮您张罗。</div></div>'
       +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:8px 0 13px;">'
       +'<div class="rp-card" style="margin:0;padding:11px 12px;"><h4>🌾 农户来一趟能了解什么</h4><pre>• 当季粮价和收粮信息\n• 粮站收粮时间与品种安排\n• 粮款结算方式与注意事项\n• 下一季交粮和合作安排</pre></div>'
       +'<div class="rp-card" style="margin:0;padding:11px 12px;"><h4>🤝 粮站能做什么</h4><pre>• 当面答谢长期合作农户\n• 提前说明下一季收粮安排\n• 听听农户对价格和服务的意见\n• 把联系方式和合作关系维护起来</pre></div>'
-      +'<div class="rp-card" style="margin:0;padding:11px 12px;"><h4>🧰 我们帮您张罗什么</h4><pre>• 协助整理邀约农户\n• 活动通知与时间确认\n• 现场物料与座位布置\n• 流程安排与签到准备</pre></div>'
+      +'<div class="rp-card" style="margin:0;padding:11px 12px;"><h4>🧰 我们帮您张罗什么</h4><pre>• 邀约农户与活动通知\n• 现场物料与座位布置\n• 流程安排与签到准备\n• 村级站点（邮掌柜）协助组织</pre></div>'
       +'</div>'
       +'<div class="rp-lbl">▌一场活动可以这样安排</div>'
       +'<table class="rp-tbl"><thead><tr><th style="width:90px;">时间</th><th>内容</th><th>谁来讲</th></tr></thead><tbody>'
@@ -7536,6 +7606,39 @@ document.addEventListener('keydown',function(e){
   const lm=$('ltPlanMask'); if(lm&&lm.classList.contains('show')&&e.key==='Escape') closeLongTermPlanner();
 });
 
+
+/* ===================== 农家夜 · 定制服务 ===================== */
+function openFarmerServiceCustomizer(){ const m=$('farmerSvcMask'); if(m)m.classList.add('show'); }
+function closeFarmerServiceCustomizer(){ const m=$('farmerSvcMask'); if(m)m.classList.remove('show'); }
+function farmerSvcData(){
+  const vals=Array.from(document.querySelectorAll('#svcChecks input[type=checkbox]:checked')).map(x=>x.value);
+  return {invite:Math.max(1,parseInt(($('svcInviteN')||{}).value||30,10)),attend:Math.max(1,parseInt(($('svcAttendN')||{}).value||20,10)),date:(($('svcDate')||{}).value||'待确定'),time:(($('svcTime')||{}).value||'18:30—20:00'),place:(($('svcPlace')||{}).value||'待确定'),items:vals,note:(($('svcNote')||{}).value||'无').trim()||'无'};
+}
+async function exportFarmerServicePDF(){
+  const d=farmerSvcData(),host=$('farmerSvcPdfHost');
+  const itemHtml=(d.items.length?d.items:['按现场需求另行确认']).map((x,i)=>'<div style="padding:9px 11px;border:1px solid #dce9e1;border-radius:9px;background:#f8fcf9;"><b style="color:#0a6b3b;">'+(i+1)+'.</b> '+escHtml(x)+'</div>').join('');
+  host.innerHTML='<div style="width:794px;min-height:1123px;padding:54px 58px;font-family:-apple-system,PingFang SC,Microsoft YaHei,sans-serif;color:#1f2a24;background:#fff;box-sizing:border-box;">'+
+    '<div style="font-size:12px;letter-spacing:2px;color:#0a6b3b;font-weight:700;">丰收智链 · 农户关系维护服务</div>'+
+    '<div style="font-size:30px;font-weight:800;color:#064d35;margin-top:12px;">「农家夜」定制服务介绍</div>'+
+    '<div style="font-size:14px;color:#68786f;margin-top:8px;padding-bottom:20px;border-bottom:2px solid #0a6b3b;">农户答谢 × 粮价交流 × 收粮安排 × 合作维护</div>'+
+    '<div style="margin-top:24px;background:#eef8f2;border:1px solid #cfe5d7;border-radius:14px;padding:18px 20px;line-height:1.9;font-size:14px;">围绕粮商与合作农户的长期关系维护，根据实际邀约规模和现场条件协助完成活动组织。服务重点放在邀约、沟通、现场执行和后续关系维护，让活动更省心、更有秩序。</div>'+
+    '<h2 style="font-size:18px;color:#0a6b3b;margin:25px 0 10px;">一、活动定制信息</h2>'+
+    '<table style="width:100%;border-collapse:collapse;font-size:14px;"><tr><td style="padding:9px;border:1px solid #dfe9e3;background:#f6faf7;width:24%;"><b>预计邀约</b></td><td style="padding:9px;border:1px solid #dfe9e3;">'+d.invite+' 人</td><td style="padding:9px;border:1px solid #dfe9e3;background:#f6faf7;width:24%;"><b>预计到场</b></td><td style="padding:9px;border:1px solid #dfe9e3;">'+d.attend+' 人</td></tr><tr><td style="padding:9px;border:1px solid #dfe9e3;background:#f6faf7;"><b>日期</b></td><td style="padding:9px;border:1px solid #dfe9e3;">'+escHtml(d.date)+'</td><td style="padding:9px;border:1px solid #dfe9e3;background:#f6faf7;"><b>时段</b></td><td style="padding:9px;border:1px solid #dfe9e3;">'+escHtml(d.time)+'</td></tr><tr><td style="padding:9px;border:1px solid #dfe9e3;background:#f6faf7;"><b>地点</b></td><td colspan="3" style="padding:9px;border:1px solid #dfe9e3;">'+escHtml(d.place)+'</td></tr></table>'+
+    '<h2 style="font-size:18px;color:#0a6b3b;margin:25px 0 10px;">二、已选服务内容</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">'+itemHtml+'</div>'+
+    '<h2 style="font-size:18px;color:#0a6b3b;margin:25px 0 10px;">三、建议活动流程</h2>'+
+    '<div style="display:grid;grid-template-columns:110px 1fr;gap:0;font-size:14px;border:1px solid #dfe9e3;border-radius:10px;overflow:hidden;"><div style="padding:10px;background:#eef8f2;font-weight:700;">18:30</div><div style="padding:10px;">签到、见面、自由交流</div><div style="padding:10px;background:#f6faf7;font-weight:700;">18:45</div><div style="padding:10px;background:#fbfdfc;">粮站介绍本季收粮安排</div><div style="padding:10px;background:#eef8f2;font-weight:700;">19:00</div><div style="padding:10px;">粮价与交粮节奏交流</div><div style="padding:10px;background:#f6faf7;font-weight:700;">19:20</div><div style="padding:10px;background:#fbfdfc;">下一季交粮、结算与合作安排交流</div></div>'+
+    '<h2 style="font-size:18px;color:#0a6b3b;margin:25px 0 10px;">四、其他定制要求</h2><div style="padding:12px 14px;border:1px dashed #bfd7c8;border-radius:10px;min-height:54px;font-size:14px;line-height:1.8;">'+escHtml(d.note)+'</div>'+
+    '<div style="margin-top:28px;padding-top:12px;border-top:1px solid #e1e9e4;color:#839189;font-size:11.5px;line-height:1.7;">说明：本页为活动服务方案介绍，具体日期、场地、人员安排和物料数量以活动前最终确认为准。</div></div>';
+  try{
+    if(typeof html2canvas==='undefined'||!window.jspdf){ toast('PDF 组件尚未加载，请联网后重试'); return; }
+    const canvas=await html2canvas(host.firstElementChild,{scale:2,useCORS:true,backgroundColor:'#ffffff'});
+    const img=canvas.toDataURL('image/jpeg',0.96),jsPDF=window.jspdf.jsPDF,pdf=new jsPDF('p','mm','a4');
+    const pw=210,ph=297,ratio=Math.min(pw/canvas.width,ph/canvas.height),w=canvas.width*ratio,h=canvas.height*ratio;
+    pdf.addImage(img,'JPEG',(pw-w)/2,0,w,h);
+    pdf.save('农家夜_定制服务介绍.pdf'); closeFarmerServiceCustomizer(); toast('定制服务介绍 PDF 已生成');
+  }catch(e){ console.error(e); toast('PDF 生成失败，请重试'); }
+}
+
 /* ===================== 初始化 ===================== */
 renderAllocEdit();
 renderAlloc();
@@ -7566,6 +7669,8 @@ refreshNeed();
 })();
 goto('upload');
 </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e","spa":2}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"1c1c7799c54e46349cc23295b5e08299","spa":2}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e","spa":2}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"1c1c7799c54e46349cc23295b5e08299","spa":2}' crossorigin="anonymous"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e","spa":2}' crossorigin="anonymous"></script>
